@@ -1,0 +1,160 @@
+.libraryPage .verticalSection {
+  margin-block-end: var(--ng-section-space);
+  scroll-margin-block-start: calc(var(--ng-nav-height) + var(--ng-space-lg));
+}
+.libraryPage :is(.sectionTitle, .sectionTitleTextButton) {
+  font-family: var(--ng-font-display);
+  font-size: var(--ng-section-font-size);
+  font-weight: var(--ng-heading-weight);
+  letter-spacing: var(--ng-control-tracking);
+  color: var(--ng-text);
+}
+.libraryPage .sectionTitleContainer {
+  margin-block-end: var(--ng-space-md);
+}
+.libraryPage .padded-left {
+  padding-inline-start: var(--ng-gutter);
+}
+.libraryPage .padded-right {
+  padding-inline-end: var(--ng-gutter);
+}
+.libraryPage .scrollSlider {
+  display: flex;
+  gap: var(--ng-card-gap);
+  margin-inline: 0;
+}
+.libraryPage .emby-scroller {
+  overflow: hidden;
+}
+.libraryPage .scrollSlider > .card {
+  flex: 0 0 auto;
+  padding: 0;
+}
+.libraryPage .overflowPortraitCard { width: var(--ng-poster-width); }
+.libraryPage :is(.overflowBackdropCard, .overflowSmallBackdropCard) { width: var(--ng-landscape-width); }
+.libraryPage .personCard { width: var(--ng-person-width); }
+.libraryPage .vertical-wrap:has(> .portraitCard) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--ng-poster-width)), 1fr));
+  gap: var(--ng-card-gap);
+}
+.libraryPage .vertical-wrap:has(> .portraitCard) > .card {
+  width: 100%;
+  padding: 0;
+}
+.libraryPage .cardBox {
+  margin: 0;
+  background: var(--ng-transparent);
+  box-shadow: none;
+  transition: transform var(--ng-motion-duration) var(--ng-ease);
+}
+.libraryPage :is(.cardScalable, .cardImageContainer, .cardContent, .cardOverlayContainer) {
+  border-radius: var(--ng-radius-card);
+}
+.libraryPage .card:focus-within .cardBox {
+  transform: translateY(var(--ng-card-lift));
+}
+.libraryPage .cardScalable { overflow: hidden; }
+.libraryPage :is(.cardImageContainer, .cardContent-shadow) {
+  box-shadow: var(--ng-shadow-card);
+}
+.libraryPage .cardOverlayContainer {
+  background: var(--ng-overlay-scrim);
+}
+.libraryPage .cardText {
+  color: var(--ng-text);
+  font-size: var(--ng-small-font-size);
+  line-height: var(--ng-body-leading);
+  text-align: start;
+  padding-block-start: var(--ng-space-xs);
+  justify-content: flex-start;
+}
+.libraryPage .cardText > :is(button, a) { text-align: inherit; font-family: inherit; color: inherit; }
+.libraryPage .cardText-first { font-weight: var(--ng-control-weight); }
+.libraryPage .cardText-secondary { color: var(--ng-text-secondary); }
+.libraryPage :is(.playedIndicator, .countIndicator) {
+  color: var(--ng-primary-text);
+  background: var(--ng-primary-bg);
+}
+.libraryPage .itemProgressBar {
+  height: var(--ng-progress-height);
+  background: var(--ng-progress-track);
+}
+.libraryPage .itemProgressBarForeground { background: var(--ng-primary-bg); }
+.libraryPage .cardOverlayButton {
+  color: var(--ng-text);
+  background: var(--ng-poster-actions-bg);
+  border-radius: var(--ng-radius-pill);
+}
+:is(.libraryPage, #searchPage) .cardOverlayContainer {
+  background: var(--ng-overlay-scrim);
+  transition: opacity var(--ng-motion-duration) var(--ng-ease);
+}
+:is(.libraryPage, #searchPage) .cardOverlayButton-br {
+  display: flex;
+  align-items: center;
+  gap: var(--ng-poster-action-gap);
+  padding: var(--ng-poster-action-padding);
+  right: var(--ng-poster-action-inset);
+  bottom: var(--ng-poster-action-inset);
+  box-sizing: border-box;
+  border: var(--ng-chrome-border-width) solid var(--ng-chrome-border);
+  border-radius: var(--ng-radius-pill);
+  background: var(--ng-poster-actions-bg);
+  backdrop-filter: var(--ng-control-blur);
+}
+:is(.libraryPage, #searchPage) .cardOverlayButton {
+  width: var(--ng-poster-action-size);
+  height: var(--ng-poster-action-size);
+  min-width: var(--ng-poster-action-size);
+  border-radius: var(--ng-radius-pill);
+  color: var(--ng-text);
+  background: var(--ng-transparent);
+  transition: background var(--ng-motion-duration) var(--ng-ease), color var(--ng-motion-duration) var(--ng-ease);
+}
+:is(.libraryPage, #searchPage) .cardOverlayButton:is(:hover, :focus-visible) {
+  background: var(--ng-chrome-hover);
+  color: var(--ng-text);
+}
+:is(.libraryPage, #searchPage) .cardOverlayFab-primary {
+  width: var(--ng-poster-play-size);
+  height: var(--ng-poster-play-size);
+  min-width: var(--ng-poster-play-size);
+  background: var(--ng-primary-bg);
+  color: var(--ng-primary-text);
+  box-shadow: var(--ng-shadow-card);
+}
+:is(.libraryPage, #searchPage) .cardOverlayFab-primary:is(:hover, :focus-visible) {
+  background: var(--ng-text);
+  color: var(--ng-primary-text);
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(.libraryPage, #searchPage) .cardOverlayContainer {
+    opacity: 0;
+    pointer-events: none;
+  }
+  :is(.libraryPage, #searchPage) .card:is(:hover, :focus-within) .cardOverlayContainer {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+@media (hover: none) {
+  :is(.libraryPage, #searchPage) .cardOverlayContainer {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .libraryPage .card-hoverable:hover > .cardBox {
+    transform: translateY(var(--ng-card-lift));
+  }
+}
+.libraryPage .card:focus-visible > .cardBox {
+  outline: var(--ng-focus-width) solid var(--ng-focus-color);
+  outline-offset: var(--ng-focus-offset);
+}
+@media (max-width: 48rem) {
+  .libraryPage .vertical-wrap:has(> .portraitCard) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

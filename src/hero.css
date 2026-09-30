@@ -1,0 +1,91 @@
+/* Desktop artwork belongs to Jellyfin's global backdrop; mobile uses the banner. */
+html:has(#itemDetailPage:not(.hide)) .backdropContainer {
+  position: absolute;
+  inset-block-start: 0;
+  height: var(--ng-hero-height);
+  overflow: hidden;
+}
+html:has(#itemDetailPage:not(.hide)) .backdropImage {
+  opacity: 1;
+  filter: none;
+  background-position: var(--ng-image-position);
+  background-size: cover;
+  mask-image: var(--ng-backdrop-mask);
+  -webkit-mask-image: var(--ng-backdrop-mask);
+}
+html:has(#itemDetailPage:not(.hide)) .backgroundContainer.withBackdrop {
+  background: var(--ng-transparent) !important;
+}
+#itemDetailPage {
+  background: var(--ng-detail-background);
+}
+#itemDetailPage .detailPageWrapperContainer {
+  background: var(--ng-transparent) !important;
+}
+#itemDetailPage #itemBackdrop {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: var(--ng-hero-height);
+  margin: 0;
+  background-position: var(--ng-image-position);
+  background-size: cover;
+  pointer-events: none;
+}
+#itemDetailPage #itemBackdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ng-hero-scrim);
+  pointer-events: none;
+}
+#itemDetailPage .detailLogo:not(.hide) {
+  display: block !important;
+  z-index: var(--ng-logo-layer);
+  position: absolute;
+  inset-inline-start: var(--ng-gutter);
+  inset-block-start: var(--ng-logo-top);
+  width: var(--ng-logo-width);
+  max-width: calc(100% - var(--ng-gutter) * 2);
+  height: var(--ng-logo-height);
+  margin: 0;
+  background-size: contain;
+  background-position: left center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+/* Keep the semantic title available to assistive technology when a logo exists. */
+#itemDetailPage:has(.detailLogo:not(.hide)) .nameContainer .itemName:not(.subtitle) {
+  position: absolute;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+html:has(.backdropImage.displayingBackdropImage[style*="url("]) #itemDetailPage .detailImageContainer,
+#itemDetailPage:has(#itemBackdrop[style*="url("]) .detailImageContainer {
+  display: none !important;
+}
+/* No borrowed fallback images, empty hero space or hidden native poster. */
+html:not(:has(.backdropImage.displayingBackdropImage[style*="url("])) #itemDetailPage:not(:has(#itemBackdrop[style*="url("])) .detailPagePrimaryContainer {
+  min-height: 0;
+  padding-block-start: calc(var(--ng-nav-height) + var(--ng-section-space));
+}
+html:not(:has(.backdropImage.displayingBackdropImage[style*="url("])) #itemDetailPage:not(:has(#itemBackdrop[style*="url("])) #itemBackdrop {
+  display: none;
+}
+html:not(:has(.backdropImage.displayingBackdropImage[style*="url("])) #itemDetailPage:not(:has(#itemBackdrop[style*="url("])) .detailLogo:not(.hide) {
+  position: relative;
+  inset-block-start: auto;
+  margin-block-start: calc(var(--ng-nav-height) + var(--ng-space-lg));
+}
+#itemDetailPage .detailImageContainer .card {
+  position: relative;
+  inset-block-start: auto;
+  width: var(--ng-poster-width);
+  margin-block-end: var(--ng-space-lg);
+}
+@media (max-width: 48rem) {
+  html:not(:has(.backdropImage.displayingBackdropImage[style*="url("])) #itemDetailPage:not(:has(#itemBackdrop[style*="url("])) .detailImageContainer.hide-desktop {
+    display: flow-root !important;
+  }
+}

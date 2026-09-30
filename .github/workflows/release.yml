@@ -1,0 +1,107 @@
+name: Release NoirGlass
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify tag belongs to main
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          git fetch origin main --no-tags
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build:all
+      - name: Verify reproducible release assets
+        shell: bash
+        run: |
+          sha256sum dist/noirglass.min.css dist/noirglass.companion.js dist/NoirGlass.Plugin_12.1.0.zip manifest.json > "$RUNNER_TEMP/noirglass-checksums"
+          npm run build:all
+          sha256sum --check "$RUNNER_TEMP/noirglass-checksums"
+      - run: npm run check
+      - run: npm run test:docs
+      - run: npm run test:plugin
+      - run: npm run test:companion
+      - run: npm run test:autoplay
+      - run: npm run test:release
+      - name: Verify release versions and changelog
+        env:
+          RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
+        run: node scripts/check-release-version.mjs "$RELEASE_TAG"
+      - name: Verify tagged CSS, browser payload and documentation
+        shell: bash
+        run: |
+          git ls-files --error-unmatch README.md docs/CUSTOMIZATION.md dist/noirglass.min.css dist/noirglass.companion.js
+          git diff --exit-code -- README.md docs/CUSTOMIZATION.md dist/noirglass.min.css dist/noirglass.companion.js
+      - name: Prepare release notes
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: node scripts/release-notes.mjs "$GITHUB_REF_NAME" release-notes.md
+      - uses: actions/upload-artifact@v4
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: noirglass-release
+          if-no-files-found: error
+          path: |
+            dist/noirglass.min.css
+            dist/NoirGlass.Plugin_12.1.0.zip
+            manifest.json
+            release-notes.md
+
+  publish:
+    needs: build-and-test
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: noirglass-release
+          path: release-files
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release already exists for $GITHUB_REF_NAME" >&2
+            exit 1
+          fi
+          gh release create "$GITHUB_REF_NAME" \
+            release-files/dist/noirglass.min.css \
+            release-files/dist/NoirGlass.Plugin_12.1.0.zip \
+            release-files/manifest.json \
+            --verify-tag --notes-file release-files/release-notes.md --title "NoirGlass ${GITHUB_REF_NAME#v}"

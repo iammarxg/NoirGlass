@@ -1,0 +1,187 @@
+/* Namespaced plugin companion surface. Native shelves remain available. */
+#indexPage:has(.ng-feature) {
+  padding-block-start: 0 !important;
+}
+#indexPage:has(.ng-feature) #homeTab .homeSectionsContainer {
+  margin-block-start: calc(-1 * var(--ng-section-space)) !important;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+#indexPage:has(.ng-feature) #homeTab .homeSectionsContainer > .section1 {
+  order: -1;
+}
+#indexPage .ng-feature {
+  position: relative;
+  height: var(--ng-feature-height);
+  min-height: var(--ng-feature-height);
+  overflow: hidden;
+  color: var(--ng-text);
+  background: var(--ng-feature-gradient);
+  isolation: isolate;
+}
+#indexPage .ng-feature__track,
+#indexPage .ng-feature__slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+#indexPage .ng-feature__slide {
+  overflow: hidden;
+  transition: transform var(--ng-feature-slide-duration) var(--ng-ease);
+}
+#indexPage .ng-feature__slide[aria-hidden="true"] { pointer-events: none; }
+#indexPage .ng-feature__art,
+#indexPage .ng-feature__scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+#indexPage .ng-feature__art {
+  object-fit: cover;
+  object-position: var(--ng-image-position);
+}
+#indexPage .ng-feature__scrim { background: var(--ng-feature-scrim); }
+#indexPage .ng-feature__content {
+  position: absolute;
+  inset-inline-start: var(--ng-gutter);
+  inset-block-end: var(--ng-section-space);
+  max-width: min(var(--ng-feature-content-width), calc(100% - var(--ng-gutter) * 2));
+  z-index: 1;
+}
+#indexPage .ng-feature__logo {
+  display: block;
+  width: min(100%, var(--ng-logo-width));
+  max-height: var(--ng-logo-height);
+  object-fit: contain;
+  object-position: left bottom;
+  margin-block-end: var(--ng-space-sm);
+}
+#indexPage .ng-feature__title {
+  margin: 0 0 var(--ng-space-sm);
+  font-family: var(--ng-font-display);
+  font-size: var(--ng-feature-title-size);
+  font-weight: var(--ng-title-weight);
+  line-height: var(--ng-title-leading);
+  letter-spacing: var(--ng-title-tracking);
+  overflow-wrap: anywhere;
+}
+#indexPage .ng-feature__title--visually-hidden {
+  position: absolute;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  overflow: hidden;
+}
+#indexPage .ng-feature__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ng-space-xs);
+  color: var(--ng-text-on-image);
+  font-size: var(--ng-small-font-size);
+  margin-block-end: var(--ng-space-sm);
+}
+#indexPage .ng-feature__overview {
+  max-width: var(--ng-hero-overview-width);
+  margin: 0 0 var(--ng-space-md);
+  color: var(--ng-text-secondary);
+  line-height: var(--ng-body-leading);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+#indexPage .ng-feature__actions,
+#indexPage .ng-feature__pager {
+  display: flex;
+  align-items: center;
+  gap: var(--ng-space-sm);
+}
+#indexPage .ng-feature__action,
+#indexPage .ng-feature__arrow,
+#indexPage .ng-feature__pause {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--ng-control-height);
+  padding-inline: var(--ng-control-padding);
+  border: var(--ng-chrome-border-width) solid var(--ng-home-glass-border);
+  border-radius: var(--ng-radius-pill);
+  background: var(--ng-home-secondary-glass);
+  color: var(--ng-text);
+  font: var(--ng-control-weight) var(--ng-control-font-size) var(--ng-font);
+  cursor: pointer;
+  backdrop-filter: var(--ng-control-blur);
+  box-shadow: var(--ng-shadow-control);
+}
+#indexPage .ng-feature__action--primary {
+  border: 0;
+  background: var(--ng-primary-bg);
+  color: var(--ng-primary-text);
+  backdrop-filter: none;
+  box-shadow: none;
+}
+#indexPage .ng-feature__action:hover,
+#indexPage .ng-feature__arrow:hover,
+#indexPage .ng-feature__pause:hover { background: var(--ng-home-secondary-hover-glass); }
+#indexPage .ng-feature__action--primary:hover { background: var(--ng-text); }
+#indexPage .ng-feature__pager {
+  position: absolute;
+  z-index: 2;
+  inset-inline-end: var(--ng-gutter);
+  inset-block-end: var(--ng-section-space);
+}
+#indexPage .ng-feature__arrow { padding-inline: var(--ng-space-md); }
+#indexPage .ng-feature__pause { gap: var(--ng-space-xs); padding-inline: var(--ng-space-md); }
+#indexPage .ng-feature__pause[hidden] { display: none; }
+#indexPage .ng-feature__pause::before {
+  content: "";
+  display: block;
+  width: var(--ng-chrome-icon-size);
+  height: var(--ng-chrome-icon-size);
+  background: currentColor;
+  mask: url("../assets/icons/pause.svg") center / contain no-repeat;
+}
+#indexPage .ng-feature__pause[data-state="paused"]::before {
+  mask-image: url("../assets/icons/play.svg");
+}
+#indexPage .ng-feature__status {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+#indexPage .ng-feature__dot {
+  width: var(--ng-feature-dot-size);
+  height: var(--ng-feature-dot-size);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ng-radius-pill);
+  background: var(--ng-feature-dot);
+  cursor: pointer;
+}
+#indexPage .ng-feature__dot[aria-current="true"] {
+  width: var(--ng-feature-dot-active-width);
+  background: var(--ng-feature-dot-active);
+}
+#indexPage .ng-feature :is(button, a):focus-visible {
+  outline: var(--ng-focus-width) solid var(--ng-focus-color);
+  outline-offset: var(--ng-focus-offset);
+}
+@media (max-width: 48rem) {
+  #indexPage:has(.ng-feature) #homeTab .homeSectionsContainer {
+    margin-block-start: calc(-1 * var(--ng-space-sm)) !important;
+  }
+  #indexPage .ng-feature__content {
+    inset-block-end: calc(var(--ng-section-space) + var(--ng-control-height) + var(--ng-space-lg));
+  }
+  #indexPage .ng-feature__overview { display: none; }
+  #indexPage .ng-feature__pager {
+    inset-inline-start: var(--ng-gutter);
+    inset-inline-end: auto;
+    inset-block-end: calc(var(--ng-section-space) + var(--ng-space-sm));
+  }
+  #indexPage .ng-feature__action { padding-inline: var(--ng-space-lg); }
+}

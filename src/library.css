@@ -1,0 +1,33 @@
+/* Retain Jellyfin's real sort, filter and library actions. */
+.libraryPage:not(#indexPage):not(#itemDetailPage):not(#videoOsdPage) {
+  background: var(--ng-surface);
+}
+.libraryPage:not(#indexPage):not(#itemDetailPage) .itemsContainer {
+  gap: var(--ng-library-grid-gap);
+}
+.libraryPage:not(#indexPage):not(#itemDetailPage) .cardBox {
+  background: var(--ng-transparent);
+  box-shadow: none;
+}
+.libraryPage:not(#indexPage):not(#itemDetailPage) :is(.emby-tab-button, .alphaPickerButton) {
+  border-radius: var(--ng-radius-pill);
+}
+.libraryPage:not(#indexPage):not(#itemDetailPage) :is(.emby-tab-button-active, .alphaPickerButton-selected) {
+  background: var(--ng-nav-selection);
+  color: var(--ng-nav-selection-text);
+}
+.libraryPage:not(#indexPage):not(#itemDetailPage) :is(.btnFilter, .btnSort, .btnSelectView, .btnViewSettings, .btnPlayAll, .btnShuffle) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--ng-chrome-button-size);
+  min-height: var(--ng-chrome-button-size);
+  border-radius: var(--ng-radius-pill);
+  color: var(--ng-text-secondary);
+  border: var(--ng-chrome-border-width) solid var(--ng-chrome-border);
+  background: var(--ng-chrome-glass);
+}
+.libraryPage:not(#indexPage):not(#itemDetailPage) :is(.btnFilter, .btnSort, .btnSelectView, .btnViewSettings, .btnPlayAll, .btnShuffle):is(:hover, :focus-visible) {
+  background: var(--ng-chrome-hover);
+  color: var(--ng-text);
+}

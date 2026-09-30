@@ -1,0 +1,51 @@
+/* Native manual, visual, Quick Connect and recovery flows remain available. */
+#loginPage {
+  background-color: var(--ng-bg);
+  color: var(--ng-text);
+}
+#loginPage > .padded-left.padded-right.padded-bottom-page {
+  width: calc(100% - var(--ng-gutter) * 2);
+  max-width: var(--ng-login-width);
+  box-sizing: border-box;
+  margin-inline: auto;
+  margin-block: calc(var(--ng-nav-height) + var(--ng-section-space)) var(--ng-section-space);
+  padding: var(--ng-login-padding);
+  background: var(--ng-login-background);
+  border-radius: var(--ng-radius-panel);
+  box-shadow: var(--ng-shadow-panel);
+}
+#loginPage :is(.manualLoginForm, .readOnlyContent, .visualLoginForm) {
+  width: 100%;
+  max-width: 100%;
+}
+#loginPage h1 {
+  font-family: var(--ng-font-display);
+  font-size: var(--ng-login-title-size);
+  font-weight: var(--ng-title-weight);
+  letter-spacing: var(--ng-title-tracking);
+}
+#loginPage :is(.inputLabel, .checkboxLabel) { color: var(--ng-text-secondary); }
+#loginPage .emby-input {
+  color: var(--ng-text);
+  background: var(--ng-surface-raised);
+  border-color: var(--ng-border);
+  border-radius: var(--ng-radius-small);
+}
+#loginPage .emby-input:focus { border-color: var(--ng-focus-color); }
+#loginPage .emby-button {
+  min-height: var(--ng-control-height);
+  font-family: var(--ng-font);
+  font-weight: var(--ng-control-weight);
+  border-radius: var(--ng-radius-pill);
+  color: var(--ng-text);
+  background: var(--ng-secondary-bg);
+  box-shadow: var(--ng-shadow-control);
+}
+#loginPage .button-submit {
+  color: var(--ng-primary-text);
+  background: var(--ng-primary-bg);
+}
+#loginPage .emby-button:hover { background: var(--ng-secondary-hover); }
+#loginPage .button-submit:hover { background: var(--ng-text); }
+#loginPage .cardText { color: var(--ng-text); }
+#loginPage .cardImageContainer { border-radius: var(--ng-radius-card); }

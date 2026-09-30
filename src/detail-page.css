@@ -1,0 +1,369 @@
+#itemDetailPage .detailPagePrimaryContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  min-height: var(--ng-hero-height);
+  box-sizing: border-box;
+  padding: calc(var(--ng-logo-top) + var(--ng-logo-height) + var(--ng-space-md)) var(--ng-gutter) var(--ng-space-lg);
+  gap: var(--ng-space-md);
+}
+#itemDetailPage .detailRibbon {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: var(--ng-hero-content-width);
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  background: var(--ng-transparent);
+  gap: var(--ng-space-sm);
+}
+#itemDetailPage :is(.infoWrapper, .nameContainer) {
+  width: 100%;
+  min-width: 0;
+  text-align: start;
+  align-items: flex-start;
+  box-sizing: border-box;
+  padding: 0;
+  flex-shrink: 1;
+}
+#itemDetailPage .detailImageContainer { position: relative; }
+#itemDetailPage .nameContainer :is(.itemName, .parentName) {
+  font-family: var(--ng-font-display);
+  font-size: var(--ng-title-size);
+  font-weight: var(--ng-title-weight);
+  line-height: var(--ng-title-leading);
+  letter-spacing: var(--ng-title-tracking);
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: var(--ng-text);
+  text-align: start;
+}
+#itemDetailPage .itemMiscInfo {
+  color: var(--ng-text-secondary);
+  font-size: var(--ng-small-font-size);
+  gap: var(--ng-space-xs);
+  justify-content: flex-start;
+  text-align: start;
+  margin-inline: 0;
+}
+#itemDetailPage:has(.detailLogo:not(.hide)) .nameContainer :is(.parentName, .subtitle) {
+  font-size: var(--ng-section-font-size);
+  font-weight: var(--ng-heading-weight);
+}
+#itemDetailPage .mainDetailButtons {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: var(--ng-space-sm);
+  margin: var(--ng-space-xs) 0;
+}
+#itemDetailPage .mainDetailButtons .detailButton {
+  box-sizing: border-box;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: var(--ng-control-height);
+  min-height: var(--ng-control-height);
+  min-width: var(--ng-control-height);
+  margin: 0;
+  padding: var(--ng-space-sm);
+  border-radius: var(--ng-radius-pill);
+  background: var(--ng-secondary-bg);
+  color: var(--ng-text);
+  box-shadow: var(--ng-shadow-control);
+  backdrop-filter: var(--ng-control-blur);
+  transition: background var(--ng-motion-duration) var(--ng-ease);
+}
+#itemDetailPage .mainDetailButtons :is(.btnPlay, .btnReplay) {
+  padding-inline: var(--ng-control-padding);
+  background: var(--ng-primary-bg);
+  color: var(--ng-primary-text);
+  box-shadow: none;
+  backdrop-filter: none;
+  gap: var(--ng-space-xs);
+}
+#itemDetailPage .mainDetailButtons :is(.btnPlay, .btnReplay)::after {
+  content: attr(title);
+  font-family: var(--ng-font);
+  font-size: var(--ng-control-font-size);
+  font-weight: var(--ng-control-weight);
+  letter-spacing: var(--ng-control-tracking);
+}
+#itemDetailPage .mainDetailButtons .detailButton:hover { background: var(--ng-secondary-hover); }
+#itemDetailPage .mainDetailButtons :is(.btnPlay, .btnReplay):hover {
+  background: var(--ng-text);
+  color: var(--ng-primary-text);
+}
+#itemDetailPage .detailPagePrimaryContent {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  background: var(--ng-transparent);
+}
+#itemDetailPage .trackSelections {
+  display: grid;
+  gap: var(--ng-space-xs);
+  width: 100%;
+  max-width: var(--ng-hero-content-width);
+}
+#itemDetailPage .trackSelections .trackSelectionFieldContainer:not(.hide) {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--ng-track-label-width) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--ng-space-sm);
+  width: 100%;
+  min-height: var(--ng-track-row-height);
+  margin: 0;
+  padding: var(--ng-space-xs) var(--ng-space-md);
+  box-sizing: border-box;
+  border: var(--ng-chrome-border-width) solid var(--ng-track-border);
+  border-radius: var(--ng-radius-card);
+  background: var(--ng-track-surface);
+  backdrop-filter: var(--ng-control-blur);
+  transition: background var(--ng-motion-duration) var(--ng-ease), border-color var(--ng-motion-duration) var(--ng-ease);
+}
+#itemDetailPage .trackSelections .trackSelectionFieldContainer:is(:hover, :focus-within) {
+  background: var(--ng-track-hover);
+  border-color: var(--ng-chrome-border);
+}
+#itemDetailPage .trackSelections .selectLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ng-space-xs);
+  color: var(--ng-text-secondary);
+  font-size: var(--ng-track-label-size);
+  font-weight: var(--ng-control-weight);
+}
+#itemDetailPage .trackSelections .selectLabel::before {
+  content: "";
+  width: var(--ng-track-icon-size);
+  height: var(--ng-track-icon-size);
+}
+#itemDetailPage :is(.trackSelectionFieldContainer, .detailTrackSelect) { max-width: 100%; }
+#itemDetailPage .detailTrackSelect {
+  width: 100%;
+  min-width: 0;
+  padding-inline-end: var(--ng-track-select-end-padding);
+  color: var(--ng-text);
+  background: var(--ng-transparent);
+  border-color: var(--ng-transparent);
+  border-radius: var(--ng-radius-card);
+  text-overflow: ellipsis;
+  font-size: var(--ng-small-font-size);
+}
+#itemDetailPage .detailTrackSelect:disabled {
+  color: var(--ng-text);
+  opacity: 1;
+}
+#itemDetailPage .trackSelections .selectArrowContainer {
+  position: absolute;
+  inset-inline-end: var(--ng-space-md);
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+#itemDetailPage .trackSelections .ng-format-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ng-space-xs);
+  grid-column: 2;
+  margin-block-start: var(--ng-track-badge-pull);
+}
+#itemDetailPage .trackSelections .ng-format-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--ng-format-badge-height);
+  padding-inline: var(--ng-space-xs);
+  border: var(--ng-chrome-border-width) solid var(--ng-format-badge-border);
+  border-radius: var(--ng-radius-small);
+  background: var(--ng-format-badge-bg);
+  color: var(--ng-text);
+  font-size: var(--ng-format-badge-font-size);
+  font-weight: var(--ng-heading-weight);
+  line-height: 1;
+  letter-spacing: var(--ng-control-tracking);
+  white-space: nowrap;
+}
+#itemDetailPage :is(.overview, .tagline, .itemGenres) {
+  max-width: var(--ng-hero-overview-width);
+  color: var(--ng-text-on-image);
+  line-height: var(--ng-body-leading);
+}
+#itemDetailPage .overview { margin-block: var(--ng-space-sm); }
+#itemDetailPage .tagline { font-weight: var(--ng-control-weight); }
+#itemDetailPage :is(.itemExternalLinks, .itemDetailsGroup) { color: var(--ng-text-secondary); }
+#itemDetailPage .button-link { color: var(--ng-text); }
+#itemDetailPage .detailPageSecondaryContainer {
+  padding: var(--ng-section-space) var(--ng-gutter);
+  background: var(--ng-bg);
+}
+#itemDetailPage .detailPageSecondaryContainer :is(.sectionTitle, .sectionTitleTextButton) {
+  font-family: var(--ng-font-display);
+  font-size: var(--ng-section-font-size);
+  font-weight: var(--ng-heading-weight);
+  letter-spacing: var(--ng-title-tracking);
+  color: var(--ng-text);
+}
+#itemDetailPage .detailVerticalSection { width: 100%; box-sizing: border-box; }
+#itemDetailPage :is(.detailPagePrimaryContent, .detailPageSecondaryContainer) .padded-right {
+  padding-inline: 0;
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .vertical-list {
+  display: grid;
+  grid-template-columns: var(--ng-episode-columns);
+  gap: var(--ng-card-gap);
+  width: 100%;
+  box-sizing: border-box;
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItem {
+  container-type: inline-size;
+  min-width: 0;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border-radius: var(--ng-radius-card);
+  border: var(--ng-chrome-border-width) solid var(--ng-episode-border);
+  background: var(--ng-episode-surface);
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: transform var(--ng-motion-duration) var(--ng-ease), background var(--ng-motion-duration) var(--ng-ease);
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItem-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--ng-space-xs);
+  row-gap: var(--ng-space-sm);
+  height: auto;
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItemImage-large {
+  grid-column: 1 / -1;
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItem:hover {
+  background: var(--ng-episode-hover);
+  transform: translateY(var(--ng-episode-card-lift));
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItem:focus-within {
+  background: var(--ng-episode-hover);
+  outline: var(--ng-focus-width) solid var(--ng-focus-color);
+  outline-offset: var(--ng-focus-offset);
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItemImage-large {
+  width: var(--ng-episode-image-width);
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 0;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItemBody {
+  grid-column: 1;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--ng-space-sm) var(--ng-space-md) 0;
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItem-overview {
+  display: none;
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listViewUserDataButtons {
+  grid-column: 2;
+  justify-self: end;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ng-episode-dock-gap);
+  margin: 0 var(--ng-space-md) 0 0;
+  padding: var(--ng-episode-dock-padding);
+  border: var(--ng-chrome-border-width) solid var(--ng-episode-dock-border);
+  border-radius: var(--ng-radius-pill);
+  background: var(--ng-episode-dock-bg);
+  backdrop-filter: var(--ng-control-blur);
+  box-shadow: var(--ng-shadow-control);
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItemButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--ng-episode-action-size);
+  height: var(--ng-episode-action-size);
+  border-radius: var(--ng-radius-pill);
+  color: var(--ng-text-secondary);
+  background: var(--ng-transparent);
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItemButton:is(:hover, :focus-visible) {
+  background: var(--ng-chrome-hover);
+  color: var(--ng-text);
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItemImageButton {
+  width: var(--ng-episode-action-size);
+  height: var(--ng-episode-action-size);
+  border-radius: var(--ng-radius-pill);
+  background: var(--ng-chrome-glass);
+  color: var(--ng-text);
+  backdrop-filter: var(--ng-control-blur);
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .mediaInfoItem {
+  white-space: nowrap;
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItemBodyText {
+  color: var(--ng-text-secondary);
+  line-height: var(--ng-body-leading);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItemBodyText:first-child {
+  color: var(--ng-text);
+  font-weight: var(--ng-control-weight);
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItem-bottomoverview {
+  grid-column: 1 / -1;
+  color: var(--ng-text-secondary);
+  line-height: var(--ng-body-leading);
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-block: 0 var(--ng-space-sm);
+  padding-inline: var(--ng-space-md);
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+@container (max-width: 38rem) {
+  #itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItem-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #itemDetailPage :is(#childrenContent, #childrenCollapsible) .listViewUserDataButtons {
+    grid-column: 1;
+    justify-self: start;
+    margin: 0 0 var(--ng-space-sm) var(--ng-space-md);
+  }
+}
+#itemDetailPage :is(#childrenContent, #childrenCollapsible) .listItem-bottomoverview p {
+  margin: 0;
+}
+@media (max-width: 48rem) {
+  #itemDetailPage .detailPagePrimaryContainer {
+    padding-block-end: var(--ng-section-space);
+  }
+  #itemDetailPage :is(#childrenContent, #childrenCollapsible) .listViewUserDataButtons {
+    grid-column: 1;
+    justify-self: start;
+    margin: 0 0 var(--ng-space-sm) var(--ng-space-md);
+  }
+  #itemDetailPage .trackSelections .trackSelectionFieldContainer:not(.hide) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #itemDetailPage .trackSelections .ng-format-badges {
+    grid-column: 1;
+    margin-block-start: 0;
+  }
+}

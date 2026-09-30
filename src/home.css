@@ -1,0 +1,20 @@
+/* The native home remains fully useful when the optional plugin is absent. */
+#indexPage:not(.hide) {
+  background: var(--ng-bg);
+}
+#indexPage:not(.hide) > .verticalSection:first-of-type,
+#indexPage:not(.hide) .homeSectionsContainer > .verticalSection:first-child {
+  padding-block-start: var(--ng-space-lg);
+}
+#indexPage:not(.hide) .verticalSection {
+  margin-block-end: var(--ng-section-space);
+}
+#indexPage:not(.hide) .cardText-secondary {
+  color: var(--ng-text-secondary);
+}
+@media (max-width: 48rem) {
+  #indexPage:not(.hide) > .verticalSection:first-of-type,
+  #indexPage:not(.hide) .homeSectionsContainer > .verticalSection:first-child {
+    padding-block-start: var(--ng-space-sm);
+  }
+}

@@ -1,0 +1,163 @@
+/* Presentation only: no changes to timing, visibility, tracks or subtitles. */
+.videoOsdBottom {
+  background: var(--ng-osd-glass);
+  color: var(--ng-text);
+  border-radius: var(--ng-osd-radius);
+  padding: var(--ng-player-bottom-padding) var(--ng-osd-padding);
+  backdrop-filter: var(--ng-osd-blur);
+  box-shadow: none;
+}
+.skinHeader.osdHeader {
+  background: var(--ng-player-top-scrim) !important;
+  color: var(--ng-text);
+}
+#videoOsdPage :is(.paper-icon-button-light, .emby-button) {
+  border-radius: var(--ng-radius-pill);
+  color: var(--ng-text);
+}
+#videoOsdPage .videoOsdBottom .buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  margin-inline-start: auto;
+  padding: var(--ng-player-dock-padding);
+  gap: var(--ng-player-dock-gap);
+  box-sizing: border-box;
+  border: var(--ng-chrome-border-width) solid var(--ng-player-dock-border);
+  border-radius: var(--ng-radius-pill);
+  background: var(--ng-player-dock-bg);
+  box-shadow: var(--ng-shadow-control);
+  backdrop-filter: var(--ng-control-blur);
+}
+#videoOsdPage .videoOsdBottom .buttons > div[dir="ltr"] {
+  display: inline-flex;
+  align-items: center;
+  position: absolute;
+  inset-inline-start: var(--ng-player-transport-offset);
+  top: 0;
+  height: 100%;
+  width: max-content;
+  padding: var(--ng-player-dock-padding);
+  gap: var(--ng-player-dock-gap);
+  box-sizing: border-box;
+  border: var(--ng-chrome-border-width) solid var(--ng-player-dock-border);
+  border-radius: var(--ng-radius-pill);
+  background: var(--ng-player-dock-bg);
+  box-shadow: var(--ng-shadow-control);
+  backdrop-filter: var(--ng-control-blur);
+}
+#videoOsdPage .videoOsdBottom .buttons > .osdTimeText {
+  color: var(--ng-text-secondary);
+  font-size: var(--ng-small-font-size);
+}
+#videoOsdPage .videoOsdBottom .buttons :is(.paper-icon-button-light, .emby-button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--ng-player-control-size);
+  min-height: var(--ng-player-control-size);
+  background: var(--ng-transparent);
+}
+#videoOsdPage .videoOsdBottom .buttons :is(.paper-icon-button-light, .emby-button).hide {
+  display: none;
+}
+#videoOsdPage .videoOsdBottom .buttons .volumeButtons {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+#videoOsdPage .osdTitle {
+  font-family: var(--ng-font-display);
+  font-size: var(--ng-player-title-size);
+  font-weight: var(--ng-control-weight);
+  letter-spacing: var(--ng-control-tracking);
+  color: var(--ng-text);
+}
+#videoOsdPage .osdControls > .flex.flex-direction-row.align-items-center {
+  gap: var(--ng-space-sm);
+}
+#videoOsdPage .osdPositionSlider + .mdl-slider-background-flex-container .mdl-slider-background-flex-inner {
+  background: var(--ng-player-timeline-track);
+}
+#videoOsdPage :is(.sliderMarker, .chapterMarker) {
+  background: var(--ng-player-chapter-tick);
+}
+#videoOsdPage :is(.paper-icon-button-light, .emby-button):is(:hover, :focus-visible) {
+  background: var(--ng-player-control-hover);
+  backdrop-filter: var(--ng-control-blur);
+}
+#videoOsdPage .videoOsdBottom .buttons :is(.btnPause, .btnPlay) {
+  background: var(--ng-player-control-active);
+  color: var(--ng-primary-text);
+}
+#videoOsdPage .videoOsdBottom .buttons :is(.btnPause, .btnPlay):is(:hover, :focus-visible) {
+  background: var(--ng-text);
+  color: var(--ng-primary-text);
+}
+#videoOsdPage :is(.mdl-slider-background-lower, .sliderMarker) {
+  background: var(--ng-primary-bg);
+}
+#videoOsdPage .mdl-slider::-webkit-slider-thumb { background: var(--ng-primary-bg); }
+#videoOsdPage .mdl-slider::-moz-range-thumb { background: var(--ng-primary-bg); }
+#videoOsdPage .sliderBubble {
+  background: var(--ng-surface-raised);
+  color: var(--ng-text);
+  border-radius: var(--ng-radius-small);
+  box-shadow: var(--ng-shadow-card);
+}
+#videoOsdPage :is(.chapterThumb, .chapterThumbContainer) {
+  border-radius: var(--ng-radius-card);
+  box-shadow: var(--ng-shadow-card);
+}
+#videoOsdPage .osdPositionSlider {
+  min-height: var(--ng-space-lg);
+}
+#videoOsdPage .osdPositionSlider + .mdl-slider-background-flex-container .mdl-slider-background-flex-inner {
+  height: var(--ng-player-timeline-height);
+  border-radius: var(--ng-radius-pill);
+  overflow: hidden;
+}
+#videoOsdPage :is(.videoOsdTitle, .osdTextContainer) {
+  font-family: var(--ng-font-display);
+  color: var(--ng-text);
+}
+@media (max-width: 48rem) {
+  .videoOsdBottom {
+    padding: var(--ng-space-md);
+  }
+  #videoOsdPage .videoOsdBottom .buttons {
+    width: 100%;
+    margin-inline-start: 0;
+    padding: calc(var(--ng-player-control-size) + var(--ng-space-md)) 0 0;
+    border: 0;
+    border-radius: 0;
+    background: var(--ng-transparent);
+    box-shadow: none;
+    backdrop-filter: none;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #videoOsdPage .videoOsdBottom .buttons > div[dir="ltr"] {
+    position: absolute;
+    width: 100%;
+    justify-content: center;
+    inset-inline-end: auto;
+    inset-inline-start: 0;
+    inset-block-end: auto;
+    top: 0;
+    height: var(--ng-player-control-size);
+    padding: var(--ng-player-dock-padding);
+  }
+  #videoOsdPage .videoOsdBottom .buttons > :is(button, .volumeButtons) {
+    background: var(--ng-player-dock-bg);
+    border-radius: var(--ng-radius-pill);
+    backdrop-filter: var(--ng-control-blur);
+  }
+  #videoOsdPage .videoOsdBottom .buttons > .osdTimeText {
+    width: 100%;
+    text-align: center;
+  }
+}

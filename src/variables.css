@@ -1,0 +1,243 @@
+/*! NoirGlass | MIT | Original CSS inspired by Apple TV on tvOS; no affiliation. */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/InterVariable.woff2") format("woff2");
+}
+
+/* NoirGlass public tokens. */
+:root {
+  --ng-companion-contract: 1;
+  --ng-bg: #000;
+  --ng-surface: #151517;
+  --ng-surface-raised: #202023;
+  --ng-text: #f5f5f7;
+  --ng-text-secondary: #ebebf5a3;
+  --ng-text-tertiary: #ebebf561;
+  --ng-text-on-image: #ffffffdb;
+  --ng-primary-bg: #f2f2f5;
+  --ng-primary-text: #0b0b0d;
+  --ng-secondary-bg: #80808a42;
+  --ng-secondary-hover: #9696a05c;
+  --ng-border: #ffffff1a;
+  --ng-hairline: #ffffff14;
+  --ng-transparent: transparent;
+  --ng-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter Variable", "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ng-font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter Variable", "Segoe UI Variable Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ng-font-size: 16px;
+  --ng-body-weight: 400;
+  --ng-control-weight: 600;
+  --ng-heading-weight: 650;
+  --ng-title-weight: 700;
+  --ng-body-leading: 1.5;
+  --ng-title-leading: 1.08;
+  --ng-title-tracking: -0.022em;
+  --ng-control-tracking: -0.01em;
+  --ng-control-font-size: 17px;
+  --ng-small-font-size: 15px;
+  --ng-section-font-size: clamp(19px, 1.45vw, 24px);
+  --ng-radius-small: 6px;
+  --ng-radius-card: 14px;
+  --ng-radius-panel: 20px;
+  --ng-radius-pill: 999px;
+  --ng-shadow-card: 0 10px 28px -14px #000c;
+  --ng-shadow-panel: 0 24px 60px -18px #000000d9;
+  --ng-shadow-control: inset 0 0 0 1px #ffffff1a;
+  --ng-control-blur: blur(30px) saturate(180%);
+  --ng-ease: cubic-bezier(.2, .8, .2, 1);
+  --ng-gutter: clamp(16px, 4vw, 72px);
+  --ng-nav-height: 72px;
+  --ng-nav-scrim: linear-gradient(to bottom, #000000db 0%, #000000b8 38%, #0000005c 70%, #0000001a 88%, transparent);
+
+  /* Jellyfin adaptations: fluid headings, roomier library rhythm and sizing. */
+  --ng-title-size: clamp(32px, 4.4vw, 64px);
+  --ng-space-xs: 8px;
+  --ng-space-sm: 12px;
+  --ng-space-md: 18px;
+  --ng-space-lg: 24px;
+  --ng-section-space: clamp(40px, 5vw, 80px);
+  --ng-card-gap: clamp(20px, 2vw, 36px);
+  --ng-poster-width: clamp(190px, 15vw, 240px);
+  --ng-landscape-width: clamp(260px, 25vw, 380px);
+  --ng-person-width: 144px;
+  --ng-card-lift: -2px;
+  --ng-motion-duration: 180ms;
+  --ng-reduced-duration: 0ms;
+  --ng-control-height: 54px;
+  --ng-control-padding: 30px;
+  --ng-focus-color: #f5f5f7;
+  --ng-focus-width: 2px;
+  --ng-focus-offset: 4px;
+  --ng-hero-height: clamp(620px, 88svh, 1000px);
+  --ng-hero-content-width: 680px;
+  --ng-hero-overview-width: 580px;
+  --ng-hero-scrim: linear-gradient(90deg, #000000ad 0%, #00000040 42%, transparent 76%), linear-gradient(0deg, #000 0%, #000000a1 16%, #0000000d 66%, transparent);
+  --ng-detail-background: linear-gradient(to bottom, transparent 0, transparent var(--ng-hero-height), var(--ng-bg) var(--ng-hero-height));
+  --ng-backdrop-mask: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
+  --ng-logo-width: clamp(280px, 43vw, 620px);
+  --ng-logo-height: clamp(80px, 11vw, 160px);
+  --ng-logo-top: max(160px, calc(var(--ng-hero-height) - 520px));
+  --ng-logo-layer: 1;
+  --ng-image-position: center top;
+  --ng-overlay-scrim: linear-gradient(to top, #0009, transparent 75%);
+  --ng-progress-height: 3px;
+  --ng-progress-track: #ffffff29;
+  --ng-episode-image-width: 100%;
+  --ng-episode-columns: repeat(2, minmax(0, 1fr));
+  --ng-episode-content-columns: minmax(0, 1fr);
+  --ng-player-scrim: #121215db;
+  --ng-player-top-scrim: linear-gradient(to bottom, #000000b8, transparent);
+  --ng-login-width: 440px;
+  --ng-login-padding: clamp(24px, 4vw, 48px);
+  --ng-login-background: linear-gradient(135deg, #16161a, #0d0d10 60%, #000);
+  --ng-login-title-size: 32px;
+  /* tvOS-inspired surfaces and proportions. */
+  --ng-nav-glass: #222226b8;
+  --ng-nav-solid: #19191ce8;
+  --ng-nav-width: 248px;
+  --ng-nav-radius: 26px;
+  --ng-nav-inset: 22px;
+  --ng-nav-inline-inset: 22px;
+  --ng-nav-row-height: 46px;
+  --ng-nav-selection: #f3f3f5;
+  --ng-nav-selection-text: #151517;
+  --ng-nav-border: #ffffff21;
+  --ng-header-scrolled: #0d0d10d9;
+  --ng-chrome-glass: #34343bb8;
+  --ng-home-chrome-glass: #30303880;
+  --ng-home-selected-glass: #f3f3f5bd;
+  --ng-home-secondary-glass: linear-gradient(145deg, #ffffff24, #ffffff0a), #27272d80;
+  --ng-home-secondary-hover-glass: linear-gradient(145deg, #ffffff35, #ffffff16), #27272d8c;
+  --ng-home-glass-border: #ffffff42;
+  --ng-chrome-hover: #ffffff36;
+  --ng-chrome-border: #ffffff30;
+  --ng-chrome-border-width: 1px;
+  --ng-chrome-icon-size: 21px;
+  --ng-chrome-button-size: 44px;
+  --ng-chrome-group-gap: 3px;
+  --ng-chrome-tab-height: 42px;
+  --ng-chrome-group-padding: 4px;
+  --ng-feature-height: clamp(590px, 82svh, 920px);
+  --ng-feature-title-size: clamp(38px, 4.8vw, 72px);
+  --ng-feature-content-width: 620px;
+  --ng-feature-scrim: linear-gradient(90deg, #000000b5, #0000004d 46%, transparent 76%), linear-gradient(0deg, #000 0%, #00000091 18%, #00000012 56%, transparent);
+  --ng-feature-gradient: radial-gradient(circle at 70% 25%, #38383d 0%, #1b1b1e 52%, #000 100%);
+  --ng-feature-dot: #ffffff73;
+  --ng-feature-dot-active: #fff;
+  --ng-feature-dot-size: 6px;
+  --ng-feature-dot-active-width: 22px;
+  --ng-feature-slide-duration: 650ms;
+  --ng-library-grid-gap: clamp(24px, 2.6vw, 42px);
+  --ng-poster-actions-bg: #151519d9;
+  --ng-poster-action-size: 40px;
+  --ng-poster-play-size: 54px;
+  --ng-poster-action-gap: 3px;
+  --ng-poster-action-inset: 12px;
+  --ng-poster-action-padding: 6px;
+  --ng-track-surface: #24242abb;
+  --ng-track-hover: #35353dc9;
+  --ng-track-border: #ffffff2b;
+  --ng-track-row-height: 66px;
+  --ng-track-icon-size: 20px;
+  --ng-track-label-size: 13px;
+  --ng-track-label-width: 112px;
+  --ng-track-select-end-padding: 34px;
+  --ng-track-badge-pull: -8px;
+  --ng-format-badge-bg: #ffffff1c;
+  --ng-format-badge-border: #ffffff38;
+  --ng-format-badge-height: 24px;
+  --ng-format-badge-font-size: 11px;
+  --ng-episode-surface: #1d1d21;
+  --ng-episode-hover: #29292f;
+  --ng-episode-border: #ffffff19;
+  --ng-episode-action-size: 40px;
+  --ng-episode-dock-padding: 5px;
+  --ng-episode-dock-gap: 2px;
+  --ng-episode-dock-bg: #37373ec9;
+  --ng-episode-dock-border: #ffffff38;
+  --ng-episode-card-lift: -3px;
+  --ng-search-heading-size: clamp(26px, 2.5vw, 38px);
+  --ng-search-content-width: 880px;
+  --ng-search-field-height: 72px;
+  --ng-search-field-bg: #2b2b30b8;
+  --ng-search-input-font-size: 24px;
+  --ng-search-input-line-height: 1.2;
+  --ng-search-input-padding: 28px;
+  --ng-search-placeholder: #ebebf58c;
+  --ng-search-tile-width: 220px;
+  --ng-search-tile-height: 96px;
+  --ng-osd-glass: linear-gradient(to bottom, transparent 0%, var(--ng-player-scrim) 48%, #000000e8 100%);
+  --ng-osd-blur: none;
+  --ng-osd-radius: 0px;
+  --ng-osd-padding: clamp(20px, 3vw, 44px);
+  --ng-player-control-size: 44px;
+  --ng-player-control-gap: 6px;
+  --ng-player-dock-bg: #2b2b318c;
+  --ng-player-dock-border: #ffffff47;
+  --ng-player-dock-padding: 6px;
+  --ng-player-dock-gap: 3px;
+  --ng-player-transport-offset: calc(100% - 100vw + 2 * var(--ng-osd-padding) + var(--ng-space-sm));
+  --ng-player-icon-size: 23px;
+  --ng-player-title-size: 21px;
+  --ng-player-timeline-track: #ffffff59;
+  --ng-player-chapter-tick: #ffffff73;
+  --ng-player-control-hover: #ffffff30;
+  --ng-player-control-active: #f2f2f5;
+  --ng-player-timeline-height: 4px;
+  --ng-player-bottom-padding: 22px;
+}
+
+/* Breakpoints are literal because native @media cannot use custom properties. */
+@media (max-width: 48rem) {
+  :root {
+    --ng-nav-height: 60px;
+    --ng-hero-height: clamp(608px, 82svh, 800px);
+    --ng-logo-width: min(84vw, 440px);
+    --ng-logo-height: 100px;
+    --ng-logo-top: clamp(192px, 34svh, 320px);
+    --ng-control-height: 48px;
+    --ng-control-padding: 26px;
+    --ng-poster-width: 160px;
+    --ng-landscape-width: 280px;
+    --ng-episode-columns: minmax(0, 1fr);
+    --ng-episode-image-width: 100%;
+    --ng-episode-content-columns: minmax(0, 1fr);
+    --ng-feature-height: clamp(520px, 78svh, 740px);
+    --ng-feature-title-size: clamp(34px, 9vw, 48px);
+    --ng-search-field-height: 58px;
+    --ng-search-input-font-size: 19px;
+    --ng-search-input-padding: 18px;
+    --ng-nav-width: min(82vw, 320px);
+    --ng-nav-inset: 10px;
+    --ng-nav-inline-inset: 0px;
+    --ng-library-grid-gap: 20px;
+    --ng-chrome-button-size: 42px;
+    --ng-chrome-group-padding: 2px;
+    --ng-track-row-height: 62px;
+    --ng-poster-action-size: 38px;
+    --ng-player-control-size: 42px;
+    --ng-player-icon-size: 21px;
+    --ng-player-title-size: 17px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --ng-motion-duration: var(--ng-reduced-duration); --ng-feature-slide-duration: var(--ng-reduced-duration); --ng-card-lift: 0px; }
+}
+
+body { background-color: var(--ng-bg); }
+.libraryPage:not(.itemDetailPage):not(#videoOsdPage) { background-color: var(--ng-bg); }
+html:has(.libraryPage:not(.hide):not(#videoOsdPage), #loginPage:not(.hide)) .backgroundContainer:not(.withBackdrop) {
+  background-color: var(--ng-bg) !important;
+}
+:where(.libraryPage, #loginPage, #videoOsdPage) {
+  font-family: var(--ng-font);
+  font-size: var(--ng-font-size);
+  font-weight: var(--ng-body-weight);
+  color: var(--ng-text);
+}
+/* Opaque fallback stays usable when backdrop-filter is unavailable. */
+@supports not (backdrop-filter: blur(1px)) {
+  :root { --ng-secondary-bg: #202026; --ng-control-blur: none; --ng-osd-blur: none; --ng-nav-glass: var(--ng-nav-solid); --ng-home-chrome-glass: var(--ng-nav-solid); --ng-home-selected-glass: var(--ng-nav-selection); --ng-home-secondary-glass: var(--ng-secondary-bg); --ng-home-secondary-hover-glass: var(--ng-secondary-hover); --ng-player-dock-bg: var(--ng-nav-solid); }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "noirglass",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A tvOS-inspired Jellyfin Web CSS theme with an optional dedicated server plugin.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:plugin": "node scripts/package-plugin.mjs",
+    "build:all": "node scripts/build.mjs && node scripts/package-plugin.mjs",
+    "check": "node scripts/check.mjs",
+    "test:plugin": "node scripts/test-plugin.mjs",
+    "test:companion": "node scripts/test-companion.mjs",
+    "test:autoplay": "node scripts/test-autoplay.mjs",
+    "browser": "node scripts/browser.mjs",
+    "preview": "node scripts/browser-command.mjs preview",
+    "verify:instance": "node scripts/validate-instance.mjs",
+    "verify:companion": "node scripts/validate-companion.mjs",
+    "verify:player": "node scripts/validate-player.mjs",
+    "verify:plugin": "node scripts/validate-plugin-instance.mjs",
+    "test:docs": "node scripts/test-docs.mjs",
+    "test:release": "node scripts/test-release.mjs"
+  },
+  "devDependencies": {
+    "clean-css": "5.3.3",
+    "playwright": "1.62.1",
+    "postcss": "8.5.28"
+  }
+}

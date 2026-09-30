@@ -1,0 +1,11 @@
+node_modules/
+reference/repos/
+reference/screenshots/
+reference/private-brand-assets/
+.local/
+test-results/
+*.log
+plugin/**/bin/
+plugin/**/obj/
+docs/images/tv-*.png
+.DS_Store

@@ -1,0 +1,53 @@
+/* Original outline pictograms replace glyphs only; native buttons keep their labels and handlers. */
+@supports (mask-image: linear-gradient(black, black)) {
+  .skinHeader:not(.osdHeader) .headerButton > .material-icons,
+  #itemDetailPage .trackSelections .selectLabel::before,
+  .libraryPage:not(#indexPage):not(#itemDetailPage) :is(.btnPlayAll, .btnShuffle, .btnSelectView, .btnSort, .btnFilter) > .material-icons,
+  #itemDetailPage :is(#childrenContent, #childrenCollapsible) .listViewUserDataButtons .material-icons,
+  #videoOsdPage .videoOsdBottom .buttons .material-icons {
+    display: inline-block;
+    width: var(--ng-chrome-icon-size);
+    height: var(--ng-chrome-icon-size);
+    flex: none;
+    font-size: 0;
+    background: currentColor;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+  }
+  .skinHeader:not(.osdHeader) .headerBackButton > .material-icons { mask-image: url("../assets/icons/back.svg"); }
+  .skinHeader:not(.osdHeader) .headerHomeButton > .material-icons { mask-image: url("../assets/icons/home.svg"); }
+  .skinHeader:not(.osdHeader) .mainDrawerButton > .material-icons { mask-image: url("../assets/icons/menu.svg"); }
+  .skinHeader:not(.osdHeader) .headerSyncButton > .material-icons { mask-image: url("../assets/icons/users.svg"); }
+  .skinHeader:not(.osdHeader) .headerCastButton > .material-icons { mask-image: url("../assets/icons/cast.svg"); }
+  .skinHeader:not(.osdHeader) .headerSearchButton > .material-icons { mask-image: url("../assets/icons/search.svg"); }
+  .skinHeader:not(.osdHeader) .headerUserButton > .material-icons { mask-image: url("../assets/icons/user.svg"); }
+  #itemDetailPage .trackSelections .selectVideoContainer .selectLabel::before { mask-image: url("../assets/icons/display.svg"); }
+  #itemDetailPage .trackSelections .selectAudioContainer .selectLabel::before { mask-image: url("../assets/icons/audio.svg"); }
+  #itemDetailPage .trackSelections .selectSubtitlesContainer .selectLabel::before { mask-image: url("../assets/icons/captions.svg"); }
+  .libraryPage:not(#indexPage):not(#itemDetailPage) .btnPlayAll > .material-icons { mask-image: url("../assets/icons/play-all.svg"); }
+  .libraryPage:not(#indexPage):not(#itemDetailPage) .btnShuffle > .material-icons { mask-image: url("../assets/icons/shuffle.svg"); }
+  .libraryPage:not(#indexPage):not(#itemDetailPage) .btnSelectView > .material-icons { mask-image: url("../assets/icons/grid.svg"); }
+  .libraryPage:not(#indexPage):not(#itemDetailPage) .btnSort > .material-icons { mask-image: url("../assets/icons/sort.svg"); }
+  .libraryPage:not(#indexPage):not(#itemDetailPage) .btnFilter > .material-icons { mask-image: url("../assets/icons/filter.svg"); }
+  #itemDetailPage :is(#childrenContent, #childrenCollapsible) .listViewUserDataButtons .info_outline { mask-image: url("../assets/icons/info.svg"); }
+  #itemDetailPage :is(#childrenContent, #childrenCollapsible) .listViewUserDataButtons .check { mask-image: url("../assets/icons/check.svg"); }
+  #itemDetailPage :is(#childrenContent, #childrenCollapsible) .listViewUserDataButtons :is(.favorite, .favorite_border) { mask-image: url("../assets/icons/heart.svg"); }
+  #itemDetailPage :is(#childrenContent, #childrenCollapsible) .listViewUserDataButtons .more_vert { mask-image: url("../assets/icons/more.svg"); }
+  #videoOsdPage .videoOsdBottom .buttons .material-icons { width: var(--ng-player-icon-size); height: var(--ng-player-icon-size); }
+  #videoOsdPage .btnPlay .material-icons { mask-image: url("../assets/icons/play.svg"); }
+  #videoOsdPage .btnPause .material-icons { mask-image: url("../assets/icons/pause.svg"); }
+  #videoOsdPage .btnRewind .material-icons { mask-image: url("../assets/icons/rewind.svg"); }
+  #videoOsdPage .btnFastForward .material-icons { mask-image: url("../assets/icons/forward.svg"); }
+  #videoOsdPage :is(.btnPreviousChapter, .btnPreviousTrack) .material-icons { mask-image: url("../assets/icons/previous.svg"); }
+  #videoOsdPage :is(.btnNextChapter, .btnNextTrack) .material-icons { mask-image: url("../assets/icons/next.svg"); }
+  #videoOsdPage .btnUserRating .material-icons { mask-image: url("../assets/icons/heart.svg"); }
+  #videoOsdPage .btnSubtitles .material-icons { mask-image: url("../assets/icons/captions.svg"); }
+  #videoOsdPage .btnAudio .material-icons { mask-image: url("../assets/icons/audio-track.svg"); }
+  #videoOsdPage .buttonMute .material-icons { mask-image: url("../assets/icons/volume.svg"); }
+  #videoOsdPage .buttonMute .material-icons.volume_off { mask-image: url("../assets/icons/mute.svg"); }
+  #videoOsdPage .btnVideoOsdSettings .material-icons { mask-image: url("../assets/icons/settings.svg"); }
+  #videoOsdPage .btnPip .material-icons { mask-image: url("../assets/icons/pip.svg"); }
+  #videoOsdPage .btnFullscreen .material-icons { mask-image: url("../assets/icons/fullscreen.svg"); }
+  #videoOsdPage .btnFullscreen .material-icons.fullscreen_exit { mask-image: url("../assets/icons/fullscreen-exit.svg"); }
+}

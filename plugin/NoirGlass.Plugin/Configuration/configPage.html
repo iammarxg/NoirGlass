@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>NoirGlass</title></head>
+<body>
+<div id="NoirGlassConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+  <div data-role="content"><div class="content-primary">
+    <form id="NoirGlassConfigForm">
+      <div class="checkboxContainer checkboxContainer-withDescription">
+        <label class="emby-checkbox-label"><input id="NoirGlassEnabled" type="checkbox" is="emby-checkbox" /><span>Enable the featured carousel and format badges</span></label>
+      </div>
+      <div class="inputContainer">
+        <label class="inputLabel" for="NoirGlassPinned">Pinned item IDs</label>
+        <textarea id="NoirGlassPinned" class="emby-input" rows="5" aria-describedby="NoirGlassPinnedHelp"></textarea>
+        <div id="NoirGlassPinnedHelp" class="fieldDescription">Optional movie or series IDs, one per line, in preferred order. Up to five accessible titles appear first; recent titles fill the remaining slots.</div>
+      </div>
+      <div class="inputContainer">
+        <label class="inputLabel" for="NoirGlassInterval">Autoplay interval (seconds)</label>
+        <input id="NoirGlassInterval" class="emby-input" type="number" min="0" max="60" step="1" inputmode="numeric" aria-describedby="NoirGlassIntervalHelp" required />
+        <div id="NoirGlassIntervalHelp" class="fieldDescription">15 seconds by default. Enter 0 to turn off autoplay, or 5–60 seconds. A Web page refresh applies the change.</div>
+      </div>
+      <button is="emby-button" type="submit" class="raised button-submit block emby-button"><span>Save</span></button>
+    </form>
+  </div></div>
+  <script>
+    (() => {
+      const page = document.querySelector('#NoirGlassConfigPage');
+      const id = '72f7ec75-08a4-4f5b-90fa-df751666c621';
+      page.addEventListener('pageshow', async () => {
+        Dashboard.showLoadingMsg();
+        try {
+          const config = await ApiClient.getPluginConfiguration(id);
+          page.querySelector('#NoirGlassEnabled').checked = config.Enabled !== false;
+          page.querySelector('#NoirGlassPinned').value = config.PinnedItemIds || '';
+          page.querySelector('#NoirGlassInterval').value = Number.isInteger(config.FeaturedIntervalSeconds) ? config.FeaturedIntervalSeconds : 15;
+        } finally { Dashboard.hideLoadingMsg(); }
+      });
+      page.querySelector('#NoirGlassInterval').addEventListener('input', event => event.target.setCustomValidity(''));
+      page.querySelector('#NoirGlassConfigForm').addEventListener('submit', async event => {
+        event.preventDefault();
+        const field = page.querySelector('#NoirGlassInterval');
+        const interval = Number(field.value);
+        field.setCustomValidity(!Number.isInteger(interval) || (interval !== 0 && (interval < 5 || interval > 60)) ? 'Enter 0 or a whole number from 5 to 60.' : '');
+        if (!field.reportValidity()) return;
+        Dashboard.showLoadingMsg();
+        try {
+          const config = await ApiClient.getPluginConfiguration(id);
+          config.Enabled = page.querySelector('#NoirGlassEnabled').checked;
+          config.PinnedItemIds = page.querySelector('#NoirGlassPinned').value;
+          config.FeaturedIntervalSeconds = interval;
+          Dashboard.processPluginConfigurationUpdateResult(await ApiClient.updatePluginConfiguration(id, config));
+        } finally { Dashboard.hideLoadingMsg(); }
+      });
+    })();
+  </script>
+</div>
+</body>
+</html>

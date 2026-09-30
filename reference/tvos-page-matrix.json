@@ -1,0 +1,56 @@
+{
+  "referenceVersion": "tvOS 27 Apple TV 4K user guide, observed 2026-09-28",
+  "method": "Apple Support pages and linked screenshots rendered in Playwright. Proportions and colors are visual estimates from raster screenshots, not computed CSS or native tvOS tokens.",
+  "screens": [
+    {
+      "page": "home",
+      "source": "https://support.apple.com/guide/tv/find-things-to-watch-atvb7d7bec9f/27/tvos/27",
+      "observed": ["A single full-bleed featured image occupies most of the first viewport", "The title, metadata, short copy and a white play pill sit low and left", "Small pagination marks sit below the hero", "Continue Watching begins at the bottom edge of the hero"],
+      "inferredProportions": {"heroViewportHeight": "about 80–90%", "contentLeftInset": "about 4%", "firstShelfVisibleAtBottom": true},
+      "jellyfinMapping": "Home native shelves; optional userscript adds a featured carousel from the signed-in user's own items."
+    },
+    {
+      "page": "navigation",
+      "source": "https://support.apple.com/guide/tv/navigate-the-apple-tv-app-atvb59b423ba/27/tvos/27",
+      "observed": ["A narrow translucent dark sidebar overlays the hero", "The focused row becomes a bright rounded pill", "Profile and time are above the navigation items", "The underlying artwork remains visible through the panel"],
+      "inferredProportions": {"sidebarWidthOfScreen": "about 18%", "rowShape": "pill"},
+      "jellyfinMapping": "Style the existing Jellyfin drawer and its real destinations; retain search, user, administration and casting controls."
+    },
+    {
+      "page": "search",
+      "source": "https://support.apple.com/guide/tv/find-things-to-watch-atvb7d7bec9f/27/tvos/27",
+      "observed": ["Large search prompt across the upper region", "Browse categories and results appear as widely spaced art tiles below", "Focused input/control is brighter than the surrounding dark field"],
+      "inferredProportions": {"searchRegionOfHeight": "upper third", "resultGrid": "multiple spacious columns"},
+      "jellyfinMapping": "Style Jellyfin's native search field, suggestions and results; do not mimic the tvOS on-screen keyboard in a web text input."
+    },
+    {
+      "page": "library",
+      "source": "https://support.apple.com/guide/tv/view-movies-and-tv-shows-in-your-library-atvba6a2c11c/27/tvos/27",
+      "observed": ["Matte charcoal background", "Categories occupy a slim left rail", "Selected category is a white pill", "Poster art is arranged in an open grid without heavy card containers"],
+      "inferredProportions": {"categoryRailOfScreen": "about 20%", "posterGap": "about one fifth of a poster width"},
+      "jellyfinMapping": "Use real Jellyfin library tabs and filters; mobile keeps them as horizontal chips."
+    },
+    {
+      "page": "movie-and-series-detail",
+      "source": "https://support.apple.com/en-nz/guide/tv/atvb1cc70de5/tvos",
+      "observed": ["Cinematic image remains the dominant background", "Logo or large title, metadata, summary and compact actions align low-left", "The main play action is white and secondary actions are translucent circles", "Episode artwork peeks below the hero"],
+      "inferredProportions": {"heroViewportHeight": "about 85%", "informationWidth": "about 40%"},
+      "jellyfinMapping": "Use Jellyfin's backdrop, clear logo, native play/watchlist actions, metadata, seasons and episodes with text and poster fallbacks."
+    },
+    {
+      "page": "episodes",
+      "source": "https://support.apple.com/en-nz/guide/tv/atvb1cc70de5/tvos",
+      "observed": ["Episode or related artwork is a horizontal row immediately below details", "Rows use generous negative space and let images carry the visual weight"],
+      "inferredProportions": {"artAspectRatio": "landscape, near 16:9"},
+      "jellyfinMapping": "Keep native season selection and episode actions while making episode imagery and titles readable at desktop and mobile widths."
+    },
+    {
+      "page": "player",
+      "source": "https://support.apple.com/guide/tv/control-video-playback-atvb7944597f/27/tvos/27",
+      "observed": ["Controls are concentrated in a low translucent strip", "Episode kicker and title appear above a thin full-width timeline", "Time labels and audio/subtitle actions remain legible", "Controls disappear during uninterrupted playback"],
+      "inferredProportions": {"timelineThickness": "thin relative to text", "controlRegion": "lower quarter"},
+      "jellyfinMapping": "Only restyle Jellyfin's native video OSD; do not alter playback timing, track state, control visibility or subtitle settings."
+    }
+  ],
+  "releaseBoundary": "Links and written observations may be public. Apple screenshot files, branded imagery, logos and fonts are not distributed."
+}

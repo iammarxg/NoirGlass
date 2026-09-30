@@ -1,0 +1,101 @@
+/* Jellyfin search input and results, with no imitation on-screen keyboard. */
+#searchPage:not(.hide) {
+  background: var(--ng-surface);
+  color: var(--ng-text);
+}
+#searchPage:not(.hide) .searchFieldsInner > .searchfields-icon {
+  display: none !important;
+}
+#searchPage:not(.hide) .searchFieldsInner {
+  width: 100%;
+  max-width: var(--ng-search-content-width);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+}
+#searchPage:not(.hide) :is(.searchResults, .searchPageContent, .itemsContainer) {
+  margin-block-start: var(--ng-space-lg);
+}
+#searchPage:not(.hide) h1 {
+  font-family: var(--ng-font-display);
+  font-size: var(--ng-search-heading-size);
+  font-weight: var(--ng-heading-weight);
+  letter-spacing: var(--ng-title-tracking);
+  color: var(--ng-text);
+}
+#searchPage:not(.hide) .verticalSection:not(.searchSuggestions) {
+  padding-inline: var(--ng-gutter);
+  margin-block-start: var(--ng-section-space);
+}
+#searchPage:not(.hide) .verticalSection:not(.searchSuggestions) .itemsContainer {
+  gap: var(--ng-card-gap);
+}
+#searchPage:not(.hide) .searchSuggestions {
+  text-align: start !important;
+  margin-block-start: var(--ng-section-space);
+}
+#searchPage:not(.hide) .searchSuggestions .sectionTitle {
+  font-size: var(--ng-section-font-size);
+  text-align: start;
+  padding-inline: var(--ng-gutter);
+}
+#searchPage:not(.hide) .searchSuggestionsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--ng-search-tile-width)), 1fr));
+  gap: var(--ng-space-md);
+  padding-inline: var(--ng-gutter);
+}
+#searchPage:not(.hide) .searchSuggestionsList > div {
+  min-width: 0;
+}
+#searchPage:not(.hide) .searchSuggestionsList .button-link {
+  display: flex !important;
+  align-items: center;
+  width: 100%;
+  min-height: var(--ng-search-tile-height);
+  padding: var(--ng-space-md) !important;
+  box-sizing: border-box;
+  border-radius: var(--ng-radius-card);
+  background: var(--ng-surface-raised);
+  color: var(--ng-text) !important;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#searchPage:not(.hide) .searchSuggestionsList .button-link:hover,
+#searchPage:not(.hide) .searchSuggestionsList .button-link:focus-visible {
+  background: var(--ng-secondary-hover);
+}
+#searchPage:not(.hide) :is(.searchInput, #txtSearch, #searchTextInput, input[type="search"]) {
+  display: block;
+  width: 100%;
+  height: var(--ng-search-field-height);
+  min-height: var(--ng-search-field-height);
+  box-sizing: border-box;
+  padding: 0 var(--ng-search-input-padding);
+  border-radius: var(--ng-radius-panel);
+  background: var(--ng-search-field-bg);
+  color: var(--ng-text);
+  border-color: var(--ng-chrome-border);
+  font-family: var(--ng-font-display);
+  font-size: var(--ng-search-input-font-size);
+  font-weight: var(--ng-body-weight);
+  line-height: var(--ng-search-input-line-height);
+  letter-spacing: var(--ng-control-tracking);
+  caret-color: var(--ng-text);
+  box-shadow: none;
+}
+#searchPage:not(.hide) :is(.searchInput, #txtSearch, #searchTextInput, input[type="search"])::placeholder {
+  color: var(--ng-search-placeholder);
+  opacity: 1;
+}
+#searchPage:not(.hide) .searchFieldsInner:focus-within :is(.searchInput, #txtSearch, #searchTextInput, input[type="search"]) {
+  box-shadow: none;
+}
+#searchPage:not(.hide) :is(.searchInput, #txtSearch, #searchTextInput, input[type="search"]):focus-visible {
+  outline: var(--ng-focus-width) solid var(--ng-focus-color);
+  outline-offset: var(--ng-focus-offset);
+}
+#searchPage:not(.hide) .card {
+  margin-block-end: var(--ng-space-md);
+}

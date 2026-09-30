@@ -1,0 +1,215 @@
+/* Preserve native navigation, including search, casting and the drawer. */
+html:has(.libraryPage:not(.hide), #loginPage:not(.hide)) .skinHeader:not(.osdHeader) {
+  color: var(--ng-text);
+  font-family: var(--ng-font);
+  background: var(--ng-nav-scrim) !important;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+/* The native header remains available; the native drawer becomes a tvOS-like
+   floating sidebar when opened. Jellyfin still owns its open/close behavior. */
+html:has(.libraryPage:not(.hide)) .skinHeader:not(.osdHeader).skinHeader-withBackground {
+  background: var(--ng-header-scrolled) !important;
+  backdrop-filter: var(--ng-control-blur);
+}
+html:has(.libraryPage:not(.hide), #loginPage:not(.hide)) .headerTop {
+  min-height: var(--ng-nav-height);
+  padding-inline: var(--ng-gutter);
+  box-sizing: border-box;
+}
+.skinHeader:not(.osdHeader) :is(.headerLeft, .headerRight) {
+  min-width: 0;
+  align-items: center;
+}
+.skinHeader:not(.osdHeader) .headerRight {
+  display: flex;
+  gap: var(--ng-chrome-group-gap);
+  padding: var(--ng-chrome-group-padding);
+  border: var(--ng-chrome-border-width) solid var(--ng-chrome-border);
+  border-radius: var(--ng-radius-pill);
+  background: var(--ng-chrome-glass);
+  backdrop-filter: var(--ng-control-blur);
+}
+.skinHeader:not(.osdHeader) .headerLeft .headerButtonLeft {
+  background: var(--ng-chrome-glass);
+  border: var(--ng-chrome-border-width) solid var(--ng-chrome-border);
+  backdrop-filter: var(--ng-control-blur);
+}
+.skinHeader:not(.osdHeader) .headerButton,
+.skinHeader:not(.osdHeader) .pageTitle {
+  color: var(--ng-text);
+}
+.skinHeader:not(.osdHeader) .headerButton {
+  width: var(--ng-chrome-button-size);
+  height: var(--ng-chrome-button-size);
+  border-radius: var(--ng-radius-pill);
+}
+.skinHeader:not(.osdHeader) .headerButton:is(:hover, :focus-visible) {
+  background: var(--ng-chrome-hover);
+  color: var(--ng-text);
+  box-shadow: var(--ng-shadow-control);
+}
+.skinHeader:not(.osdHeader) .pageTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.skinHeader:not(.osdHeader) .headerTabs .emby-tabs-slider {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ng-chrome-group-gap);
+  padding: var(--ng-chrome-group-padding);
+  border: var(--ng-chrome-border-width) solid var(--ng-chrome-border);
+  border-radius: var(--ng-radius-pill);
+  background: var(--ng-chrome-glass);
+  backdrop-filter: var(--ng-control-blur);
+}
+.skinHeader:not(.osdHeader) .emby-tab-button {
+  height: var(--ng-chrome-tab-height) !important;
+  min-height: var(--ng-chrome-tab-height);
+  padding-block: 0 !important;
+  padding-inline: var(--ng-space-md);
+  color: var(--ng-text-secondary);
+  font-family: var(--ng-font);
+  font-size: var(--ng-small-font-size);
+  font-weight: var(--ng-control-weight);
+  letter-spacing: var(--ng-control-tracking);
+  border-radius: var(--ng-radius-pill);
+}
+.skinHeader:not(.osdHeader) .emby-tab-button-active {
+  background: var(--ng-nav-selection);
+  color: var(--ng-nav-selection-text);
+}
+.skinHeader:not(.osdHeader) .emby-tab-button:hover {
+  background: var(--ng-chrome-hover);
+  color: var(--ng-text);
+}
+.skinHeader:not(.osdHeader) .emby-tab-button-active:hover {
+  background: var(--ng-nav-selection);
+  color: var(--ng-nav-selection-text);
+}
+/* Home glass remains legible over moving artwork without changing other tabs or drawers. */
+html:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) :is(.headerRight, .headerLeft .headerButtonLeft, .headerTabs .emby-tabs-slider) {
+  background: var(--ng-home-chrome-glass);
+  border-color: var(--ng-home-glass-border);
+  backdrop-filter: var(--ng-control-blur);
+}
+html:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .emby-tab-button-active,
+html:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .emby-tab-button-active:hover {
+  background: var(--ng-home-selected-glass);
+  color: var(--ng-nav-selection-text);
+  box-shadow: var(--ng-shadow-control);
+}
+.skinHeader:not(.osdHeader) .emby-tab-button-active::after { display: none; }
+@media (min-width: 62.5rem) {
+  html:has(.libraryPage:not(.hide)) .headerTabs.sectionTabs {
+    position: absolute;
+    inset-block-start: var(--ng-space-sm);
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: 50%;
+    margin: 0;
+  }
+}
+.mainDrawer {
+  background: var(--ng-nav-glass) !important;
+  color: var(--ng-text);
+  width: var(--ng-nav-width) !important;
+  margin-inline-start: var(--ng-nav-inline-inset);
+  border: var(--ng-focus-width) solid var(--ng-nav-border);
+  border-radius: var(--ng-nav-radius);
+  box-shadow: var(--ng-shadow-panel);
+  backdrop-filter: var(--ng-control-blur);
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+.mainDrawer .navMenuOption {
+  min-height: var(--ng-nav-row-height);
+  width: calc(100% - var(--ng-space-xs) * 2) !important;
+  margin-inline: var(--ng-space-xs) !important;
+  padding-inline: var(--ng-space-sm);
+  border-radius: var(--ng-radius-card) !important;
+  box-sizing: border-box;
+  color: var(--ng-text-secondary);
+  transition: background var(--ng-motion-duration) var(--ng-ease), color var(--ng-motion-duration) var(--ng-ease);
+}
+.mainDrawer .navMenuOption:hover {
+  background: var(--ng-secondary-hover) !important;
+  color: var(--ng-text) !important;
+}
+.mainDrawer .navMenuOption-selected {
+  background: var(--ng-nav-selection) !important;
+  color: var(--ng-nav-selection-text) !important;
+}
+.mainDrawer .navMenuOption-selected:hover {
+  background: var(--ng-nav-selection) !important;
+  color: var(--ng-nav-selection-text) !important;
+}
+html:has(#indexPage:not(.hide)) .mainDrawer a.navMenuOption[href="#/home"] {
+  background: var(--ng-nav-selection) !important;
+  color: var(--ng-nav-selection-text) !important;
+}
+.mainDrawer .navMenuOption-selected :is(.navMenuOptionText, .material-icons, .md-icon) {
+  color: var(--ng-nav-selection-text) !important;
+}
+html:has(#indexPage:not(.hide)) .mainDrawer a.navMenuOption[href="#/home"] :is(.navMenuOptionText, .material-icons, .md-icon) {
+  color: var(--ng-nav-selection-text) !important;
+}
+/* Jellyfin v12's administrator uses a separate MUI sidebar. */
+.MuiDrawer-paper .MuiListItemButton-root {
+  width: calc(100% - var(--ng-space-xs) * 2) !important;
+  margin-inline: var(--ng-space-xs) !important;
+  border-radius: var(--ng-radius-card) !important;
+  box-sizing: border-box;
+}
+.MuiDrawer-paper .MuiListItemButton-root.Mui-selected,
+.MuiDrawer-paper .MuiListItemButton-root.Mui-selected:hover {
+  background: var(--ng-nav-selection) !important;
+  color: var(--ng-nav-selection-text) !important;
+}
+.MuiDrawer-paper .MuiListItemButton-root.Mui-selected :is(.MuiListItemIcon-root, .MuiListItemText-root, svg) {
+  color: var(--ng-nav-selection-text) !important;
+}
+.MuiDrawer-paper .MuiListItemButton-root:focus-visible {
+  outline: var(--ng-focus-width) solid var(--ng-focus-color) !important;
+  outline-offset: var(--ng-focus-offset);
+}
+@media (min-width: 48.01rem) {
+  .mainDrawer {
+    top: var(--ng-nav-inset) !important;
+    bottom: var(--ng-nav-inset) !important;
+    height: auto !important;
+  }
+}
+@media (max-width: 48rem) {
+  .skinHeader:not(.osdHeader) .pageTitle {
+    display: none;
+  }
+  .skinHeader:not(.osdHeader) .headerRight {
+    padding: 0;
+    border: none;
+    background: var(--ng-transparent);
+    backdrop-filter: none;
+  }
+  html:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .headerRight {
+    border: none;
+    background: var(--ng-transparent);
+    backdrop-filter: none;
+  }
+  .skinHeader:not(.osdHeader) .headerButton {
+    min-width: var(--ng-chrome-button-size);
+  }
+  .skinHeader:not(.osdHeader) .headerTabs .emby-tabs-slider {
+    backdrop-filter: none;
+  }
+  .mainDrawer {
+    top: var(--ng-nav-inset) !important;
+    bottom: var(--ng-nav-inset) !important;
+    height: auto !important;
+  }
+}
+:where(.skinHeader, .mainDrawer, .libraryPage, #loginPage, #videoOsdPage) :is(a, button, input, select, textarea):focus-visible {
+  outline: var(--ng-focus-width) solid var(--ng-focus-color) !important;
+  outline-offset: var(--ng-focus-offset);
+}
