@@ -58,6 +58,6 @@ Add a dated section to [CHANGELOG.md](../CHANGELOG.md) for each release using `#
 
 Push `main` and wait for validation to pass before pushing the reviewed annotated release tag. Published releases and existing drafts are never overwritten by the workflow.
 
-If a release run fails before publication, use the workflow's **Run workflow** option on `main` with the existing tag. This rebuilds and tests that tagged source with the current workflow; it does not move the tag. Release-note generation runs in the publish job because GitHub requires write access for that API.
+If a release run fails without creating a release, use the workflow's **Run workflow** option on `main` with the existing tag. This rebuilds and tests that tagged source with the current workflow; it does not move the tag. Release-note generation runs in the publish job because GitHub requires write access for that API.
 
 The workflow does not create tags or push source changes. Publishing requires a reviewed version-tag push. CDN `@latest` can lag the GitHub release, so test the [compatibility fallback and version pinning](SETUP.md#versions-and-cdn-caching) during rollout.
