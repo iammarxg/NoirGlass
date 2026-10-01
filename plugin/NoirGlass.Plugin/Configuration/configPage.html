@@ -6,7 +6,11 @@
   <div data-role="content"><div class="content-primary">
     <form id="NoirGlassConfigForm">
       <div class="checkboxContainer checkboxContainer-withDescription">
-        <label class="emby-checkbox-label"><input id="NoirGlassEnabled" type="checkbox" is="emby-checkbox" /><span>Enable the featured carousel and format badges</span></label>
+        <label class="emby-checkbox-label"><input id="NoirGlassEnabled" type="checkbox" is="emby-checkbox" /><span>Enable NoirGlass enhancements</span></label>
+      </div>
+      <div class="checkboxContainer checkboxContainer-withDescription">
+        <label class="emby-checkbox-label"><input id="NoirGlassDashboard" type="checkbox" is="emby-checkbox" /><span>Theme Dashboard</span></label>
+        <div class="fieldDescription">Apply your configured NoirGlass CSS to administration pages, including Metadata Manager. Enabled by default; respects your Display Custom CSS preferences.</div>
       </div>
       <div class="inputContainer">
         <label class="inputLabel" for="NoirGlassPinned">Pinned item IDs</label>
@@ -30,6 +34,7 @@
         try {
           const config = await ApiClient.getPluginConfiguration(id);
           page.querySelector('#NoirGlassEnabled').checked = config.Enabled !== false;
+          page.querySelector('#NoirGlassDashboard').checked = config.ThemeDashboard !== false;
           page.querySelector('#NoirGlassPinned').value = config.PinnedItemIds || '';
           page.querySelector('#NoirGlassInterval').value = Number.isInteger(config.FeaturedIntervalSeconds) ? config.FeaturedIntervalSeconds : 15;
         } finally { Dashboard.hideLoadingMsg(); }
@@ -45,6 +50,7 @@
         try {
           const config = await ApiClient.getPluginConfiguration(id);
           config.Enabled = page.querySelector('#NoirGlassEnabled').checked;
+          config.ThemeDashboard = page.querySelector('#NoirGlassDashboard').checked;
           config.PinnedItemIds = page.querySelector('#NoirGlassPinned').value;
           config.FeaturedIntervalSeconds = interval;
           Dashboard.processPluginConfigurationUpdateResult(await ApiClient.updatePluginConfiguration(id, config));

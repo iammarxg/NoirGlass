@@ -24,16 +24,34 @@
   let pluginSettings = null;
   let settingsLoading = null;
   let settingsRetryAfter = 0;
+  let settingsUser = null;
+  let dashboardRequest = 0;
+  let dashboardKey = null;
+  let dashboardTimer = null;
+  let dashboardProbe = null;
+  let dashboardRetryAfter = 0;
+  let observedUser = null;
+  let observedApi = null;
 
   const themeReady = () => getComputedStyle(document.documentElement).getPropertyValue('--ng-companion-contract').trim() === '1';
+  const dashboardThemeReady = () => themeReady() && getComputedStyle(document.documentElement).getPropertyValue('--ng-dashboard-contract').trim() === '1';
   async function loadSettings(api) {
+    const userId = api.getCurrentUserId();
+    if (!userId) return null;
+    if (settingsUser !== userId) {
+      settingsUser = userId;
+      pluginSettings = settingsLoading = null;
+      settingsRetryAfter = 0;
+    }
     if (pluginSettings) return pluginSettings;
     if (settingsLoading) return settingsLoading;
     if (Date.now() < settingsRetryAfter || typeof api.getJSON !== 'function' || typeof api.getUrl !== 'function') return null;
-    settingsLoading = api.getJSON(api.getUrl('NoirGlass/Settings'))
+    const pending = Promise.resolve().then(() => api.getJSON(api.getUrl('NoirGlass/Settings')))
       .then(value => {
+        if (destroyed || window.ApiClient !== api || settingsUser !== userId || api.getCurrentUserId() !== userId) return null;
         pluginSettings = {
           enabled: value?.enabled === true,
+          themeDashboard: value?.themeDashboard === true,
           pinnedItemIds: Array.isArray(value?.pinnedItemIds) ? value.pinnedItemIds : [],
           intervalSeconds: Number.isInteger(value?.intervalSeconds) && (value.intervalSeconds === 0 || (value.intervalSeconds >= 5 && value.intervalSeconds <= 60))
             ? value.intervalSeconds : 15
@@ -42,11 +60,119 @@
         return pluginSettings;
       })
       .catch(() => {
-        settingsRetryAfter = Date.now() + 10000;
+        if (window.ApiClient === api && settingsUser === userId) settingsRetryAfter = Date.now() + 10000;
         return null;
       })
-      .finally(() => { settingsLoading = null; });
+      .finally(() => { if (settingsLoading === pending) settingsLoading = null; });
+    settingsLoading = pending;
     return settingsLoading;
+  }
+
+  // Mirrors Jellyfin CustomCss.tsx: server CSS, then this user's local CSS.
+  // userSettings uses appSettings.get(name, userId) for both CSS preferences.
+  // Read only these two keys; never enumerate or persist authentication data.
+  const onDashboard = () => document.body?.classList.contains('dashboardDocument') &&
+    /^#\/(?:dashboard(?:\/|$)|metadata(?:\?|$)|configurationpage(?:\?|$))/i.test(location.hash);
+  function dashboardPreferences(userId) {
+    try {
+      return {
+        disabled: localStorage.getItem(`${userId}-disableCustomCss`) === 'true',
+        css: localStorage.getItem(`${userId}-customCss`) || ''
+      };
+    } catch { return null; }
+  }
+  const noirGlassConfigured = css =>
+    /@import\s+(?:url\(\s*)?["']?https:\/\/cdn\.jsdelivr\.net\/gh\/iammarxg\/NoirGlass@[^\s"')]+\/dist\/noirglass\.min\.css/i.test(css) ||
+    (/--ng-companion-contract\s*:\s*1\s*[;}]/.test(css) && /--ng-field-|--ng-bg\s*:/.test(css));
+  function clearDashboard() {
+    dashboardRequest += 1;
+    dashboardKey = null;
+    clearTimeout(dashboardProbe);
+    clearTimeout(dashboardTimer);
+    dashboardProbe = dashboardTimer = null;
+    document.querySelectorAll('style[data-noirglass-dashboard]').forEach(node => node.remove());
+  }
+  function syncIdentity() {
+    const userId = typeof window.ApiClient?.getCurrentUserId === 'function' ? window.ApiClient.getCurrentUserId() || null : null;
+    if (observedUser === userId && observedApi === window.ApiClient) return;
+    observedUser = userId;
+    observedApi = window.ApiClient;
+    request += 1;
+    removeFeature();
+    clearDetailBadges();
+    clearDashboard();
+    dashboardRetryAfter = 0;
+    settingsUser = null;
+    pluginSettings = settingsLoading = null;
+    settingsRetryAfter = 0;
+  }
+  async function syncDashboard() {
+    const api = window.ApiClient;
+    const userId = typeof api?.getCurrentUserId === 'function' ? api.getCurrentUserId() : null;
+    if (destroyed || !onDashboard() || !userId) {
+      if (dashboardKey || dashboardTimer || dashboardProbe) clearDashboard();
+      if (!userId) { settingsUser = null; pluginSettings = settingsLoading = null; }
+      return;
+    }
+    if (typeof api.getCurrentUser !== 'function' || typeof api.getJSON !== 'function' || typeof api.getUrl !== 'function') return;
+    const preferences = dashboardPreferences(userId);
+    if (!preferences) { clearDashboard(); return; }
+    const key = JSON.stringify([userId, preferences.disabled, preferences.css]);
+    if (key === dashboardKey || Date.now() < dashboardRetryAfter) return;
+    clearDashboard();
+    dashboardKey = key;
+    const turn = dashboardRequest;
+    let ready = false;
+    const current = () => !destroyed && turn === dashboardRequest && onDashboard() &&
+      window.ApiClient === api && api.getCurrentUserId() === userId &&
+      JSON.stringify([userId, dashboardPreferences(userId)?.disabled, dashboardPreferences(userId)?.css]) === key;
+    const fail = () => {
+      if (turn !== dashboardRequest) return;
+      clearDashboard();
+      dashboardRetryAfter = Date.now() + 10000;
+    };
+    try {
+      const user = await api.getCurrentUser();
+      if (!current()) return;
+      // Administration styling is not an authorization mechanism; Jellyfin still
+      // owns access control. Only inject for its positively identified admin.
+      if (user?.Policy?.IsAdministrator !== true) { fail(); return; }
+      const settings = await loadSettings(api);
+      if (!current()) return;
+      if (!settings?.enabled || !settings.themeDashboard) { fail(); return; }
+      const server = preferences.disabled ? '' : (await api.getJSON(api.getUrl('Branding/Configuration')))?.CustomCss || '';
+      if (!current()) return;
+      const css = [typeof server === 'string' ? server : '', preferences.css];
+      if (!css.some(noirGlassConfigured)) { fail(); return; }
+      for (const [index, value] of css.entries()) {
+        if (!value.trim()) continue;
+        const node = document.createElement('style');
+        node.dataset.noirglassDashboard = index === 0 ? 'server' : 'user';
+        node.textContent = value;
+        document.head.append(node);
+      }
+      const deadline = Date.now() + 6000;
+      const probe = () => {
+        if (!current()) { if (turn === dashboardRequest) clearDashboard(); return; }
+        if (dashboardThemeReady()) { ready = true; return; }
+        if (Date.now() >= deadline) { fail(); return; }
+        dashboardProbe = setTimeout(probe, 100);
+      };
+      probe();
+    } catch { fail(); } // Network/CSP/client failures leave native Dashboard usable.
+    finally {
+      if (turn === dashboardRequest && !current()) { clearDashboard(); schedule(); }
+      if (current()) {
+        // Detect sign-out or changed local preferences even when no DOM changes.
+        const monitor = () => {
+          dashboardTimer = null;
+          if (!current()) { clearDashboard(); schedule(); return; }
+          if (ready && !dashboardThemeReady()) { fail(); return; }
+          dashboardTimer = setTimeout(monitor, 1000);
+        };
+        dashboardTimer = setTimeout(monitor, 1000);
+      }
+    }
   }
 
   function removeFeature() {
@@ -167,6 +293,7 @@
     }
     const api = client();
     if (!api || !api.getCurrentUserId() || typeof api.getItem !== 'function') return;
+    const owner = api.getCurrentUserId();
     if (detailId !== id) {
       clearDetailBadges();
       detailId = id;
@@ -176,8 +303,8 @@
     detailLoading = detailAttempted = id;
     const turn = ++detailRequest;
     try {
-      const item = await api.getItem(api.getCurrentUserId(), id);
-      if (turn !== detailRequest || detailId !== id || !form.isConnected ||
+      const item = await api.getItem(owner, id);
+      if (destroyed || !themeReady() || api.getCurrentUserId() !== owner || turn !== detailRequest || detailId !== id || !form.isConnected ||
           !document.querySelector('#itemDetailPage:not(.hide)')) return;
       detailItem = item?.MediaSources?.length ? item : null;
       if (detailItem) formatBadges(form, detailItem);
@@ -459,7 +586,7 @@
 
   async function sync() {
     if (destroyed) return;
-    if (!themeReady()) { removeFeature(); return; }
+    if (!themeReady()) { request += 1; removeFeature(); return; }
     const page = document.querySelector(SELECTOR);
     if (!page || !visible(page)) {
       request += 1;
@@ -470,6 +597,7 @@
     if (loading || !page.querySelector('.card')) return;
     const api = client();
     if (!api || !api.getCurrentUserId()) return;
+    const owner = api.getCurrentUserId();
     if (!(await loadSettings(api))?.enabled) { removeFeature(); return; }
     if (destroyed || loading || page !== document.querySelector(SELECTOR) || !visible(page)) return;
     loading = true;
@@ -478,7 +606,7 @@
       const candidates = await loadItems(api);
       const loaded = await Promise.all(candidates.map(item => imageLoads(art(api, item, 'Backdrop'))));
       const items = candidates.filter((item, index) => loaded[index]);
-      if (destroyed || turn !== request || page !== document.querySelector(SELECTOR) || !visible(page) || !items.length) return;
+      if (destroyed || !themeReady() || api.getCurrentUserId() !== owner || turn !== request || page !== document.querySelector(SELECTOR) || !visible(page) || !items.length) return;
       removeFeature();
       currentFeature = createFeature(page, api, items);
       currentPage = page;
@@ -493,13 +621,14 @@
     scheduleTimer = setTimeout(() => {
       scheduleTimer = null;
       scheduled = false;
-      if (!destroyed) { sync(); syncDetail(); }
+      if (!destroyed) { syncIdentity(); syncDashboard(); sync(); syncDetail(); }
     }, 150);
   }
   const observer = new MutationObserver(schedule);
   observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
   addEventListener('hashchange', schedule);
   addEventListener('popstate', schedule);
+  addEventListener('storage', schedule);
   document.addEventListener('change', schedule, true);
   window.__NoirGlassCompanion = {
     destroy() {
@@ -510,9 +639,11 @@
       observer.disconnect();
       removeEventListener('hashchange', schedule);
       removeEventListener('popstate', schedule);
+      removeEventListener('storage', schedule);
       document.removeEventListener('change', schedule, true);
       removeFeature();
       clearDetailBadges();
+      clearDashboard();
       delete window.__NoirGlassCompanion;
     }
   };

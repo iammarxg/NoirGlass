@@ -10,6 +10,7 @@
 /* NoirGlass public tokens. */
 :root {
   --ng-companion-contract: 1;
+  --ng-dashboard-contract: 1;
   --ng-bg: #000;
   --ng-surface: #151517;
   --ng-surface-raised: #202023;
@@ -187,6 +188,37 @@
   --ng-player-control-active: #f2f2f5;
   --ng-player-timeline-height: 4px;
   --ng-player-bottom-padding: 22px;
+  /* Shared forms and compact administration. */
+  --ng-field-radius: 14px;
+  --ng-field-height: 48px;
+  --ng-field-padding: 16px;
+  --ng-field-bg: #292930a3;
+  --ng-field-hover: #383840b8;
+  --ng-field-border: #ffffff38;
+  --ng-field-placeholder: #ebebf599;
+  --ng-primary-glass: #f2f2f5d9;
+  --ng-danger: #ff9b98;
+  --ng-danger-bg: #962b303d;
+  --ng-success: #99dfbd;
+  --ng-disabled-opacity: .45;
+  --ng-touch-target: 44px;
+  --ng-dialog-glass: #1e1e24ed;
+  --ng-dialog-clearance: 16px;
+  --ng-dialog-available-width: calc(100vw - var(--ng-dialog-clearance) * 2);
+  --ng-dialog-available-height: calc(100dvh - var(--ng-dialog-clearance) * 2);
+  --ng-dialog-menu-width: 28rem;
+  --ng-dialog-editor-width: 56rem;
+  --ng-dialog-footer-bg: #292930e8;
+  --ng-dialog-backdrop: #0009;
+  --ng-admin-row-height: 44px;
+  --ng-admin-gap: 16px;
+  --ng-admin-content-width: 72rem;
+  --ng-admin-form-width: 56rem;
+  --ng-admin-panel-bg: #25252b80;
+  --ng-admin-table-stripe: #ffffff04;
+  --ng-admin-table-min-width: 36rem;
+  --ng-stats-width: 28rem;
+  --ng-multiline-height: 144px;
 }
 
 /* Breakpoints are literal because native @media cannot use custom properties. */
@@ -213,13 +245,15 @@
     --ng-nav-inset: 10px;
     --ng-nav-inline-inset: 0px;
     --ng-library-grid-gap: 20px;
-    --ng-chrome-button-size: 42px;
+    --ng-chrome-button-size: 44px;
     --ng-chrome-group-padding: 2px;
     --ng-track-row-height: 62px;
-    --ng-poster-action-size: 38px;
-    --ng-player-control-size: 42px;
+    --ng-poster-action-size: 44px;
+    --ng-episode-action-size: 44px;
+    --ng-player-control-size: 44px;
     --ng-player-icon-size: 21px;
     --ng-player-title-size: 17px;
+    --ng-admin-gap: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

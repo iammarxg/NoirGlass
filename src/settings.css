@@ -1,0 +1,56 @@
+/* Practical form spacing in user Settings and standard plugin configuration. */
+:is(#myPreferencesMenuPage, #userProfilePage, #quickConnectPreferencesPage,
+    #displayPreferencesPage, #homeScreenPreferencesPage, #playbackPreferencesPage,
+    #controlsPreferencesPage, #forgotPasswordPage, .pluginConfigurationPage) {
+  font-family: var(--ng-font);
+  color: var(--ng-text);
+  background: var(--ng-bg);
+}
+:is(#myPreferencesMenuPage, #userProfilePage, #quickConnectPreferencesPage,
+    #displayPreferencesPage, #homeScreenPreferencesPage, #playbackPreferencesPage,
+    #controlsPreferencesPage, #forgotPasswordPage, .pluginConfigurationPage) .content-primary {
+  width: auto;
+  max-width: var(--ng-admin-form-width);
+  padding-inline: var(--ng-admin-gap);
+  box-sizing: border-box;
+  margin-inline: auto;
+}
+:is(#myPreferencesMenuPage, #userProfilePage, #quickConnectPreferencesPage,
+    #displayPreferencesPage, #homeScreenPreferencesPage, #playbackPreferencesPage,
+    #controlsPreferencesPage, .pluginConfigurationPage) :is(.inputContainer, .selectContainer, .checkboxContainer) { margin-block-end: var(--ng-admin-gap); }
+#myPreferencesMenuPage .listItem {
+  min-height: var(--ng-field-height);
+  margin-block: var(--ng-space-xs);
+  padding-inline: var(--ng-space-md);
+  background: var(--ng-admin-panel-bg);
+  border: var(--ng-chrome-border-width) solid var(--ng-border);
+  border-radius: var(--ng-field-radius);
+  color: var(--ng-text);
+}
+#myPreferencesMenuPage .listItem:hover { background: var(--ng-secondary-hover); }
+:is(.page, .dialog) :is(.jstree-anchor, .metadataSidebar .listItem) {
+  min-height: var(--ng-touch-target);
+  line-height: var(--ng-touch-target);
+  border-radius: var(--ng-radius-card);
+  color: var(--ng-text);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+:is(.page, .dialog) .jstree-clicked { background: var(--ng-nav-selection) !important; color: var(--ng-nav-selection-text); box-shadow: none; }
+:is(.page, .dialog) .jstree-hovered { background: var(--ng-secondary-hover); box-shadow: none; }
+:is(.page, .dialog) .jstree-icon { color: var(--ng-text-secondary) !important; }
+:is(.page, .dialog) .jstree-clicked .jstree-icon { color: var(--ng-nav-selection-text) !important; }
+:is(.selectionCommandsPanel, .selectionPanel) {
+  background: var(--ng-dialog-glass);
+  color: var(--ng-text);
+  border-radius: var(--ng-radius-panel);
+  backdrop-filter: var(--ng-control-blur);
+  box-shadow: var(--ng-shadow-panel);
+}
+.libraryPage .listItem:not(.listItem-largeImage) { color: var(--ng-text); border-color: var(--ng-border); min-height: var(--ng-touch-target); }
+.libraryPage .listItemBody { min-width: 0; overflow-wrap: anywhere; }
+.libraryPage .listItemBodyText-secondary { color: var(--ng-text-secondary); }
+/* Alternate artwork views retain native aspect ratios and widths. */
+.libraryPage :is(.bannerCard, .backdropCard, .squareCard) .cardBox { border-radius: var(--ng-radius-card); }
+.libraryPage .itemsContainer:not(.scrollSlider):has(> :is(.bannerCard, .backdropCard, .squareCard)) { max-width: 100%; }
+.libraryPage :is(.noItemsMessage, .emptyMessage) { color: var(--ng-text-secondary); padding: var(--ng-space-lg); }

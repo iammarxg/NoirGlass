@@ -25,6 +25,7 @@ Open **Dashboard → Plugins → NoirGlass**, save changes, then refresh Web.
 | Setting | Behavior |
 | --- | --- |
 | Enable | On by default for signed-in Legacy Web users. Disabling restores native Home after refresh. |
+| Theme Dashboard | On by default for administrators. Applies configured NoirGlass CSS to Dashboard, Metadata Manager, and plugin settings; requires Enable to be on. |
 | Pinned titles | Up to five movie/series IDs, one per line, in order. Inaccessible or unsuitable items are skipped; recent eligible titles fill remaining slots. |
 | Autoplay interval | 15 seconds by default; 5–60 seconds when enabled; 0 disables autoplay. |
 
@@ -32,11 +33,17 @@ Autoplay needs at least two featured items. It pauses on hover, keyboard focus, 
 
 Format badges describe the selected source file and tracks, not guaranteed browser playback quality. Native Play, Details, and track-selection controls remain Jellyfin-owned. Missing metadata, an unavailable script, or incompatible CSS leaves native shelves usable.
 
+## Dashboard styling
+
+The CSS import themes media pages, user Settings, and shared dialogs on its own. Jellyfin omits Custom CSS from Dashboard, so administration styling requires the optional plugin and **Theme Dashboard**. It works on direct Dashboard loads as well as navigation from Home.
+
+The plugin applies server Custom CSS first and this user's Display Custom CSS second. It respects **Disable server-provided custom CSS**, only activates when NoirGlass is configured, and removes its styles when you leave administration or sign out. Failed loading leaves native administration available. It does not change any saved CSS or server settings.
+
 ## Versions and CDN caching
 
 The README import uses jsDelivr's `@latest` alias. CDN caches may delay an update; for a fixed release, replace `latest` with a released Git tag in that URL, keeping the `@` prefix. The catalog URL follows the latest GitHub release.
 
-Keep the theme and plugin on compatible versions. The plugin checks the CSS compatibility marker and falls back to native Home when it does not match; do not override that marker. Release packages target Jellyfin **12.1**.
+Keep the theme and plugin on compatible versions. The plugin checks the CSS compatibility markers and falls back to native Home or Dashboard when they do not match; do not override those markers. Release packages target Jellyfin **12.1**.
 
 ## Removal
 

@@ -30,6 +30,14 @@ Check(SettingsController.NormalizeInterval(15) == 15, "Default interval is retai
 Check(SettingsController.NormalizeInterval(-4) == 5 && SettingsController.NormalizeInterval(90) == 60, "Out-of-range intervals are clamped");
 Check(Plugin.PluginId == "72f7ec75-08a4-4f5b-90fa-df751666c621", "Plugin GUID survives rename");
 Check(typeof(SettingsController).IsDefined(typeof(AuthorizeAttribute)), "Settings route requires authentication");
+Check(new PluginConfiguration().ThemeDashboard, "Dashboard styling defaults to enabled");
+var settingsSerializer = new System.Xml.Serialization.XmlSerializer(typeof(PluginConfiguration));
+using (var serialized = new StringWriter())
+{
+    settingsSerializer.Serialize(serialized, new PluginConfiguration { ThemeDashboard = false });
+    using var reader = new StringReader(serialized.ToString());
+    Check(!((PluginConfiguration)settingsSerializer.Deserialize(reader)!).ThemeDashboard, "Explicit Dashboard opt-out survives configuration serialization");
+}
 
 var configurationDirectory = Path.Combine(Path.GetTempPath(), "noirglass-migration-" + Guid.NewGuid().ToString("N"));
 Directory.CreateDirectory(configurationDirectory);
@@ -43,7 +51,7 @@ try
     using (var reader = File.OpenRead(newPath))
     {
         var restored = (PluginConfiguration)serializer.Deserialize(reader)!;
-        Check(!restored.Enabled && restored.PinnedItemIds == "1234567890abcdef1234567890abcdef" && restored.FeaturedIntervalSeconds == 15,
+        Check(!restored.Enabled && restored.PinnedItemIds == "1234567890abcdef1234567890abcdef" && restored.FeaturedIntervalSeconds == 15 && restored.ThemeDashboard,
             "Pre-rename settings migrate with the default autoplay interval");
     }
     Check(File.Exists(oldPath), "Migration preserves the previous configuration");
@@ -98,7 +106,8 @@ RequestDelegate serveIndex = async context =>
 await (Task)method.Invoke(null, [index, serveIndex])!;
 index.Response.Body.Position = 0;
 var transformed = await new StreamReader(index.Response.Body).ReadToEndAsync();
-Check(transformed.Contains("/jelly/NoirGlass/companion.js?v=1.0.0"), "Index middleware honors base URL");
+var pluginVersion = typeof(WebScriptStartupFilter).Assembly.GetName().Version?.ToString(3);
+Check(transformed.Contains("/jelly/NoirGlass/companion.js?v=" + pluginVersion), "Index middleware honors base URL");
 Check(index.Response.ContentLength is null && !index.Response.Headers.ContainsKey("ETag"), "Stale response validators removed");
 Check(index.Request.Headers.AcceptEncoding == "gzip" && index.Request.Headers.IfNoneMatch == "old-tag", "Request headers restored");
 

@@ -3,22 +3,26 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 const root=path.resolve(import.meta.dirname,'..');
+const {version}=JSON.parse(await readFile(path.join(root,'package.json'),'utf8'));
 await mkdir(path.join(root,'.local/verification'),{recursive:true});
 const profile=JSON.parse(await readFile(path.join(root,'.local/instance.json'),'utf8'));
 const css=await readFile(path.join(root,'dist/noirglass.min.css'),'utf8');
 const response=await fetch('http://127.0.0.1:4319',{method:'POST',body:JSON.stringify({action:'evaluate',expression:'Object.fromEntries(Object.entries(localStorage))'})});
 assert(response.ok);
 const storage=await response.json(); // Session exists only in memory.
-const report={product:'NoirGlass',version:'1.0.0',date:new Date().toISOString(),target:'Jellyfin Web 12.1 Legacy',checks:[],limitations:[]};
+const report={product:'NoirGlass',version,date:new Date().toISOString(),target:'Jellyfin Web 12.1 Legacy',checks:[],limitations:[]};
 const modes=process.env.NOIRGLASS_PLAYER_MODE?[process.env.NOIRGLASS_PLAYER_MODE]:['desktop','mobile'];
+const desktopWidth=Number(process.env.NOIRGLASS_PLAYER_DESKTOP_WIDTH || 1440);
+assert([1440,1920].includes(desktopWidth),'Use a supported desktop validation width');
 report.checks=report.checks.filter(c=>!modes.some(mode=>c.name.startsWith(`${mode}: real playback`)));
 report.limitations=report.limitations.filter(l=>!modes.some(mode=>l.startsWith(`Player validation (${mode}):`)));
 report.playerCheckedAt=new Date().toISOString();
 const browser=await chromium.launch({headless:true,...(process.env.NOIRGLASS_BROWSER_EXECUTABLE?{executablePath:process.env.NOIRGLASS_BROWSER_EXECUTABLE}:{})});
-await mkdir(path.join(root,'docs/images'),{recursive:true});
+const screenshotDirectory=path.join(root,process.env.NOIRGLASS_PUBLIC_CAPTURE==='1'?'docs/images':'test-results');
+await mkdir(screenshotDirectory,{recursive:true});
 try {
   for(const mode of modes) {
-    const context=await browser.newContext({hasTouch:mode==='mobile',isMobile:mode==='mobile',viewport:mode==='desktop'?{width:1440,height:900}:{width:390,height:844},storageState:{cookies:[],origins:[{origin:profile.origin,localStorage:Object.entries({...storage,layout:`${mode}-legacy`}).map(([name,value])=>({name,value}))}]}});
+    const context=await browser.newContext({hasTouch:mode==='mobile',isMobile:mode==='mobile',viewport:mode==='desktop'?{width:desktopWidth,height:desktopWidth===1920?1080:900}:{width:390,height:844},storageState:{cookies:[],origins:[{origin:profile.origin,localStorage:Object.entries({...storage,layout:`${mode}-legacy`}).map(([name,value])=>({name,value}))}]}});
     await context.route('https://noirglass.invalid/**',r=>r.fulfill({contentType:'text/css',body:css}));
     const page=await context.newPage();
     const press=locator=>mode==='mobile'?locator.tap():locator.click();
@@ -104,7 +108,7 @@ try {
     assert.equal(osdSurface.radius,'0px','Full-width OSD must not appear as a rounded panel');
     assert(osdSurface.image.includes('linear-gradient'),'OSD must use a fading scrim');
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Player must not overflow');
-    await page.screenshot({path:path.join(root,'docs/images',`player-${mode}.png`)});
+    await page.screenshot({path:path.join(screenshotDirectory,`player-${mode}.png`)});
     const hiddenSurface=await page.locator('#videoOsdPage').evaluate(osd=>{
       osd.classList.add('hide');
       const bottom=osd.querySelector('.videoOsdBottom');

@@ -17,7 +17,11 @@ async function fixture({ interval = 5, reducedMotion = 'no-preference', theme = 
     body: '<!doctype html><html><body><div id="indexPage"><div id="homeTab" class="is-active"><div class="card">Native shelf</div></div></div><div style="height:2000px"></div></body></html>'
   }));
   const page = await context.newPage();
-  if (fakeClock) await page.clock.install();
+  if (fakeClock) {
+    await page.clock.install();
+    // Keep virtual time fixed between explicit advances, even on a busy CI host.
+    await page.clock.pauseAt(new Date(Date.now() + 100));
+  }
   await page.goto('http://noirglass.test/web/#/home');
   const style = await page.addStyleTag({ content: theme ? css : ':root{--ng-bg:#000}' });
   await page.evaluate(seconds => {

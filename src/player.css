@@ -1,4 +1,25 @@
 /* Presentation only: no changes to timing, visibility, tracks or subtitles. */
+.playerStats {
+  max-width: min(var(--ng-stats-width), var(--ng-dialog-available-width));
+  max-height: var(--ng-dialog-available-height);
+  color: var(--ng-text);
+  background: var(--ng-dialog-glass);
+  border: var(--ng-chrome-border-width) solid var(--ng-border);
+  border-radius: var(--ng-radius-panel);
+  backdrop-filter: var(--ng-control-blur);
+  box-shadow: var(--ng-shadow-panel);
+  font-family: var(--ng-font);
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+.playerStats :is(.playerStats-content, .playerStats-stats) { padding: var(--ng-space-md); overflow-wrap: anywhere; }
+.playerStats .playerStats-closeButton { min-height: var(--ng-touch-target); min-width: var(--ng-touch-target); color: var(--ng-text); border-radius: var(--ng-radius-pill); }
+:is(.upNextContainer, .skipIntro, .skipSegment, .btnSkipIntro, .btnSkipSegment) {
+  color: var(--ng-text);
+  background: var(--ng-home-secondary-glass);
+  border-radius: var(--ng-radius-panel);
+  backdrop-filter: var(--ng-control-blur);
+}
 .videoOsdBottom {
   background: var(--ng-osd-glass);
   color: var(--ng-text);

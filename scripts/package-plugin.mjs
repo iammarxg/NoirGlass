@@ -89,7 +89,7 @@ const manifest = [
     guid: '72f7ec75-08a4-4f5b-90fa-df751666c621',
     name: 'NoirGlass',
     description: 'Adds NoirGlass’s featured Home carousel and source-format badges to Jellyfin Web Legacy layouts.',
-    overview: 'Cinematic Home carousel and detail badges for NoirGlass.',
+    overview: 'Cinematic Home carousel, detail badges, and configured Dashboard styling for NoirGlass.',
     owner: 'iammarxg',
     category: 'General',
     versions: [{

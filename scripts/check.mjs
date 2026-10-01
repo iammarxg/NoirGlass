@@ -7,7 +7,7 @@ import { root, modules, compile, variableTable } from './build.mjs';
 
 const declared = new Set();
 const used = new Set();
-assert.equal(modules.length,12,'Standalone release must contain twelve CSS modules');
+assert.equal(modules.length,16,'Shared UI and media components must be included in the explicit build');
 for (const name of modules) {
   const css = await readFile(path.join(root,'src',`${name}.css`),'utf8');
   const ast = postcss.parse(css, { from: `${name}.css`, map: false });
@@ -67,7 +67,7 @@ assert.equal(createHash('md5').update(archive).digest('hex'),manifest[0].version
 assert((await readFile(path.join(root,'LICENSE'),'utf8')).includes('Ammar Alghamdi'),'MIT copyright name must match the requested owner');
 assert(first.includes('SIL OPEN FONT LICENSE') && first.includes('Permission is hereby granted'),'Distribution must retain both licenses');
 assert((await readFile(path.join(root,'dist/fonts/OFL.txt'),'utf8')).includes('SIL OPEN FONT LICENSE'));
-for (const filename of ['README.md','CHANGELOG.md','docs/SETUP.md','docs/CUSTOMIZATION.md','docs/DEVELOPMENT.md']) {
+for (const filename of ['README.md','CHANGELOG.md','docs/SETUP.md','docs/CUSTOMIZATION.md','docs/DEVELOPMENT.md','docs/UI-COVERAGE.md']) {
   const markdown = await readFile(path.join(root,filename),'utf8');
   assert(!/MediaBar|NoirLucent|Ubuntu|pre-rename|--nl-|\.nl-|\bpending\b|\bunverified\b/i.test(markdown), `Historical or internal-status content in ${filename}`);
   assert(!/\b(?:before|after) publication\b|\buntil then\b|\buntil[^\n.]*\bpublished\b/i.test(markdown), `Temporary publication instructions in ${filename}`);
@@ -95,7 +95,7 @@ for (const filename of ['README.md','CHANGELOG.md','docs/SETUP.md','docs/CUSTOMI
 }
 const tvos = JSON.parse(await readFile(path.join(root,'reference/tvos-page-matrix.json'),'utf8'));
 for (const page of ['home','navigation','search','library','movie-and-series-detail','episodes','player']) assert(tvos.screens.some(screen => screen.page === page), `Missing tvOS research page ${page}`);
-assert.equal(declared.size,175,'Standalone release must document 175 tokens');
+assert.equal(declared.size,206,'Every public token must be documented');
 assert(!/mediabar|slides-container|ss-settings|guardPlugin|silencePluginMedia|ng-companion-active/i.test(first + companion),'Distribution must not contain third-party hero integration');
 for (const old of ['dist/jellytv.min.css','dist/jellytv.user.js','dist/noirlucent.min.css','dist/noirlucent.companion.js','dist/NoirLucent.Plugin_12.1.0.zip']) await assert.rejects(readFile(path.join(root,old)),{code:'ENOENT'});
 console.log(`Checks passed: ${declared.size} tokens, ${modules.length} modules, deterministic minification, reference coverage, fonts, plugin package and documentation links.`);

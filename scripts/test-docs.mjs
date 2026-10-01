@@ -10,7 +10,7 @@ const guide = await readFile(path.join(root,'docs/CUSTOMIZATION.md'),'utf8');
 const css = await readFile(path.join(root,'dist/noirglass.min.css'),'utf8');
 const examples = [...guide.matchAll(/```css\n([\s\S]*?)```/g)].map(match=>match[1]);
 assert.equal(examples.length,3,'Customization guide must contain exactly three scenario blocks');
-assert.equal(new Set(tokenDocs.map(entry=>entry.name)).size,175,'Metadata must cover 175 distinct variables');
+assert.equal(new Set(tokenDocs.map(entry=>entry.name)).size,206,'Metadata must cover every distinct variable');
 assert.equal(quickTokens.length,12);
 await assert.rejects(variableTable(tokenDocs.slice(1)),/Missing token documentation/);
 await assert.rejects(variableTable([...tokenDocs,tokenDocs[0]]),/Duplicate token documentation/);
@@ -79,5 +79,5 @@ try {
   }
   await page.emulateMedia({reducedMotion:'reduce'});
   assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--ng-feature-slide-duration').trim()),'0ms','Scenarios must preserve reduced-motion behavior');
-  console.log('Documentation browser checks passed: 175 value types, examples/defaults, three desktop/mobile scenarios and reduced motion.');
+  console.log(`Documentation browser checks passed: ${tokenDocs.length} value types, examples/defaults, three desktop/mobile scenarios and reduced motion.`);
 } finally { await browser.close(); }

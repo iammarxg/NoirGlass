@@ -1,5 +1,6 @@
 // Curated documentation only; defaults and responsive values come from variables.css.
 const kinds = {
+  opacity: { values: 'Number from 0 (transparent) to 1 (opaque)', property: 'opacity', examples: ['.45', '.6', '1'] },
   color: { values: 'CSS color: hex, rgb/rgba, hsl/hsla, or a named color', property: 'color', examples: ['#f5f5f7', 'rgba(255,255,255,.65)'] },
   paint: { values: 'CSS background: color, gradient, layered backgrounds, or none', property: 'background', examples: ['#22222680', 'linear-gradient(135deg,#ffffff24,#ffffff0a), #27272d80'] },
   image: { values: 'CSS image: a gradient or none', property: 'mask-image', examples: ['linear-gradient(to bottom,#000,transparent)', 'none'] },
@@ -22,8 +23,41 @@ const kinds = {
 };
 
 export const groups = [
+  { id: 'forms', label: 'Forms, dialogs & administration', rows: [
+    ['field-radius','Field corners','Rounds text inputs, selectors, and compact form buttons.','radius'],
+    ['field-height','Standard field height','Sets the minimum height of standard form fields.','length'],
+    ['field-padding','Field text padding','Sets horizontal spacing inside standard form fields.','length'],
+    ['field-bg','Field glass','Sets the translucent background of standard inputs.','paint'],
+    ['field-hover','Field hover surface','Sets the background of hovered form fields.','paint'],
+    ['field-border','Field borders','Colors field outlines and unchecked control borders.','color'],
+    ['field-placeholder','Field placeholder text','Colors placeholder text inside standard inputs.','color'],
+    ['primary-glass','Primary form action glass','Colors primary form actions and checked controls.','color'],
+    ['danger','Destructive and error text','Colors destructive actions and invalid-field labels.','color'],
+    ['danger-bg','Destructive action surface','Sets the tinted background of destructive actions and error alerts.','paint'],
+    ['success','Success text','Colors success notifications.','color'],
+    ['disabled-opacity','Disabled control opacity','Sets the opacity of disabled controls.','opacity'],
+    ['touch-target','Minimum touch target','Sets the minimum size of shared buttons and menu rows.','length'],
+    ['dialog-glass','Dialog glass','Sets the translucent background of menus, dialogs, and player statistics.','paint'],
+    ['dialog-clearance','Dialog viewport clearance','Keeps dialogs away from viewport edges.','length'],
+    ['dialog-available-width','Dialog available width','Limits dialog width to the viewport minus its edge clearance.','length'],
+    ['dialog-available-height','Dialog available height','Limits dialog height to the viewport minus its edge clearance.','length'],
+    ['dialog-menu-width','Action sheet maximum width','Limits the width of native action sheets.','length'],
+    ['dialog-editor-width','Editor maximum width','Limits the width of larger editing dialogs.','length'],
+    ['dialog-footer-bg','Dialog header and footer glass','Sets the background behind dialog titles and footer actions.','paint'],
+    ['dialog-backdrop','Modal background dimming','Colors the dimming layer behind MUI dialogs.','color'],
+    ['admin-row-height','Administration row height','Sets the minimum height of compact administration rows.','length'],
+    ['admin-gap','Administration spacing','Sets compact panel padding and form spacing in Settings and Dashboard.','length'],
+    ['admin-content-width','Dashboard content width','Limits the width of Dashboard content.','length'],
+    ['admin-form-width','Settings form width','Limits the width of Settings and administration forms.','length'],
+    ['admin-panel-bg','Administration panel glass','Sets the background of administration cards and Settings rows.','paint'],
+    ['admin-table-stripe','Table row tint','Sets a subtle background on alternating administration table rows.','paint'],
+    ['admin-table-min-width','Table minimum width','Keeps wide tables readable while their container scrolls horizontally.','length'],
+    ['stats-width','Playback statistics width','Limits the width of the native playback statistics panel.','length'],
+    ['multiline-height','Multiline input height','Sets the minimum height of textareas such as Custom CSS and metadata.','length']
+  ] },
   { id: 'materials', label: 'Colors, materials & motion', rows: [
     ['companion-contract','Compatibility marker (internal)','Allows the plugin to recognize compatible CSS and must stay at 1.','fixed'],
+    ['dashboard-contract','Dashboard compatibility marker (internal)','Allows administration styling only with the shared UI modules and must stay at 1.','fixed'],
     ['bg','Page background','Sets the background color behind Jellyfin pages.','color'],
     ['surface','Content surfaces','Colors standard content surfaces, including Library and Search.','paint'],
     ['surface-raised','Raised panels','Colors the higher-contrast panels used above the page background.','paint'],
@@ -36,7 +70,7 @@ export const groups = [
     ['secondary-bg','Secondary button background','Sets the background of secondary native actions.','paint'],
     ['secondary-hover','Secondary button hover','Sets the background when secondary native actions are hovered.','paint'],
     ['border','Standard borders','Colors shared input and panel borders.','color'],
-    ['hairline','Hairline borders (reserved)','Reserves a subtle divider color with no current visual effect.','color'],
+    ['hairline','Hairline borders','Colors subtle separators in dialogs and filter accordions.','color'],
     ['transparent','Transparent surfaces','Supplies the transparent color used by borderless surfaces.','color'],
     ['control-blur','Control glass blur','Controls blur and saturation behind translucent controls.','filter'],
     ['ease','Animation easing','Controls the acceleration curve of theme transitions.','easing'],

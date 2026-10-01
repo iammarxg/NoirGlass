@@ -15,6 +15,8 @@ npm run test:docs
 npm run test:plugin
 npm run test:companion
 npm run test:autoplay
+npm run test:ui
+npm run test:dashboard
 npm run test:release
 node scripts/check-release-version.mjs v1.0.0
 npm audit --audit-level=high
@@ -47,6 +49,14 @@ The helper on `127.0.0.1:4319` controls a Playwright browser; it does not start 
 Local item IDs belong in ignored `.local/instance.json`. Keep authentication files, credentials, private logo previews, reference screenshots, and cloned reference repositories out of public commits. Use Playwright for rendered-page verification at 1920×1080, 1440×900, and 390×844. Public screenshots must use a permitted test library.
 
 Keep technical test reports in ignored `.local/verification/` storage.
+
+## Shared UI coverage
+
+The [component coverage matrix](UI-COVERAGE.md) separates live audit selectors from synthetic fixtures and conditional surfaces. `test:ui` renders stable Legacy/MUI class families at three viewport sizes and writes screenshots and measurements to ignored `test-results/ui/`. Fixtures use small structural scaffolds rather than a live Jellyfin server; destructive and credential actions are never submitted.
+
+`test:dashboard` exercises authenticated administrator detection, direct routes, base URLs, native CSS precedence, preference changes, duplicate payloads, stale results, sign-out, and stylesheet failure. The loader reads only Jellyfin's existing local Custom CSS preferences, and uses the authenticated API client for plugin settings and branding.
+
+For a temporary Dashboard preview, use `node scripts/browser-command.mjs dashboard-preview` after signing in. This substitutes the local candidate stylesheet in the browser's branding response only; it does not edit saved CSS or install a plugin. Restore the native client with `disable-companion` or close the temporary browser.
 
 ## Release process
 

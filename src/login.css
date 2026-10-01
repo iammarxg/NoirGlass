@@ -27,9 +27,9 @@
 #loginPage :is(.inputLabel, .checkboxLabel) { color: var(--ng-text-secondary); }
 #loginPage .emby-input {
   color: var(--ng-text);
-  background: var(--ng-surface-raised);
-  border-color: var(--ng-border);
-  border-radius: var(--ng-radius-small);
+  background: var(--ng-field-bg);
+  border-color: var(--ng-field-border);
+  border-radius: var(--ng-field-radius);
 }
 #loginPage .emby-input:focus { border-color: var(--ng-focus-color); }
 #loginPage .emby-button {
@@ -43,7 +43,7 @@
 }
 #loginPage .button-submit {
   color: var(--ng-primary-text);
-  background: var(--ng-primary-bg);
+  background: var(--ng-primary-glass);
 }
 #loginPage .emby-button:hover { background: var(--ng-secondary-hover); }
 #loginPage .button-submit:hover { background: var(--ng-text); }

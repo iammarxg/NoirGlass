@@ -64,15 +64,30 @@ const server = http.createServer(async (req, res) => {
         await page.locator(command.selector).nth(command.index || 0).focus();
         result = { focused: command.selector }; break;
       case 'preview': await preview(); result = { preview: true, bytes: css.length }; break;
+      case 'dashboard-preview':
       case 'companion': {
+        const dashboardPreview = command.action === 'dashboard-preview';
+        if (dashboardPreview) {
+          css = await readFile(path.join(root, 'dist/noirglass.min.css'), 'utf8');
+          await page.locator('#noirglass-preview').evaluateAll(nodes => nodes.forEach(node => node.remove()));
+        }
         await page.evaluate(() => {
           const api = window.ApiClient;
           if (!api || window.__NoirGlassPreviewGetJSON) return;
           window.__NoirGlassPreviewGetJSON = api.getJSON.bind(api);
           api.getJSON = url => String(url).includes('NoirGlass/Settings')
-            ? Promise.resolve({ enabled: true, pinnedItemIds: [] })
+            ? Promise.resolve({ enabled: true, themeDashboard: true, pinnedItemIds: [] })
             : window.__NoirGlassPreviewGetJSON(url);
         });
+        if (dashboardPreview) await page.evaluate(candidate => {
+          const original = window.__NoirGlassPreviewGetJSON;
+          window.ApiClient.getJSON = async url => {
+            if (String(url).includes('NoirGlass/Settings')) return { enabled: true, themeDashboard: true, pinnedItemIds: [] };
+            const response = await original(url);
+            if (!String(url).includes('Branding/Configuration')) return response;
+            return { ...response, CustomCss: (response.CustomCss || '').replace(/@import\s+url\(["']?https:\/\/cdn\.jsdelivr\.net\/gh\/iammarxg\/NoirGlass@[^)]+\);?/gi, () => candidate) };
+          };
+        }, css);
         await page.addScriptTag({ content: await readFile(path.join(root, 'dist/noirglass.companion.js'), 'utf8') });
         result = { companion: true }; break;
       }

@@ -62,6 +62,14 @@ jobs:
       - run: npm run test:plugin
       - run: npm run test:companion
       - run: npm run test:autoplay
+      - run: npm run test:ui
+      - run: npm run test:dashboard
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: noirglass-ui-fixtures
+          if-no-files-found: ignore
+          path: test-results/ui/
       - run: npm run test:release
       - name: Verify release versions and changelog
         env:

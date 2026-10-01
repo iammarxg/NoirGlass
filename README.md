@@ -2,9 +2,9 @@
 
 NoirGlass is a cinematic Jellyfin Web theme inspired by Apple TV, with spacious artwork, translucent controls, and a single CSS import. An optional server plugin adds a featured Home carousel and format badges.
 
-- **CSS theme:** responsive navigation, Search, Library, details, episodes, login, and native player controls.
+- **CSS theme:** responsive media pages, glass menus and forms, user Settings, and native player controls.
 - **Optional plugin:** up to five accessible featured titles, smooth autoplay, and keyboard/touch navigation.
-- **Optional plugin:** source-confirmed format badges, without promising the quality delivered to your browser.
+- **Optional plugin:** source-confirmed format badges and configured CSS on administrator Dashboard pages.
 
 <details>
 <summary>Screenshots</summary>

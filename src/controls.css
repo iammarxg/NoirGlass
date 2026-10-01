@@ -1,0 +1,116 @@
+/* Native controls only: subtitle renderers and appearance previews are excluded.
+   Stable MUI names also cover portals mounted outside the application root. */
+:is(.emby-input, .emby-textarea, .emby-select, .emby-button,
+    .inputLabel, .selectLabel, .checkboxLabel, .radioButtonLabel, .fieldDescription, .listItemBodyText,
+    .MuiInputBase-root, .MuiInputLabel-root, .MuiFormLabel-root,
+    .MuiFormHelperText-root, .MuiButton-root, .MuiMenuItem-root,
+    .MuiListItemText-root, .MuiDialogTitle-root, .MuiDialogContentText-root,
+    .MuiTableCell-root, .MuiChip-root, .MuiTab-root, .MuiTypography-root):not(:is(.subtitlePreview, .subtitlePreview *, .subtitleText, .subtitleText *, .videoSubtitles, .videoSubtitles *)) {
+  font-family: var(--ng-font) !important;
+}
+:is(.emby-input, .emby-textarea, .emby-select):not([type="color"]) {
+  box-sizing: border-box;
+  min-height: var(--ng-field-height);
+  max-width: 100%;
+  padding: var(--ng-space-sm) var(--ng-field-padding);
+  border: var(--ng-chrome-border-width) solid var(--ng-field-border);
+  border-radius: var(--ng-field-radius);
+  color: var(--ng-text);
+  background: var(--ng-field-bg);
+  font-size: var(--ng-font-size);
+  line-height: var(--ng-body-leading);
+  caret-color: var(--ng-text);
+  box-shadow: none;
+}
+:is(.emby-input, .emby-textarea, .emby-select):hover:not(:disabled):not(.detailTrackSelect):not(.searchInput):not(#searchTextInput):not(#txtSearch):not([type="search"]) { background: var(--ng-field-hover); }
+:is(.emby-input, .emby-textarea, .emby-select):focus { border-color: var(--ng-focus-color); }
+:is(.emby-input, .emby-textarea)::placeholder { color: var(--ng-field-placeholder); opacity: 1; }
+:is(.emby-textarea, textarea.emby-input) { min-height: var(--ng-multiline-height); resize: vertical; }
+:is(.inputLabel, .selectLabel, .checkboxLabel, .emby-checkbox-label, .MuiFormControlLabel-label) { color: var(--ng-text) !important; }
+:is(.fieldDescription, .MuiFormHelperText-root) { color: var(--ng-text-secondary) !important; line-height: var(--ng-body-leading); overflow-wrap: anywhere; }
+:is(.emby-button.raised, .MuiButton-root) {
+  min-height: var(--ng-touch-target);
+  border-radius: var(--ng-field-radius) !important;
+  padding-inline: var(--ng-field-padding);
+  font-size: var(--ng-small-font-size);
+  font-weight: var(--ng-control-weight);
+  text-transform: none;
+  color: var(--ng-text);
+  background: var(--ng-home-secondary-glass);
+  border: var(--ng-chrome-border-width) solid var(--ng-chrome-border);
+  box-shadow: var(--ng-shadow-control);
+  backdrop-filter: var(--ng-control-blur);
+  transition: background var(--ng-motion-duration) var(--ng-ease);
+}
+:is(.emby-button.raised, .MuiButton-root):hover:not(:disabled):not(.Mui-disabled) { background: var(--ng-home-secondary-hover-glass); }
+:is(.emby-button.button-submit, .MuiButton-containedPrimary) {
+  color: var(--ng-primary-text) !important;
+  background: var(--ng-primary-glass) !important;
+}
+:is(.button-delete, .button-delete:hover, .MuiButton-colorError, .MuiIconButton-colorError, .MuiAlert-standardError) {
+  color: var(--ng-danger) !important;
+  background: var(--ng-danger-bg) !important;
+}
+:is(.emby-input, .emby-textarea, .emby-select)[aria-invalid="true"],
+:is(.emby-input, .emby-textarea):user-invalid,
+.MuiInputBase-root.Mui-error { border-color: var(--ng-danger) !important; }
+:is(.MuiFormLabel-root, .MuiFormHelperText-root).Mui-error { color: var(--ng-danger) !important; }
+:is(.emby-input, .emby-select, .emby-textarea, .emby-button, .MuiButtonBase-root, .MuiInputBase-root):is(:disabled, .Mui-disabled) {
+  opacity: var(--ng-disabled-opacity);
+  cursor: default;
+}
+:is(.emby-checkbox, .emby-radio, input[type="range"], input[type="color"]) { accent-color: var(--ng-primary-glass); }
+:is(.checkboxContainer, .radioContainer) { min-height: var(--ng-touch-target); }
+:is(.checkboxOutline, .radioOutline) { border-color: var(--ng-field-border) !important; }
+.emby-checkbox:checked + span + .checkboxOutline { background: var(--ng-primary-glass) !important; border-color: var(--ng-primary-glass) !important; color: var(--ng-primary-text); }
+.emby-checkbox:indeterminate + span + .checkboxOutline { background: var(--ng-secondary-hover) !important; border-color: var(--ng-primary-glass) !important; }
+.mdl-radio { min-height: var(--ng-touch-target); height: auto; display: flex; align-items: center; }
+.mdl-radio__button:checked + .mdl-radio__circles { color: var(--ng-primary-glass) !important; }
+.mdl-radio__circles { color: var(--ng-text-secondary); }
+.mdl-radio:focus-within { outline: var(--ng-focus-width) solid var(--ng-focus-color); outline-offset: var(--ng-focus-offset); border-radius: var(--ng-field-radius); }
+.mdl-slider { color: var(--ng-primary-glass); }
+.mdl-slider-background-lower { background: var(--ng-primary-glass); }
+.mdl-slider::-webkit-slider-thumb { background: var(--ng-primary-glass); }
+.mdl-slider::-moz-range-thumb { background: var(--ng-primary-glass); }
+:is(.MuiCheckbox-root, .MuiRadio-root, .MuiSwitch-switchBase) { color: var(--ng-text-secondary); }
+:is(.MuiCheckbox-root, .MuiRadio-root) { min-width: var(--ng-touch-target); min-height: var(--ng-touch-target); }
+:is(.MuiCheckbox-root, .MuiRadio-root, .MuiSwitch-switchBase):is(.Mui-checked, .MuiCheckbox-indeterminate) { color: var(--ng-primary-glass) !important; }
+.MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track { background-color: var(--ng-primary-glass) !important; }
+.MuiSlider-root { color: var(--ng-primary-glass) !important; }
+:is(.paper-icon-button-light, .MuiIconButton-root) { min-width: var(--ng-touch-target); min-height: var(--ng-touch-target); color: var(--ng-text-secondary); }
+:is(.paper-icon-button-light, .MuiIconButton-root):hover:not(:disabled) { background: var(--ng-chrome-hover); color: var(--ng-text); }
+:is(.MuiButtonBase-root, .MuiInputBase-root, .MuiSlider-root).Mui-focusVisible,
+:is(.dialog, .page, .dashboardDocument, .MuiDialog-root, .MuiPopover-root, .MuiPopper-root) :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: var(--ng-focus-width) solid var(--ng-focus-color) !important;
+  outline-offset: var(--ng-focus-offset);
+}
+.MuiInputBase-root {
+  background: var(--ng-field-bg) !important;
+  border: var(--ng-chrome-border-width) solid var(--ng-field-border);
+  border-radius: var(--ng-field-radius) !important;
+  min-height: var(--ng-field-height);
+  color: var(--ng-text) !important;
+  box-sizing: border-box;
+}
+.MuiInputBase-root:hover { background: var(--ng-field-hover) !important; }
+.MuiInputBase-root.Mui-focused { border-color: var(--ng-focus-color); }
+.MuiInputBase-root:focus-within { outline: var(--ng-focus-width) solid var(--ng-focus-color); outline-offset: var(--ng-focus-offset); }
+.MuiInputBase-root .MuiInputBase-input:focus-visible { outline: none !important; }
+.MuiInputBase-root::before, .MuiInputBase-root::after { display: none; }
+.MuiOutlinedInput-notchedOutline { border: none !important; }
+.MuiInputBase-input { font-family: var(--ng-font); color: var(--ng-text); }
+.MuiInputBase-input::placeholder { color: var(--ng-field-placeholder); opacity: 1; }
+:is(.MuiInputLabel-root, .MuiFormLabel-root) { color: var(--ng-text-secondary) !important; }
+.MuiSelect-icon { color: var(--ng-text-secondary) !important; }
+:is(.MuiChip-root, .MuiToggleButton-root) { border-radius: var(--ng-radius-pill); background: var(--ng-secondary-bg); color: var(--ng-text); border-color: var(--ng-border); }
+:is(.MuiChip-colorPrimary, .MuiToggleButton-root.Mui-selected) { background: var(--ng-nav-selection) !important; color: var(--ng-nav-selection-text) !important; }
+.MuiChip-deleteIcon { color: inherit !important; }
+.MuiAlert-standardSuccess { background: var(--ng-admin-panel-bg); color: var(--ng-success); }
+.MuiAlert-root { border-radius: var(--ng-field-radius); }
+.MuiSkeleton-root { background-color: var(--ng-secondary-bg); border-radius: var(--ng-field-radius); }
+:is(.MuiCircularProgress-root, .MuiLinearProgress-root) { color: var(--ng-primary-glass); }
+.MuiLinearProgress-bar { background: var(--ng-primary-glass); }
+.mdl-spinner__layer { border-color: var(--ng-primary-glass); }
+.MuiAppBar-root { background: var(--ng-nav-glass); color: var(--ng-text); backdrop-filter: var(--ng-control-blur); }
+/* Native file/share/select popups retain browser-owned rendering. */
+input[type="file"] { max-width: 100%; color: var(--ng-text-secondary); }

@@ -89,8 +89,12 @@ try {
   console.log('PASS detail badges follow selected source tracks');
   const anonymousCalls = await page.evaluate(() => {
     window.__ngFixture.userId = null;
+    document.dispatchEvent(new Event('change'));
     return window.__ngFixture.settingsCalls;
   });
+  await page.waitForTimeout(400);
+  assert.equal(await page.locator('.ng-format-badges').count(),0,'Sign-out must clear cached detail enhancements without reloading the payload');
+  assert.equal(await page.locator('.ng-feature').count(),0);
   await page.addScriptTag({ content: script });
   await page.waitForTimeout(400);
   assert.equal(await page.evaluate(() => window.__ngFixture.settingsCalls), anonymousCalls);

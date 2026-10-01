@@ -25,6 +25,6 @@ public sealed class SettingsController : ControllerBase
         if (config is null) return StatusCode(503);
         var pins = ParsePinnedIds(config.PinnedItemIds);
         Response.Headers.CacheControl = "private, no-store";
-        return Ok(new { enabled = config.Enabled, pinnedItemIds = pins, intervalSeconds = NormalizeInterval(config.FeaturedIntervalSeconds) });
+        return Ok(new { enabled = config.Enabled, themeDashboard = config.ThemeDashboard, pinnedItemIds = pins, intervalSeconds = NormalizeInterval(config.FeaturedIntervalSeconds) });
     }
 }

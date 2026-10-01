@@ -4,6 +4,18 @@ Changes for each NoirGlass release are recorded here. GitHub release notes inclu
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-01
+
+### Added
+
+- Shared glass controls, dialogs, editors, user Settings, and compact Dashboard panels, tables, menus, and pickers.
+- Optional administrator Dashboard styling with native server/per-user Custom CSS precedence and a default-on Theme Dashboard setting.
+- Component and Dashboard-loader browser fixtures for accessibility states, responsive layouts, failure handling, and route cleanup.
+
+### Changed
+
+- Extended browsing lists and alternate artwork views, playback menus and statistics, and documented customization tokens for forms and administration.
+
 ## [1.0.0] - 2026-09-30
 
 ### Added

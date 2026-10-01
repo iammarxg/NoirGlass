@@ -3,17 +3,17 @@
     "guid": "72f7ec75-08a4-4f5b-90fa-df751666c621",
     "name": "NoirGlass",
     "description": "Adds NoirGlass’s featured Home carousel and source-format badges to Jellyfin Web Legacy layouts.",
-    "overview": "Cinematic Home carousel and detail badges for NoirGlass.",
+    "overview": "Cinematic Home carousel, detail badges, and configured Dashboard styling for NoirGlass.",
     "owner": "iammarxg",
     "category": "General",
     "versions": [
       {
-        "version": "1.0.0.0",
-        "changelog": "### Added\n\n- Cinematic Jellyfin Web theme with translucent navigation, spacious artwork, and refined Library, Search, detail, episode, login, and native player controls.\n- Single CSS import with embedded Inter fonts and original icons, responsive Legacy layouts, and accessible focus states.\n- Optional Jellyfin plugin with a five-title featured Home carousel, pinned titles, native Play/Details actions, and keyboard/touch navigation.\n- Configurable autoplay with a 15-second default, smooth transitions, Pause/Resume, and automatic pauses for focus, hover, hidden content, and reduced motion.\n- Source-confirmed format badges that follow selected media sources and tracks while preserving native controls.\n- A complete customization guide with documented variables and three practical examples.\n- Automated, tested release assets and version-specific release notes.",
+        "version": "1.1.0.0",
+        "changelog": "### Added\n\n- Shared glass controls, dialogs, editors, user Settings, and compact Dashboard panels, tables, menus, and pickers.\n- Optional administrator Dashboard styling with native server/per-user Custom CSS precedence and a default-on Theme Dashboard setting.\n- Component and Dashboard-loader browser fixtures for accessibility states, responsive layouts, failure handling, and route cleanup.\n\n### Changed\n\n- Extended browsing lists and alternate artwork views, playback menus and statistics, and documented customization tokens for forms and administration.",
         "targetAbi": "12.1.0.0",
-        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.0.0/NoirGlass.Plugin_12.1.0.zip",
-        "checksum": "75c1d9c0d6ac929ca5980f616c393371",
-        "timestamp": "2026-09-30T00:00:00.000Z"
+        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.1.0/NoirGlass.Plugin_12.1.0.zip",
+        "checksum": "16f1c60eaff6405e8b7f99badcebcc0f",
+        "timestamp": "2026-09-30T18:50:41.000Z"
       }
     ]
   }

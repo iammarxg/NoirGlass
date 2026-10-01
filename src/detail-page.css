@@ -150,6 +150,7 @@
   width: 100%;
   min-width: 0;
   padding-inline-end: var(--ng-track-select-end-padding);
+  padding-inline-start: var(--ng-field-padding);
   color: var(--ng-text);
   background: var(--ng-transparent);
   border-color: var(--ng-transparent);

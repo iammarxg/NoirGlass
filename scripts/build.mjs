@@ -5,7 +5,7 @@ import postcss from 'postcss';
 import { tokenDocs, quickTokens, groups } from './token-docs.mjs';
 
 export const root = path.resolve(import.meta.dirname, '..');
-export const modules = ['variables','icons','header','home','hero','cards','library','search','detail-page','player','login','companion'];
+export const modules = ['variables','icons','controls','dialogs','settings','dashboard','header','home','hero','cards','library','search','detail-page','player','login','companion'];
 const icons = ['back','home','menu','users','cast','search','user','display','audio','audio-track','captions','play-all','shuffle','grid','sort','filter','info','check','heart','more','play','pause','rewind','forward','previous','next','volume','mute','settings','pip','fullscreen','fullscreen-exit'];
 export async function compile() {
   const sources = await Promise.all(modules.map(name => readFile(path.join(root,'src',`${name}.css`),'utf8')));

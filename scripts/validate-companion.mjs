@@ -4,6 +4,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 
 const root = path.resolve(import.meta.dirname, '..');
+const { version } = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 await mkdir(path.join(root,'.local/verification'),{recursive:true});
 const profile = JSON.parse(await readFile(path.join(root, '.local/instance.json'), 'utf8'));
 const { origin } = profile;
@@ -20,7 +21,7 @@ const browser = await chromium.launch({
   ...(process.env.NOIRGLASS_BROWSER_EXECUTABLE ? { executablePath: process.env.NOIRGLASS_BROWSER_EXECUTABLE } : {})
 });
 await mkdir(path.join(root, 'docs/images'), { recursive: true });
-const report = { version: '1.0.0', date: new Date().toISOString(), browser: browser.version(), target: 'Jellyfin Web 12.1 legacy', checks: [], limitations: [] };
+const report = { version, date: new Date().toISOString(), browser: browser.version(), target: 'Jellyfin Web 12.1 legacy', checks: [], limitations: [] };
 const pass = (name, details = {}) => { report.checks.push({ name, result: 'passed', ...details }); console.log(`PASS ${name}`); };
 async function setup(name, viewport) {
   const mode = name === 'mobile' ? 'mobile' : 'desktop';

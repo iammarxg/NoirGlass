@@ -4,6 +4,7 @@ import path from 'node:path';
 import { chromium } from 'playwright';
 
 const root = path.resolve(import.meta.dirname, '..');
+const { version } = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 await mkdir(path.join(root,'.local/verification'),{recursive:true});
 const { origin, movie } = JSON.parse(await readFile(path.join(root, '.local/instance.json'), 'utf8'));
 const css = await readFile(path.join(root, 'dist/noirglass.min.css'), 'utf8');
@@ -17,7 +18,7 @@ const storage = await signedIn.json();
 const browser = await chromium.launch({ headless: true });
 const report = {
   product: 'NoirGlass',
-  version: '1.0.0',
+  version,
   date: new Date().toISOString(),
   target: 'Jellyfin Server/Web 12.1 Legacy',
   browser: browser.version(),
