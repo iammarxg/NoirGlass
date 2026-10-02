@@ -1,5 +1,7 @@
 // Curated documentation only; defaults and responsive values come from variables.css.
 const kinds = {
+  scale: { values: 'Number from 0 to 2; 1 preserves the default material', property: 'opacity', examples: ['0', '.7', '1', '2'] },
+  display: { values: 'flex to show badges or none to hide them', property: 'display', examples: ['flex', 'none'] },
   opacity: { values: 'Number from 0 (transparent) to 1 (opaque)', property: 'opacity', examples: ['.45', '.6', '1'] },
   color: { values: 'CSS color: hex, rgb/rgba, hsl/hsla, or a named color', property: 'color', examples: ['#f5f5f7', 'rgba(255,255,255,.65)'] },
   paint: { values: 'CSS background: color, gradient, layered backgrounds, or none', property: 'background', examples: ['#22222680', 'linear-gradient(135deg,#ffffff24,#ffffff0a), #27272d80'] },
@@ -23,6 +25,13 @@ const kinds = {
 };
 
 export const groups = [
+  { id: 'optional', label: 'Optional Features', rows: [
+    ['glass-opacity-scale','Glass transparency','Multiplies glass background opacity without fading text or changing blur.','scale'],
+    ['format-badges-display','Format badges','Shows or hides the optional plugin’s detail-page format badges.','display'],
+    ['icon-state-duration','Play/Pause animation','Sets the duration of native playback icon state transitions.','time'],
+    ['admin-brand-inset','Dashboard brand padding','Insets the Dashboard server-brand tile from the sidebar’s top and side.','length'],
+    ['feature-logo-height','Featured logo height','Limits featured logos by the viewport height to keep short screens readable.','length']
+  ] },
   { id: 'forms', label: 'Forms, dialogs & administration', rows: [
     ['form-field-width','Form field width','Sets the width of ordinary field groups including their labels and help text.','size'],
     ['form-field-min-width','Form field minimum width','Keeps ordinary fields readable without exceeding their container.','length'],
@@ -259,7 +268,7 @@ const commonExamples = {
   bg: ['#000','#101014'], text: ['#f5f5f7','#fff'], 'nav-glass': ['#22222680','#18181bd9'],
   'control-blur': ['blur(24px) saturate(160%)','none'], 'card-gap': ['24px','32px'],
   'library-grid-gap': ['24px','40px'], 'radius-card': ['14px','18px'],
-  'feature-height': ['76svh','clamp(590px,82svh,920px)'], 'hero-height': ['88svh','clamp(620px,88svh,1000px)'],
+  'feature-height': ['70svh','78svh'], 'hero-height': ['88svh','clamp(620px,88svh,1000px)'],
   'feature-title-size': ['48px','clamp(38px,4.8vw,72px)'], 'search-input-font-size': ['20px','24px'],
   'player-control-size': ['44px','48px']
 };

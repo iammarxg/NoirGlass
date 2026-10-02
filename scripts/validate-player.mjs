@@ -2,6 +2,7 @@ import { chromium } from 'playwright';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+import { sixteenNine } from './viewports.mjs';
 const root=path.resolve(import.meta.dirname,'..');
 const {version}=JSON.parse(await readFile(path.join(root,'package.json'),'utf8'));
 await mkdir(path.join(root,'.local/verification'),{recursive:true});
@@ -13,7 +14,8 @@ const storage=await response.json(); // Session exists only in memory.
 const report={product:'NoirGlass',version,date:new Date().toISOString(),target:'Jellyfin Web 12.1 Legacy',checks:[],limitations:[]};
 const modes=process.env.NOIRGLASS_PLAYER_MODE?[process.env.NOIRGLASS_PLAYER_MODE]:['desktop','mobile'];
 const desktopWidth=Number(process.env.NOIRGLASS_PLAYER_DESKTOP_WIDTH || 1440);
-assert([1440,1920].includes(desktopWidth),'Use a supported desktop validation width');
+assert([1440,1920,...sixteenNine.map(([width])=>width)].includes(desktopWidth),'Use a supported desktop validation width');
+const desktopHeight = sixteenNine.find(([width])=>width===desktopWidth)?.[1] || 900;
 report.checks=report.checks.filter(c=>!modes.some(mode=>c.name.startsWith(`${mode}: real playback`)));
 report.limitations=report.limitations.filter(l=>!modes.some(mode=>l.startsWith(`Player validation (${mode}):`)));
 report.playerCheckedAt=new Date().toISOString();
@@ -22,7 +24,7 @@ const screenshotDirectory=path.join(root,process.env.NOIRGLASS_PUBLIC_CAPTURE===
 await mkdir(screenshotDirectory,{recursive:true});
 try {
   for(const mode of modes) {
-    const context=await browser.newContext({hasTouch:mode==='mobile',isMobile:mode==='mobile',viewport:mode==='desktop'?{width:desktopWidth,height:desktopWidth===1920?1080:900}:{width:390,height:844},storageState:{cookies:[],origins:[{origin:profile.origin,localStorage:Object.entries({...storage,layout:`${mode}-legacy`}).map(([name,value])=>({name,value}))}]}});
+    const context=await browser.newContext({hasTouch:mode==='mobile',isMobile:mode==='mobile',viewport:mode==='desktop'?{width:desktopWidth,height:desktopHeight}:{width:390,height:844},storageState:{cookies:[],origins:[{origin:profile.origin,localStorage:Object.entries({...storage,layout:`${mode}-legacy`}).map(([name,value])=>({name,value}))}]}});
     await context.route('https://noirglass.invalid/**',r=>r.fulfill({contentType:'text/css',body:css}));
     const page=await context.newPage();
     const press=locator=>mode==='mobile'?locator.tap():locator.click();
@@ -30,7 +32,7 @@ try {
       await page.goto(`${profile.origin}/web/#/details?id=${id}`,{waitUntil:'domcontentloaded'});
       await page.locator('#itemDetailPage:not(.hide) .btnPlay:not(.hide)').first().waitFor({state:'visible'});
       await page.waitForLoadState('networkidle',{timeout:15000}).catch(()=>{});
-      await page.addStyleTag({content:'@import url("https://noirglass.invalid/dist/noirglass.min.css");'});
+      await page.addStyleTag({content:'@import url("https://noirglass.invalid/dist/noirglass.min.css");'}).then(handle=>handle.evaluate(e=>document.body.append(e)));
     };
     await openDetail(profile.movie);
     const alternatives=await page.evaluate(async()=>{
@@ -65,14 +67,25 @@ try {
       }
       if(playbackResult==='playing'){played=true;break;}
       console.log(`${mode}: native HLS playback failed for candidate ${index+1}`);
+      // A timed-out native player can outlive a hash-only detail navigation.
+      // Unload its document before trying another source; never click through it.
+      await page.goto('about:blank');
     }
     assert(played,'Jellyfin reported a native HLS playback error for all available test candidates');
     const start=await page.locator('video').evaluate(v=>v.currentTime);
     await page.waitForTimeout(1200);
     assert(await page.locator('video').evaluate(v=>v.currentTime)>start,'Playback must advance');
     await page.mouse.move(50,50);
+    const playingMask=await page.locator('#videoOsdPage .btnPause .material-icons').evaluate(e=>getComputedStyle(e).maskImage);
     await press(page.locator('#videoOsdPage .btnPause'));
     assert(await page.locator('video').evaluate(v=>v.paused));
+    await page.waitForFunction(()=>document.querySelector('#videoOsdPage .btnPause .play_arrow'));
+    assert.notEqual(await page.locator('#videoOsdPage .btnPause .material-icons').evaluate(e=>getComputedStyle(e).maskImage),playingMask,'Paused playback must show Play');
+    await page.locator('#videoOsdPage .btnPause').focus();
+    await page.locator('#videoOsdPage .btnPause').press('Enter');
+    await page.waitForFunction(()=>document.querySelector('#videoOsdPage .btnPause .pause'));
+    assert.equal(await page.locator('#videoOsdPage .btnPause .material-icons').evaluate(e=>getComputedStyle(e).maskImage),playingMask,'Resumed playback must show Pause');
+    await press(page.locator('#videoOsdPage .btnPause'));
     await press(page.locator('#videoOsdPage .btnSubtitles'));
     assert(await page.locator('.dialog:visible,.actionSheet:visible').count()>0,'Subtitle menu must open');
     await page.keyboard.press('Escape');
@@ -86,6 +99,14 @@ try {
     await page.locator('.dialog:visible,.actionSheet:visible').waitFor({state:'hidden',timeout:5000});
     await page.mouse.move(70,70);
     assert(await page.locator('#videoOsdPage .btnVideoOsdSettings').isVisible());
+    await press(page.locator('#videoOsdPage .btnVideoOsdSettings'));
+    await page.locator('.dialog:visible,.actionSheet:visible').first().waitFor({state:'visible',timeout:10000});
+    assert(await page.locator('.dialog:visible,.actionSheet:visible').count()>0,'Playback settings menu must open');
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Playback menu stays within viewport');
+    await page.keyboard.press('Escape');
+    await page.mouse.click(8,8);
+    await page.locator('.dialog:visible,.actionSheet:visible').waitFor({state:'hidden',timeout:5000});
+    await page.mouse.move(75,75);
     const seek=page.locator('#videoOsdPage .osdPositionSlider');
     assert(await seek.isVisible());
     const track=await seek.boundingBox();
@@ -108,6 +129,9 @@ try {
     assert.equal(osdSurface.radius,'0px','Full-width OSD must not appear as a rounded panel');
     assert(osdSurface.image.includes('linear-gradient'),'OSD must use a fading scrim');
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Player must not overflow');
+    const buttonBoxes=await page.locator('#videoOsdPage .videoOsdBottom button').evaluateAll(nodes=>nodes.filter(e=>e.getClientRects().length&&getComputedStyle(e).display!=='none').map(e=>({classes:e.className,box:e.getBoundingClientRect().toJSON()})));
+    for(const {box:b,classes}of buttonBoxes)assert(b.x>=-.1&&b.x+b.width<= (mode==='desktop'?desktopWidth:390)+.1,'Player button outside viewport: '+classes);
+    for(let i=0;i<buttonBoxes.length;i++)for(let j=i+1;j<buttonBoxes.length;j++){const a=buttonBoxes[i].box,b=buttonBoxes[j].box;assert(!(a.x<b.x+b.width-.5&&a.x+a.width>b.x+.5&&a.y<b.y+b.height-.5&&a.y+a.height>b.y+.5),'Overlapping player buttons: '+buttonBoxes[i].classes+' / '+buttonBoxes[j].classes);}
     await page.screenshot({path:path.join(screenshotDirectory,`player-${mode}.png`)});
     const hiddenSurface=await page.locator('#videoOsdPage').evaluate(osd=>{
       osd.classList.add('hide');
@@ -117,7 +141,7 @@ try {
       return hidden;
     });
     assert(hiddenSurface,'The native hidden state must remove the OSD scrim');
-    report.checks.push({name:`${mode}: real playback, pause, audio/subtitle menus, seek and settings controls`,result:'passed',input:mode==='mobile'?'Touch-enabled context and touchscreen taps':'Mouse',transparentVideoLayers:true,osdScrim:'Gradient with no backdrop blur',subtitles:'Menus inspected without changing subtitle preferences'});
+    report.checks.push({name:`${mode}: real playback, pause, audio/subtitle/settings menus and seek`,result:'passed',input:mode==='mobile'?'Touch-enabled context, touchscreen taps and keyboard':'Mouse and keyboard',transparentVideoLayers:true,osdScrim:'Gradient with no backdrop blur',subtitles:'Menus inspected without changing subtitle preferences'});
     console.log(`PASS ${mode}: actual video playback and OSD`);
     await context.close();
   }

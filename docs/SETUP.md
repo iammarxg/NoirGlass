@@ -20,18 +20,23 @@ Install NoirGlass and restart Jellyfin. An administrator installs it once for si
 
 ## Plugin settings
 
-Open **Dashboard → Plugins → NoirGlass**, save changes, then refresh Web.
+Open **Dashboard → Plugins → NoirGlass** and save changes. Active Home pages check configuration within a minute.
 
 | Setting | Behavior |
 | --- | --- |
-| Enable | On by default for signed-in Legacy Web users. Disabling restores native Home after refresh. |
+| Enable | On by default for signed-in Legacy Web users. Disabling restores native Home when the updated configuration is received. |
 | Theme Dashboard | On by default for administrators. Applies configured NoirGlass CSS to Dashboard, Metadata Manager, and plugin settings; requires Enable to be on. |
-| Pinned titles | Up to five movie/series IDs, one per line, in order. Inaccessible or unsuitable items are skipped; recent eligible titles fill remaining slots. |
-| Autoplay interval | 15 seconds by default; 5–60 seconds when enabled; 0 disables autoplay. |
+| Featured title count | 10 by default; any positive whole number, limited by available eligible media rather than a theme cap. |
+| Pinned titles | Movie/series IDs, one per line, in order. Inaccessible or unsuitable items are skipped; pins remain first during lineup replacement. |
+| Autoplay interval | 10 seconds for new/unset configurations; saved intervals are retained; 5–60 seconds when enabled; 0 disables autoplay. |
+| Lineup refresh | 360 minutes (six hours) by default; a positive whole number of minutes; 0 disables replacement. |
+| Rotate Now | Administrator action requesting new automatic titles for all users; open Home pages detect it within a minute and apply it when idle. |
+| Home links | Optional ordered Collections/library links with custom labels; each account sees only libraries it can access. |
+| Hide Jellyfin branding | Optional Web logo/wordmark removal; keeps server names, favicon and important settings information. |
 
 Autoplay needs at least two featured items. It pauses on hover, keyboard focus, hidden/off-screen content, and reduced-motion preference. Manual navigation resets the timer. Pause/Resume applies to the current tab until refresh. Artwork and text slide together over 650 ms; reduced motion makes manual transitions instant.
 
-Format badges describe the selected source file and tracks, not guaranteed browser playback quality. Native Play, Details, and track-selection controls remain Jellyfin-owned. Missing metadata, an unavailable script, or incompatible CSS leaves native shelves usable.
+Format badges describe the selected source file and tracks, not guaranteed browser playback quality. Hover a badge for its evidence: stream metadata or an explicit filename/name/tag label. Source labels do not certify a film's mastering format. Native Play, Details, and track-selection controls remain Jellyfin-owned. Missing metadata, an unavailable script, or incompatible CSS leaves native shelves usable.
 
 ## Dashboard styling
 

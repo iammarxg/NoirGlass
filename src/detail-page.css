@@ -107,6 +107,7 @@
 }
 #itemDetailPage .trackSelections {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--ng-space-xs);
   width: 100%;
   max-width: var(--ng-hero-content-width);
@@ -114,13 +115,14 @@
 #itemDetailPage .trackSelections .trackSelectionFieldContainer:not(.hide) {
   position: relative;
   display: grid;
-  grid-template-columns: var(--ng-track-label-width) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  gap: var(--ng-space-sm);
+  gap: 0;
   width: 100%;
+  min-width: 0;
   min-height: var(--ng-track-row-height);
   margin: 0;
-  padding: var(--ng-space-xs) var(--ng-space-md);
+  padding: var(--ng-space-xs) var(--ng-space-sm);
   box-sizing: border-box;
   border: var(--ng-chrome-border-width) solid var(--ng-track-border);
   border-radius: var(--ng-radius-card);
@@ -149,8 +151,11 @@
 #itemDetailPage .detailTrackSelect {
   width: 100%;
   min-width: 0;
+  min-height: var(--ng-track-row-height);
+  height: var(--ng-track-row-height);
+  padding-block: 0;
   padding-inline-end: var(--ng-track-select-end-padding);
-  padding-inline-start: var(--ng-field-padding);
+  padding-inline-start: 0;
   color: var(--ng-text);
   background: var(--ng-transparent);
   border-color: var(--ng-transparent);
@@ -165,15 +170,16 @@
 #itemDetailPage .trackSelections .selectArrowContainer {
   position: absolute;
   inset-inline-end: var(--ng-space-md);
-  inset-block-start: 50%;
-  transform: translateY(-50%);
+  inset-block-start: auto;
+  inset-block-end: calc(var(--ng-space-xs) + var(--ng-track-row-height) / 2);
+  transform: translateY(50%);
   pointer-events: none;
 }
 #itemDetailPage .trackSelections .ng-format-badges {
-  display: flex;
+  display: var(--ng-format-badges-display);
   flex-wrap: wrap;
   gap: var(--ng-space-xs);
-  grid-column: 2;
+  grid-column: 1 / -1;
   margin-block-start: var(--ng-track-badge-pull);
 }
 #itemDetailPage .trackSelections .ng-format-badge {
@@ -360,6 +366,7 @@
     justify-self: start;
     margin: 0 0 var(--ng-space-sm) var(--ng-space-md);
   }
+  #itemDetailPage .trackSelections { grid-template-columns: minmax(0, 1fr); }
   #itemDetailPage .trackSelections .trackSelectionFieldContainer:not(.hide) {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -368,3 +375,6 @@
     margin-block-start: 0;
   }
 }
+
+#itemDetailPage .trackSelections .selectSourceContainer { grid-column: 1 / -1; }
+#itemDetailPage .trackSelections .selectLabel { max-width: var(--ng-track-label-width); }

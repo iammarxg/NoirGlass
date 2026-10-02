@@ -8,12 +8,12 @@
     "category": "General",
     "versions": [
       {
-        "version": "1.1.2.0",
-        "changelog": "### Fixed\n\n- Narrowed ordinary field groups across Dashboard, Settings, login and editors while preserving full-width pages, Search, multiline editors and track selectors.\n- Replaced favorite glyphs with white outline hearts and filled red hearts that follow native favorite state, including hover and keyboard focus.\n- Centered compact Legacy confirmations on mobile, removed their inset header strip and kept long content scrolling above reachable buttons.\n- Added field, favorite and confirmation checks through ultrawide and 4K resolutions, with configurable field sizing and favorite color.",
+        "version": "1.2.0.0",
+        "changelog": "### Added\n\n- Configurable featured-title count with a default of ten, periodic lineup replacement, and administrator Rotate Now.\n- Optional Home links for Collections and authorized libraries, plus a setting to hide Web branding.\n- Global glass opacity, optional detail badges, and expanded source/track format labels.\n\n### Changed\n\n- New autoplay configurations default to ten seconds; saved intervals remain unchanged.\n- Compact glass track selectors with a shared format-badge strip.\n\n### Fixed\n\n- State-aware Play/Pause icons, viewport-scaled Home artwork, and mobile glass navigation.\n- Login splash visibility, continuous dialog surfaces, page backgrounds, and Dashboard brand spacing.\n- Contained mobile task tables, long repository URLs, narrow profile rows and short-screen player docks.",
         "targetAbi": "12.1.0.0",
-        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.1.2/NoirGlass.Plugin_12.1.0.zip",
-        "checksum": "bfc443aefec28d34b1cc8b89a69aab54",
-        "timestamp": "2026-10-02T00:36:46.000Z"
+        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.2.0/NoirGlass.Plugin_12.1.0.zip",
+        "checksum": "a69800f66c1d2d132ff3bac12d1ba652",
+        "timestamp": "2026-10-02T01:50:29.000Z"
       }
     ]
   }

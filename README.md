@@ -3,8 +3,8 @@
 NoirGlass is a cinematic Jellyfin Web theme inspired by Apple TV, with spacious artwork, translucent controls, and a single CSS import. An optional server plugin adds a featured Home carousel and format badges.
 
 - **CSS theme:** responsive media pages, glass menus and forms, user Settings, and native player controls.
-- **Optional plugin:** up to five accessible featured titles, smooth autoplay, and keyboard/touch navigation.
-- **Optional plugin:** source-confirmed format badges and configured CSS on administrator Dashboard pages.
+- **Optional plugin:** configurable featured titles, lineup rotation, smooth autoplay, and keyboard/touch navigation.
+- **Optional plugin:** selected-track format badges, explicit source labels, and configured CSS on administrator Dashboard pages.
 
 <details>
 <summary>Screenshots</summary>
@@ -19,6 +19,7 @@ Desktop and mobile previews from a Jellyfin library.
 | Library | ![Library on desktop](docs/images/desktop-library.png) | ![Library on mobile](docs/images/mobile-library.png) |
 | Search | ![Search on desktop](docs/images/desktop-search-results.png) | ![Search on mobile](docs/images/mobile-search-results.png) |
 | Episodes | ![Episodes on desktop](docs/images/desktop-episodes.png) | ![Episodes on mobile](docs/images/mobile-episodes.png) |
+| Player | ![Player on desktop](docs/images/player-desktop.png) | ![Player on mobile](docs/images/player-mobile.png) |
 | Login | ![Login on desktop](docs/images/login-desktop.png) | ![Login on mobile](docs/images/login-mobile.png) |
 
 </details>
@@ -39,7 +40,7 @@ For the optional plugin, add this repository under **Dashboard → Plugins → C
 https://github.com/iammarxg/NoirGlass/releases/latest/download/manifest.json
 ```
 
-Under **Dashboard → Plugins → NoirGlass**, enable or disable the enhancement, pin up to five title IDs, and set autoplay: **15 seconds** by default, **5–60 seconds**, or **0** to disable. Save and refresh Web. Autoplay pauses on hover, focus, hidden/off-screen content, and reduced motion; Pause/Resume controls the current tab.
+Under **Dashboard → Plugins → NoirGlass**, choose the featured count (**10** by default), pin titles, and set autoplay (**10 seconds** for new configurations, **5–60 seconds**, or **0** to disable). Automatic titles refresh every **six hours**, with configurable timing and **Rotate Now**. Optional settings add library links and hide Web branding. Autoplay pauses on hover, focus, hidden/off-screen content, and reduced motion; Pause/Resume controls the current tab.
 
 See [setup guide](docs/SETUP.md) for plugin settings and installation details.
 
@@ -52,7 +53,7 @@ Add overrides after the import:
 ```css
 :root {
   --ng-card-gap: 32px;
-  --ng-nav-glass: #18181bd9;
+  --ng-glass-opacity-scale: .8;
 }
 ```
 

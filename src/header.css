@@ -186,23 +186,10 @@ html:has(#indexPage:not(.hide)) .mainDrawer a.navMenuOption[href="#/home"] :is(.
   .skinHeader:not(.osdHeader) .pageTitle {
     display: none;
   }
-  .skinHeader:not(.osdHeader) .headerRight {
-    padding: 0;
-    border: none;
-    background: var(--ng-transparent);
-    backdrop-filter: none;
-  }
-  html:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .headerRight {
-    border: none;
-    background: var(--ng-transparent);
-    backdrop-filter: none;
-  }
   .skinHeader:not(.osdHeader) .headerButton {
     min-width: var(--ng-chrome-button-size);
   }
-  .skinHeader:not(.osdHeader) .headerTabs .emby-tabs-slider {
-    backdrop-filter: none;
-  }
+
   .mainDrawer {
     top: var(--ng-nav-inset) !important;
     bottom: var(--ng-nav-inset) !important;
@@ -213,3 +200,42 @@ html:has(#indexPage:not(.hide)) .mainDrawer a.navMenuOption[href="#/home"] :is(.
   outline: var(--ng-focus-width) solid var(--ng-focus-color) !important;
   outline-offset: var(--ng-focus-offset);
 }
+
+/* Native navigation stays accessible when compact groups wrap. */
+@media (max-width: 48rem) {
+  .skinHeader:not(.osdHeader) .headerTop {
+    display: flex; flex-wrap: wrap; justify-content: space-between;
+    gap: var(--ng-space-xs); padding-block: var(--ng-chrome-group-padding);
+  }
+  .skinHeader:not(.osdHeader) .headerLeft { display: inline-flex; flex: 0 0 auto; gap: var(--ng-chrome-group-gap); }
+  .skinHeader:not(.osdHeader) .headerRight { flex: 0 0 auto; margin: 0; }
+  .skinHeader:not(.osdHeader) .headerButton { flex: none; margin: 0; padding: 0; }
+  .skinHeader:not(.osdHeader) .headerTabs { max-width: 100%; overflow-x: auto; }
+}
+@media (max-width: 23.75rem) {
+  .skinHeader:not(.osdHeader) .headerTop { justify-content: center; }
+  .skinHeader:not(.osdHeader) .headerLeft,
+  .skinHeader:not(.osdHeader) .headerRight { margin-inline: auto; }
+}
+.ng-home-links {
+  display: inline-flex; vertical-align: middle; gap: var(--ng-chrome-group-gap);
+  max-width: 100%; overflow-x: auto; padding: var(--ng-chrome-group-padding);
+  border: var(--ng-chrome-border-width) solid var(--ng-chrome-border);
+  border-radius: var(--ng-radius-pill); background: var(--ng-home-chrome-glass);
+  backdrop-filter: var(--ng-control-blur); box-sizing: border-box;
+}
+.ng-home-link {
+  display: inline-flex; align-items: center; flex: none; min-height: var(--ng-touch-target);
+  padding-inline: var(--ng-space-md); color: var(--ng-text);
+  font: var(--ng-control-weight) var(--ng-small-font-size) var(--ng-font);
+  border-radius: var(--ng-radius-pill); text-decoration: none;
+}
+.ng-home-link:hover { background: var(--ng-chrome-hover); }
+.skinHeader:not(.osdHeader) .headerTabs:has(> .ng-home-links) { display: flex; align-items: center; gap: var(--ng-space-xs); }
+.skinHeader:not(.osdHeader) .headerTabs:has(> .ng-home-links) > .tabs-viewmenubar { flex: 0 0 auto; max-width: 100%; }
+.ng-home-links { min-width: 0; flex: 1 1 auto; }
+.ng-home-link:focus-visible { outline: var(--ng-focus-width) solid var(--ng-focus-color); outline-offset: calc(-1 * var(--ng-focus-offset)); }
+html.ng-hide-branding .skinHeader .pageTitleWithDefaultLogo,
+html.ng-hide-branding :is(.skinHeader, #loginPage) img:is([src*="banner-light"], [src*="banner-dark"], [src*="icon-transparent"]),
+html.ng-hide-branding .MuiDrawer-paper a[href="#/"] .MuiListItemIcon-root:has(img[src*="icon-transparent"]),
+html.ng-hide-branding .MuiAppBar-root img:is([src*="banner-light"], [src*="banner-dark"], [src*="icon-transparent"]) { display: none !important; }

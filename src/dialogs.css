@@ -70,7 +70,7 @@
 .dialog :is(.formDialogHeader, .formDialogFooter) {
   flex-shrink: 0;
   color: var(--ng-text);
-  background: var(--ng-dialog-footer-bg);
+  background: var(--ng-transparent) !important;
   border-color: var(--ng-border);
   padding: var(--ng-space-sm) var(--ng-space-md);
 }
@@ -128,7 +128,7 @@
 .MuiTooltip-tooltip { background: var(--ng-dialog-glass); color: var(--ng-text); font-family: var(--ng-font); border-radius: var(--ng-radius-small); }
 .MuiSnackbarContent-root { background: var(--ng-dialog-glass); color: var(--ng-text); font-family: var(--ng-font); border-radius: var(--ng-radius-panel); max-width: var(--ng-dialog-available-width); overflow-wrap: anywhere; }
 .MuiDialogContent-root { min-height: 0; overflow-y: auto; scrollbar-gutter: stable; color: var(--ng-text); }
-:is(.MuiDialogTitle-root, .MuiDialogActions-root) { flex-shrink: 0; background: var(--ng-dialog-footer-bg); padding: var(--ng-space-md) !important; }
+:is(.MuiDialogTitle-root, .MuiDialogActions-root) { flex-shrink: 0; background: var(--ng-transparent) !important; padding: var(--ng-space-md) !important; }
 .MuiDialogActions-root { flex-wrap: wrap; gap: var(--ng-space-xs); }
 :is(.MuiMenuItem-root, .MuiListItemButton-root) { min-height: var(--ng-touch-target); color: var(--ng-text); }
 .MuiMenuItem-root { white-space: normal !important; overflow-wrap: anywhere; }
@@ -159,3 +159,5 @@
   }
   .dialog :is(.formDialogHeader, .formDialogContent) { padding-inline: var(--ng-space-sm); }
 }
+
+:is(.MuiDialog-paper, .dialog.formDialog) :is(.MuiDialogContent-root, .MuiDialogContentText-root, .formDialogContent, .dialogContentInner) { background: var(--ng-transparent) !important; }

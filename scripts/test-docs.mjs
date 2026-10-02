@@ -10,7 +10,7 @@ const guide = await readFile(path.join(root,'docs/CUSTOMIZATION.md'),'utf8');
 const css = await readFile(path.join(root,'dist/noirglass.min.css'),'utf8');
 const examples = [...guide.matchAll(/```css\n([\s\S]*?)```/g)].map(match=>match[1]);
 assert.equal(examples.length,3,'Customization guide must contain exactly three scenario blocks');
-assert.equal(new Set(tokenDocs.map(entry=>entry.name)).size,211,'Metadata must cover every distinct variable');
+assert.equal(new Set(tokenDocs.map(entry=>entry.name)).size,216,'Metadata must cover every distinct variable');
 assert.equal(quickTokens.length,12);
 await assert.rejects(variableTable(tokenDocs.slice(1)),/Missing token documentation/);
 await assert.rejects(variableTable([...tokenDocs,tokenDocs[0]]),/Duplicate token documentation/);
@@ -60,7 +60,7 @@ try {
       if(index===1) {
         const paints=await page.evaluate(()=>{
           const reference=document.createElement('div');
-          reference.style.background='#34343b80';
+          reference.style.background='rgb(52 52 59 / '+(184/255*.7)+')';
           document.body.append(reference);
           const expected=getComputedStyle(reference).backgroundColor;
           reference.remove();

@@ -182,3 +182,14 @@
     text-align: center;
   }
 }
+
+/* Short desktop viewports need the transport dock on a separate row. */
+@media (min-width: 48.01rem) and (max-width: 64rem) {
+  #videoOsdPage .videoOsdBottom .buttons {
+    flex-wrap: wrap;
+    margin-block-start: calc(var(--ng-player-control-size) + var(--ng-player-dock-padding) * 2 + var(--ng-space-sm));
+  }
+  #videoOsdPage .videoOsdBottom .buttons > div[dir="ltr"] {
+    top: calc(-100% - var(--ng-space-sm));
+  }
+}

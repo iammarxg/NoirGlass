@@ -1,6 +1,7 @@
 /* Dashboard has its own application; the plugin restores the configured CSS.
    Use stable component/state classes, never generated Emotion selectors. */
-body.dashboardDocument { color: var(--ng-text); background: var(--ng-bg); }
+html:has(body.dashboardDocument) { background: var(--ng-bg) !important; }
+body.dashboardDocument { color: var(--ng-text); background: var(--ng-bg) !important; }
 .dashboardDocument :is(.MuiTypography-root, .MuiListItemText-root, .MuiFormControlLabel-label) { color: var(--ng-text); }
 .dashboardDocument :is(.MuiPaper-root, .MuiCard-root, .MuiAccordion-root) {
   background-color: var(--ng-admin-panel-bg);
@@ -14,6 +15,9 @@ body.dashboardDocument { color: var(--ng-text); background: var(--ng-bg); }
 .dashboardDocument .MuiAppBar-root { border: none; border-radius: 0; }
 .dashboardDocument .MuiDrawer-paper { background: var(--ng-nav-glass); backdrop-filter: var(--ng-control-blur); border-radius: 0; border-inline-end: var(--ng-chrome-border-width) solid var(--ng-border); }
 .dashboardDocument .MuiListItemIcon-root { color: inherit; }
+.dashboardDocument .MuiListItemText-root { min-width: 0; }
+.dashboardDocument .MuiListItemText-secondary { white-space: normal; overflow-wrap: anywhere; }
+.dashboardDocument .content-primary > .MuiList-root { background: var(--ng-admin-panel-bg); border-radius: var(--ng-radius-panel); }
 .dashboardDocument .MuiDrawer-paper .MuiListItemButton-root.Mui-selected :is(.MuiTypography-root, .MuiListItemText-primary, .MuiListItemText-secondary) { color: var(--ng-nav-selection-text) !important; }
 .dashboardDocument :is(h1, h2, h3).MuiTypography-root { font-family: var(--ng-font-display); font-weight: var(--ng-heading-weight); letter-spacing: var(--ng-control-tracking); }
 .dashboardDocument .MuiContainer-root { max-width: var(--ng-admin-content-width); }
@@ -28,6 +32,7 @@ body.dashboardDocument { color: var(--ng-text); background: var(--ng-bg); }
 .dashboardDocument .MuiTabs-indicator { background: var(--ng-transparent); }
 .dashboardDocument :is(.MuiTableContainer-root, .MuiTable-root) { border-radius: var(--ng-radius-panel); }
 .dashboardDocument .MuiTableContainer-root { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.dashboardDocument :is(.MuiPaper-root, .MuiBox-root, .MuiStack-root):has(> .MuiTable-root) { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
 .dashboardDocument .MuiTable-root { min-width: var(--ng-admin-table-min-width); }
 .dashboardDocument .MuiTableCell-root { color: var(--ng-text); border-color: var(--ng-border); padding: 0 var(--ng-admin-gap); height: var(--ng-admin-row-height); box-sizing: border-box; }
 .dashboardDocument .MuiTableHead-root .MuiTableCell-root { background: var(--ng-dialog-glass); font-weight: var(--ng-control-weight); }
@@ -73,4 +78,11 @@ body.dashboardDocument { color: var(--ng-text); background: var(--ng-bg); }
 @media (max-width: 48rem) {
   .dashboardDocument .MuiTableCell-root { padding: 0 var(--ng-space-sm); }
   .dashboardDocument .MuiDialog-paper { max-height: var(--ng-dialog-available-height); }
+}
+
+.dashboardDocument .MuiDrawer-paper a.MuiListItemButton-root[href="#/"]:has(img[src*="icon-transparent"]) {
+  width: calc(100% - var(--ng-admin-brand-inset) * 2) !important;
+  margin-inline: var(--ng-admin-brand-inset) !important;
+  margin-block-start: var(--ng-admin-brand-inset);
+  padding: var(--ng-admin-brand-inset) var(--ng-admin-gap);
 }

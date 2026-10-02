@@ -3,61 +3,87 @@
 <head><meta charset="utf-8"><title>NoirGlass</title></head>
 <body>
 <div id="NoirGlassConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
-  <div data-role="content"><div class="content-primary">
-    <form id="NoirGlassConfigForm">
-      <div class="checkboxContainer checkboxContainer-withDescription">
-        <label class="emby-checkbox-label"><input id="NoirGlassEnabled" type="checkbox" is="emby-checkbox" /><span>Enable NoirGlass enhancements</span></label>
-      </div>
-      <div class="checkboxContainer checkboxContainer-withDescription">
-        <label class="emby-checkbox-label"><input id="NoirGlassDashboard" type="checkbox" is="emby-checkbox" /><span>Theme Dashboard</span></label>
-        <div class="fieldDescription">Apply your configured NoirGlass CSS to administration pages, including Metadata Manager. Enabled by default; respects your Display Custom CSS preferences.</div>
-      </div>
-      <div class="inputContainer">
-        <label class="inputLabel" for="NoirGlassPinned">Pinned item IDs</label>
-        <textarea id="NoirGlassPinned" class="emby-input" rows="5" aria-describedby="NoirGlassPinnedHelp"></textarea>
-        <div id="NoirGlassPinnedHelp" class="fieldDescription">Optional movie or series IDs, one per line, in preferred order. Up to five accessible titles appear first; recent titles fill the remaining slots.</div>
-      </div>
-      <div class="inputContainer">
-        <label class="inputLabel" for="NoirGlassInterval">Autoplay interval (seconds)</label>
-        <input id="NoirGlassInterval" class="emby-input" type="number" min="0" max="60" step="1" inputmode="numeric" aria-describedby="NoirGlassIntervalHelp" required />
-        <div id="NoirGlassIntervalHelp" class="fieldDescription">15 seconds by default. Enter 0 to turn off autoplay, or 5–60 seconds. A Web page refresh applies the change.</div>
-      </div>
-      <button is="emby-button" type="submit" class="raised button-submit block emby-button"><span>Save</span></button>
-    </form>
-  </div></div>
-  <script>
-    (() => {
-      const page = document.querySelector('#NoirGlassConfigPage');
-      const id = '72f7ec75-08a4-4f5b-90fa-df751666c621';
-      page.addEventListener('pageshow', async () => {
-        Dashboard.showLoadingMsg();
-        try {
-          const config = await ApiClient.getPluginConfiguration(id);
-          page.querySelector('#NoirGlassEnabled').checked = config.Enabled !== false;
-          page.querySelector('#NoirGlassDashboard').checked = config.ThemeDashboard !== false;
-          page.querySelector('#NoirGlassPinned').value = config.PinnedItemIds || '';
-          page.querySelector('#NoirGlassInterval').value = Number.isInteger(config.FeaturedIntervalSeconds) ? config.FeaturedIntervalSeconds : 15;
-        } finally { Dashboard.hideLoadingMsg(); }
-      });
-      page.querySelector('#NoirGlassInterval').addEventListener('input', event => event.target.setCustomValidity(''));
-      page.querySelector('#NoirGlassConfigForm').addEventListener('submit', async event => {
-        event.preventDefault();
-        const field = page.querySelector('#NoirGlassInterval');
-        const interval = Number(field.value);
-        field.setCustomValidity(!Number.isInteger(interval) || (interval !== 0 && (interval < 5 || interval > 60)) ? 'Enter 0 or a whole number from 5 to 60.' : '');
-        if (!field.reportValidity()) return;
-        Dashboard.showLoadingMsg();
-        try {
-          const config = await ApiClient.getPluginConfiguration(id);
-          config.Enabled = page.querySelector('#NoirGlassEnabled').checked;
-          config.ThemeDashboard = page.querySelector('#NoirGlassDashboard').checked;
-          config.PinnedItemIds = page.querySelector('#NoirGlassPinned').value;
-          config.FeaturedIntervalSeconds = interval;
-          Dashboard.processPluginConfigurationUpdateResult(await ApiClient.updatePluginConfiguration(id, config));
-        } finally { Dashboard.hideLoadingMsg(); }
-      });
-    })();
-  </script>
+<div data-role="content"><div class="content-primary">
+<form id="NoirGlassConfigForm">
+<h1>NoirGlass</h1>
+<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="NoirGlassEnabled" type="checkbox" is="emby-checkbox"><span>Enable NoirGlass enhancements</span></label></div>
+<div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="NoirGlassDashboard" type="checkbox" is="emby-checkbox"><span>Theme Dashboard</span></label><div class="fieldDescription">Use configured NoirGlass CSS on administration pages; respects each user's Display preferences.</div></div>
+<div class="inputContainer"><label class="inputLabel" for="NoirGlassCount">Featured title count</label><input id="NoirGlassCount" class="emby-input" type="number" min="1" max="2147483647" step="1" required><div class="fieldDescription">10 by default. Choose any positive whole number; fewer appear when the accessible library is smaller.</div></div>
+<div class="inputContainer"><label class="inputLabel" for="NoirGlassPinned">Pinned item IDs</label><textarea id="NoirGlassPinned" class="emby-textarea" rows="4"></textarea><div class="fieldDescription">Optional movie or series IDs, one per line, in order. Accessible titles stay first; automatic titles fill the configured count.</div></div>
+<div class="inputContainer"><label class="inputLabel" for="NoirGlassInterval">Slide interval (seconds)</label><input id="NoirGlassInterval" class="emby-input" type="number" min="0" max="60" step="1" required><div class="fieldDescription">10 seconds for new configurations; saved values are preserved. Enter 0 to disable autoplay or 5–60 seconds.</div></div>
+<div class="inputContainer"><label class="inputLabel" for="NoirGlassRefresh">Replace automatic titles every (minutes)</label><input id="NoirGlassRefresh" class="emby-input" type="number" min="0" max="2147483647" step="1" required><div class="fieldDescription">360 minutes (six hours) by default. Enter 0 to disable periodic replacement; pins remain in place.</div></div>
+<button id="NoirGlassRotate" is="emby-button" type="button" class="raised emby-button">Rotate now</button>
+<p id="NoirGlassRotationStatus" class="fieldDescription" role="status">Uses saved settings; open Home pages detect the request within a minute and update when idle.</p>
+<h2>Optional Features</h2>
+<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="NoirGlassHideBranding" type="checkbox" is="emby-checkbox"><span>Hide Jellyfin branding</span></label><div class="fieldDescription">Hide Web logos and branding wordmarks, including login. Keep server names, the favicon and important settings information.</div></div>
+<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="NoirGlassHomeLinks" type="checkbox" is="emby-checkbox"><span>Add Home navigation links</span></label><div class="fieldDescription">Each user sees only libraries they can access; native Home and Favorites remain available.</div></div>
+<div class="selectContainer"><label class="selectLabel" for="NoirGlassLibrary">Library or collection destination</label><select id="NoirGlassLibrary" class="emby-select"><option value="collections">Collections</option></select></div>
+<button id="NoirGlassAddLink" is="emby-button" class="raised emby-button" type="button">Add link</button>
+<div id="NoirGlassLinkList" aria-label="Configured Home links"></div>
+<button is="emby-button" type="submit" class="raised button-submit block emby-button"><span>Save</span></button>
+</form>
+</div></div>
+<script>
+(() => {
+ const page=document.querySelector('#NoirGlassConfigPage'),id='72f7ec75-08a4-4f5b-90fa-df751666c621';
+ let links=[],views=[];
+ const field=id=>page.querySelector('#'+id);
+ function renderLinks(){
+  const list=field('NoirGlassLinkList');list.replaceChildren();
+  links.forEach((link,index)=>{
+   const row=document.createElement('div');row.className='inputContainer';
+   const label=document.createElement('label');label.className='inputLabel';label.textContent=link.Kind==='collections'?'Collections':views.find(v=>v.Id===link.LibraryId)?.Name || 'Library';
+   const input=document.createElement('input');input.className='emby-input';input.value=link.Label || '';input.placeholder='Use destination name';input.setAttribute('aria-label','Display label for '+label.textContent);
+   input.addEventListener('input',()=>link.Label=input.value);label.append(input);row.append(label);
+   for(const [name,offset]of [['Move up',-1],['Move down',1],['Remove',0]]){
+    const button=document.createElement('button');button.type='button';button.className='raised emby-button';button.textContent=name;button.setAttribute('aria-label',name+' '+label.firstChild.textContent);
+    button.disabled=offset!==0&&(index+offset<0||index+offset>=links.length);
+    button.addEventListener('click',()=>{if(!offset)links.splice(index,1);else [links[index],links[index+offset]]=[links[index+offset],links[index]];renderLinks();});
+    row.append(button);
+   }
+   list.append(row);
+  });
+ }
+ page.addEventListener('pageshow',async()=>{
+  Dashboard.showLoadingMsg();
+  try{
+   const config=await ApiClient.getPluginConfiguration(id);
+   field('NoirGlassEnabled').checked=config.Enabled!==false;field('NoirGlassDashboard').checked=config.ThemeDashboard!==false;
+   field('NoirGlassHideBranding').checked=config.HideBranding===true;field('NoirGlassHomeLinks').checked=config.HomeLinksEnabled===true;
+   field('NoirGlassPinned').value=config.PinnedItemIds||'';
+   field('NoirGlassInterval').value=Number.isInteger(config.FeaturedIntervalSeconds)?config.FeaturedIntervalSeconds:10;
+   field('NoirGlassCount').value=Number.isInteger(config.FeaturedItemCount)?config.FeaturedItemCount:10;
+   field('NoirGlassRefresh').value=Number.isInteger(config.LineupRefreshMinutes)?config.LineupRefreshMinutes:360;
+   links=(config.HomeLinks||[]).map(x=>({...x}));
+   try{views=(await ApiClient.getUserViews(ApiClient.getCurrentUserId())).Items||[];}catch{views=[];}
+   const select=field('NoirGlassLibrary');select.replaceChildren(new Option('Collections','collections'));
+   for(const view of views)select.add(new Option(view.Name,view.Id));
+   renderLinks();
+  }finally{Dashboard.hideLoadingMsg();}
+ });
+ field('NoirGlassAddLink').addEventListener('click',()=>{const value=field('NoirGlassLibrary').value;if(!value)return;const link={Kind:value==='collections'?'collections':'library',LibraryId:value==='collections'?'':value,Label:''};if(!links.some(x=>x.Kind===link.Kind&&x.LibraryId===link.LibraryId))links.push(link);renderLinks();});
+ field('NoirGlassRotate').addEventListener('click',async event=>{
+  event.currentTarget.disabled=true;
+  try{await ApiClient.ajax({type:'POST',url:ApiClient.getUrl('NoirGlass/Rotate'),dataType:'json'});field('NoirGlassRotationStatus').textContent='Rotation requested. Open Home pages update when idle.';}
+  catch{field('NoirGlassRotationStatus').textContent='Rotation failed. Your existing titles are unchanged.';}
+  finally{field('NoirGlassRotate').disabled=false;}
+ });
+ for(const name of ['NoirGlassInterval','NoirGlassCount','NoirGlassRefresh'])field(name).addEventListener('input',e=>e.target.setCustomValidity(''));
+ field('NoirGlassConfigForm').addEventListener('submit',async event=>{
+  event.preventDefault();const interval=Number(field('NoirGlassInterval').value),count=Number(field('NoirGlassCount').value),refresh=Number(field('NoirGlassRefresh').value);
+  field('NoirGlassInterval').setCustomValidity(!Number.isInteger(interval)||(interval!==0&&(interval<5||interval>60))?'Enter 0 or a whole number from 5 to 60.':'');
+  field('NoirGlassCount').setCustomValidity(!Number.isInteger(count)||count<1||count>2147483647?'Enter a positive whole number.':'');
+  field('NoirGlassRefresh').setCustomValidity(!Number.isInteger(refresh)||refresh<0||refresh>2147483647?'Enter zero or a positive whole number of minutes.':'');
+  if(!event.target.reportValidity())return;
+  Dashboard.showLoadingMsg();
+  try{
+   const config=await ApiClient.getPluginConfiguration(id);
+   Object.assign(config,{Enabled:field('NoirGlassEnabled').checked,ThemeDashboard:field('NoirGlassDashboard').checked,PinnedItemIds:field('NoirGlassPinned').value,FeaturedIntervalSeconds:interval,FeaturedItemCount:count,LineupRefreshMinutes:refresh,HomeLinksEnabled:field('NoirGlassHomeLinks').checked,HomeLinks:links,HideBranding:field('NoirGlassHideBranding').checked});
+   Dashboard.processPluginConfigurationUpdateResult(await ApiClient.updatePluginConfiguration(id,config));
+  }finally{Dashboard.hideLoadingMsg();}
+ });
+})();
+</script>
 </div>
 </body>
 </html>

@@ -3,7 +3,7 @@
 (() => {
   'use strict';
   window.__NoirGlassCompanion?.destroy?.();
-  const MAX_FEATURED = 5;
+  const DEFAULT_FEATURED = 10;
   const ROOT_CLASS = 'ng-feature';
   const SELECTOR = '#indexPage:not(.hide) #homeTab.is-active';
   const isJellyfinWebPath = /\/web\/(?:index\.html)?$/i.test(location.pathname);
@@ -25,6 +25,19 @@
   let settingsLoading = null;
   let settingsRetryAfter = 0;
   let settingsUser = null;
+  let settingsFetchedAt = 0;
+  let lineup = [];
+  let lineupAt = 0;
+  let lineupKey = null;
+  let lineupRevision = null;
+  let navigationKey = null;
+  let navigationHost = null;
+  let navigationLoading = false;
+  let navigationFinished = false;
+  let navigationRequest = 0;
+  let preferencesTimer = null;
+  let publicBrandingAt = 0;
+  let publicBrandingLoading = false;
   let dashboardRequest = 0;
   let dashboardKey = null;
   let dashboardTimer = null;
@@ -35,7 +48,7 @@
 
   const themeReady = () => getComputedStyle(document.documentElement).getPropertyValue('--ng-companion-contract').trim() === '1';
   const dashboardThemeReady = () => themeReady() && getComputedStyle(document.documentElement).getPropertyValue('--ng-dashboard-contract').trim() === '1';
-  async function loadSettings(api) {
+  async function loadSettings(api, force = false) {
     const userId = api.getCurrentUserId();
     if (!userId) return null;
     if (settingsUser !== userId) {
@@ -43,9 +56,9 @@
       pluginSettings = settingsLoading = null;
       settingsRetryAfter = 0;
     }
-    if (pluginSettings) return pluginSettings;
+    if (pluginSettings && !force && Date.now() - settingsFetchedAt < 60000) return pluginSettings;
     if (settingsLoading) return settingsLoading;
-    if (Date.now() < settingsRetryAfter || typeof api.getJSON !== 'function' || typeof api.getUrl !== 'function') return null;
+    if (Date.now() < settingsRetryAfter || typeof api.getJSON !== 'function' || typeof api.getUrl !== 'function') return pluginSettings;
     const pending = Promise.resolve().then(() => api.getJSON(api.getUrl('NoirGlass/Settings')))
       .then(value => {
         if (destroyed || window.ApiClient !== api || settingsUser !== userId || api.getCurrentUserId() !== userId) return null;
@@ -54,14 +67,22 @@
           themeDashboard: value?.themeDashboard === true,
           pinnedItemIds: Array.isArray(value?.pinnedItemIds) ? value.pinnedItemIds : [],
           intervalSeconds: Number.isInteger(value?.intervalSeconds) && (value.intervalSeconds === 0 || (value.intervalSeconds >= 5 && value.intervalSeconds <= 60))
-            ? value.intervalSeconds : 15
+            ? value.intervalSeconds : 10,
+          featuredItemCount: Number.isSafeInteger(value?.featuredItemCount) && value.featuredItemCount > 0 ? value.featuredItemCount : DEFAULT_FEATURED,
+          lineupRefreshMinutes: Number.isSafeInteger(value?.lineupRefreshMinutes) && value.lineupRefreshMinutes >= 0 ? value.lineupRefreshMinutes : 360,
+          rotationRevision: typeof value?.rotationRevision === "string" ? value.rotationRevision : "",
+          homeLinksEnabled: value?.homeLinksEnabled === true,
+          homeLinks: Array.isArray(value?.homeLinks) ? value.homeLinks : [],
+          hideBranding: value?.hideBranding === true
         };
+        settingsFetchedAt = Date.now();
+        document.documentElement.classList.toggle("ng-hide-branding", pluginSettings.enabled && pluginSettings.hideBranding);
         schedule();
         return pluginSettings;
       })
       .catch(() => {
         if (window.ApiClient === api && settingsUser === userId) settingsRetryAfter = Date.now() + 10000;
-        return null;
+        return window.ApiClient === api && settingsUser === userId ? pluginSettings : null;
       })
       .finally(() => { if (settingsLoading === pending) settingsLoading = null; });
     settingsLoading = pending;
@@ -104,7 +125,10 @@
     dashboardRetryAfter = 0;
     settingsUser = null;
     pluginSettings = settingsLoading = null;
-    settingsRetryAfter = 0;
+    settingsRetryAfter = settingsFetchedAt = 0;
+    lineup = []; lineupAt = 0; lineupKey = lineupRevision = null;
+    clearNavigation(); publicBrandingAt = 0;
+    document.documentElement.classList.remove("ng-hide-branding");
   }
   async function syncDashboard() {
     const api = window.ApiClient;
@@ -201,7 +225,7 @@
       ? item.BackdropImageTags?.[0] || item.ParentBackdropImageTags?.[0]
       : item.ImageTags?.Logo;
     if (!id || !tag) return '';
-    return safeImage(api.getImageUrl(id, { type, index: 0, tag, maxWidth: 1920 }));
+    return safeImage(api.getImageUrl(id, { type, index: 0, tag, maxWidth: Math.min(3840, Math.ceil(innerWidth * Math.min(devicePixelRatio || 1, 2) / 320) * 320) }));
   };
   const canFeature = (api, item) => item && /^(Movie|Series)$/.test(item.Type || '') &&
     !!art(api, item, 'Backdrop');
@@ -235,55 +259,74 @@
   }
   function formatBadges(form, item) {
     const sourceId = form.querySelector('.selectSource')?.value;
-    const source = sourceId
-      ? item.MediaSources?.find(candidate => candidate.Id === sourceId)
-      : item.MediaSources?.[0];
-    const streams = source?.MediaStreams || [];
+    const source = sourceId ? item.MediaSources?.find(x => x.Id === sourceId) : item.MediaSources?.[0];
+    if (!source) { form.querySelectorAll('.ng-format-badges').forEach(n => n.remove()); return; }
+    const streams = source.MediaStreams || [];
     const selected = (selector, type) => {
-      const value = form.querySelector(selector)?.value;
-      if (value == null || value === '') return null;
-      const index = Number(value);
-      return streams.find(stream => stream.Type === type && stream.Index === index);
+      const field = form.querySelector(selector);
+      if (!field || field.value === '') return null;
+      return streams.find(x => x.Type === type && x.Index === Number(field.value));
     };
-    const video = selected('.selectVideo', 'Video');
-    const audio = selected('.selectAudio', 'Audio');
-    const key = [item.Id, source?.Id, video?.Index, audio?.Index].join(':');
-    const videoFormats = [];
-    if (Number(video?.Width) >= 3800 && Number(video?.Height) >= 1600) videoFormats.push(['4k', '4K']);
-    const range = `${video?.VideoRangeType || ''} ${video?.VideoRange || ''} ${video?.VideoDoViTitle || ''}`;
-    if (/dovi|dolby vision/i.test(range) || Number(video?.DvProfile) > 0) videoFormats.push(['dv', 'Dolby Vision']);
-    else if (/hdr|hlg/i.test(range)) videoFormats.push(['hdr', 'HDR']);
-    const audioFormats = [];
-    const audioInfo = `${audio?.Codec || ''} ${audio?.Profile || ''} ${audio?.Title || ''} ${audio?.DisplayTitle || ''}`;
-    if (/atmos|\bjoc\b/i.test(audioInfo)) audioFormats.push(['da', 'Dolby Atmos']);
-    else if (/\beac3\b|\bec-3\b|dolby digital\s*\+/i.test(audioInfo)) audioFormats.push(['ddp', 'Dolby Digital+']);
-    const groups = form.querySelectorAll('.ng-format-badges');
-    const expected = Number(videoFormats.length > 0) + Number(audioFormats.length > 0);
-    if (form.dataset.ngFormatsKey === key && groups.length === expected) return;
-    groups.forEach(node => node.remove());
-    for (const [container, formats] of [
-      [form.querySelector('.selectVideoContainer:not(.hide)'), videoFormats],
-      [form.querySelector('.selectAudioContainer:not(.hide)'), audioFormats]
-    ]) {
-      if (!container || !formats.length) continue;
+    const video = selected('.selectVideo', 'Video'), audio = selected('.selectAudio', 'Audio');
+    const key = JSON.stringify([item.Id, source.Id, video?.Index, audio?.Index, item.Tags, source.Name, source.Path]);
+    if (form.dataset.ngFormatsKey === key && form.querySelector('.ng-format-badges')) return;
+    form.querySelectorAll('.ng-format-badges').forEach(n => n.remove());
+    const formats = new Map();
+    const add = (id, label, evidence = 'Selected stream metadata') => formats.set(id, { label, evidence });
+    if (video) {
+      if (Number(video.Width) >= 3800) add('4k', '4K');
+      const range = [video.VideoRangeType, video.VideoRange, video.VideoDoViTitle].filter(Boolean).join(' ');
+      if (/dovi|dolby.?vision/i.test(range) || Number(video.DvProfile) > 0) add('dv', 'Dolby Vision');
+      if (video.Hdr10PlusPresentFlag === true || /hdr10plus|hdr10\+/i.test(range)) add('hdr10plus', 'HDR10+');
+      if (/hdr10(?!plus|\+)/i.test(range)) add('hdr10', 'HDR10');
+      if (/hlg/i.test(range)) add('hlg', 'HLG');
+      if (!formats.has('dv') && !formats.has('hdr10plus') && !formats.has('hdr10') && !formats.has('hlg') && /\bhdr\b/i.test(range)) add('hdr', 'HDR');
+      if (!formats.has('dv') && !/hdr|hlg/i.test(range) && /\bsdr\b/i.test(range)) add('sdr', 'SDR');
+    }
+    if (audio) {
+      const codec = (audio.Codec || '').toLowerCase();
+      const info = [audio.Profile, audio.AudioSpatialFormat, audio.Title, audio.DisplayTitle].filter(Boolean).join(' ');
+      if (/atmos|\bjoc\b/i.test(info)) add('da', 'Dolby Atmos');
+      if (/dts.?x\b/i.test(info)) add('dtsx', 'DTS:X');
+      if (/truehd|mlp/.test(codec)) add('truehd', 'Dolby TrueHD');
+      else if (/^(eac3|ec-3)$/.test(codec)) add('ddp', 'Dolby Digital+');
+      else if (/^(ac3|ac-3)$/.test(codec)) add('dd', 'Dolby Digital');
+      else if (/dts/.test(codec)) {
+        if (/dts.?hd.?ma|master audio/i.test(info)) add('dtshdma', 'DTS-HD MA');
+        else if (/dts.?hd.?hra|high resolution/i.test(info)) add('dtshdhr', 'DTS-HD HR');
+        else if (/dts.?hd/i.test(info)) add('dtshd', 'DTS-HD');
+        else add('dts', 'DTS');
+      }
+      const layout = (audio.ChannelLayout || '').trim();
+      if (layout) add('channels', /^(mono|stereo)$/i.test(layout) ? layout.replace(/^./, c => c.toUpperCase()) : layout);
+      else if (Number(audio.Channels) > 0) add('channels', audio.Channels + ' channels');
+    }
+    const sourceText = [source.Name, source.Path?.split(/[\\/]/).pop(), ...(item.Tags || [])].filter(x => typeof x === 'string').join(' ');
+    for (const [id, label, pattern] of [
+      ['remux','REMUX',/\bremux\b/i], ['webdl','WEB-DL',/\bweb[ ._-]?dl\b/i],
+      ['webrip','WEBRip',/\bweb[ ._-]?rip\b/i], ['bluray','Blu-ray',/\bblu[ ._-]?ray\b/i],
+      ['openmatte','Open Matte',/\bopen[ ._-]?matte\b/i], ['35mm','35mm',/\b35[ ._-]?mm\b/i],
+      ['70mm','70mm',/\b70[ ._-]?mm\b/i], ['imax','IMAX',/\bimax\b/i], ['dcp','DCP',/\bdcp\b/i]
+    ]) if (pattern.test(sourceText)) add(id, label, 'Explicit source filename/name or Jellyfin tag');
+    if (formats.size) {
       const group = make('div', 'ng-format-badges');
-      group.dataset.ngKey = key;
-      group.setAttribute('aria-label', 'Available source formats');
-      for (const [format, label] of formats) {
-        const badge = make('span', 'ng-format-badge', label);
-        badge.dataset.format = format;
-        badge.title = `${label} in the source file; playback quality depends on the client`;
+      group.setAttribute('aria-label', 'Source and selected track formats');
+      for (const [id, info] of formats) {
+        const badge = make('span', 'ng-format-badge', info.label);
+        badge.dataset.format = id; badge.dataset.evidence = info.evidence;
+        badge.title = info.evidence + ': ' + info.label + '; this is a source label, not a guarantee of browser playback quality';
         group.append(badge);
       }
-      container.append(group);
+      form.append(group);
     }
     form.dataset.ngFormatsKey = key;
   }
+
   async function syncDetail() {
     if (destroyed) return;
     if (!themeReady()) { clearDetailBadges(); return; }
     const initialApi = client();
-    if (!initialApi || !initialApi.getCurrentUserId() || !(await loadSettings(initialApi))?.enabled) return;
+    if (!initialApi || !initialApi.getCurrentUserId() || !(await loadSettings(initialApi))?.enabled) { clearDetailBadges(); return; }
     const page = document.querySelector('#itemDetailPage:not(.hide)');
     const form = page?.querySelector('.trackSelections');
     const id = new URLSearchParams(location.hash.split('?')[1] || '').get('id');
@@ -330,40 +373,53 @@
     setTimeout(() => observer.disconnect(), 10000);
   };
 
-  async function loadItems(api) {
-    const userId = api.getCurrentUserId();
-    if (!userId) return [];
-    const response = await api.getItems(userId, {
-      Recursive: true,
-      IncludeItemTypes: 'Movie,Series',
-      SortBy: 'DateCreated',
-      SortOrder: 'Descending',
-      Limit: 60,
-      Fields: 'Overview,Genres,ProductionYear,RunTimeTicks,BackdropImageTags,ImageTags'
-    });
-    const recent = Array.isArray(response) ? response : response?.Items || [];
-    const selected = [];
-    const seen = new Set();
-    async function add(item) {
-      if (!canFeature(api, item) || seen.has(item.Id)) return;
-      selected.push(item);
-      seen.add(item.Id);
-    }
-    for (const id of pluginSettings?.pinnedItemIds || []) {
-      if (selected.length === MAX_FEATURED) break;
-      if (typeof id !== 'string' || !/^[a-f0-9]{32}$/i.test(id)) continue;
-      let item = recent.find(candidate => candidate.Id === id);
-      if (!item && typeof api.getItem === 'function') {
-        try { item = await api.getItem(userId, id); } catch { /* inaccessible item */ }
+  async function loadItems(api, rotating, turn) {
+    const owner = api.getCurrentUserId(), count = pluginSettings.featuredItemCount;
+    const pool = [], seen = new Set();
+    let offset = 0;
+    // Stable pages avoid independently randomized pagination duplicates.
+    for (;;) {
+      const response = await api.getItems(owner, {
+        Recursive: true, IncludeItemTypes: 'Movie,Series',
+        SortBy: 'SortName', SortOrder: 'Ascending', StartIndex: offset, Limit: 200,
+        Fields: 'Overview,Genres,ProductionYear,RunTimeTicks,BackdropImageTags,ImageTags'
+      });
+      if (destroyed || turn !== request || api.getCurrentUserId() !== owner || !document.querySelector(SELECTOR)) throw new DOMException('Stale lineup', 'AbortError');
+      const batch = Array.isArray(response) ? response : response?.Items || [];
+      let added = 0;
+      for (const item of batch) if (!seen.has(item.Id)) {
+        seen.add(item.Id); added++;
+        if (canFeature(api, item)) pool.push(item);
       }
-      await add(item);
+      offset += batch.length;
+      if (!added || batch.length < 200 || (Number.isFinite(response?.TotalRecordCount) && offset >= response.TotalRecordCount)) break;
     }
-    for (const item of recent) {
-      if (selected.length === MAX_FEATURED) break;
-      await add(item);
+    const selected = [], selectedIds = new Set();
+    const add = item => { if (canFeature(api, item) && !selectedIds.has(item.Id)) { selected.push(item); selectedIds.add(item.Id); } };
+    for (const id of pluginSettings.pinnedItemIds) {
+      if (selected.length >= count) break;
+      if (!/^[a-f0-9]{32}$/i.test(id)) continue;
+      let item = pool.find(x => x.Id === id);
+      if (!item && typeof api.getItem === 'function') try { item = await api.getItem(owner, id); } catch { /* inaccessible */ }
+      if (destroyed || turn !== request || api.getCurrentUserId() !== owner) throw new DOMException('Stale pins', 'AbortError');
+      add(item);
+    }
+    if (rotating) {
+      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+      const old = new Set(lineup.map(x => x.Id));
+      pool.sort((a, b) => Number(old.has(a.Id)) - Number(old.has(b.Id)));
+    }
+    for (const item of pool) { if (selected.length >= count) break; add(item); }
+    let probes = 0;
+    while (selected.length && !await imageLoads(art(api, selected[0], 'Backdrop'))) {
+      if (++probes >= 8) return []; // Bounded failure recovery, independent of requested lineup size.
+      selected.shift();
+      for (const item of pool) { if (selected.length >= count) break; add(item); }
+      if (destroyed || turn !== request || api.getCurrentUserId() !== owner) throw new DOMException('Stale artwork', 'AbortError');
     }
     return selected;
   }
+
 
   function createFeature(page, api, items) {
     const root = make('section', ROOT_CLASS);
@@ -429,26 +485,41 @@
       slide.append(image, scrim, content);
       return slide;
     }
-    const slides = items.map(makeSlide);
+    const slides = new Map();
+    const slideAt = index => { if (!slides.has(index)) slides.set(index, makeSlide(items[index])); return slides.get(index); };
+    root.dataset.total = String(items.length);
     let active = 0;
-    let activeSlide = slides[0];
+    let activeSlide = slideAt(0);
     let transitionCleanup = null;
     let timer = null;
     let disposed = false;
     let manuallyPaused = false;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const hoverCapable = matchMedia('(hover: hover)');
-    const interval = pluginSettings?.intervalSeconds ?? 15;
-    const dots = items.map((item, index) => {
-      const dot = make('button', 'ng-feature__dot');
-      dot.type = 'button';
-      dot.setAttribute('aria-label', `Show featured title ${index + 1}: ${item.Name || 'Untitled'}`);
-      dot.addEventListener('click', () => show(index, true));
-      return dot;
-    });
+    const interval = pluginSettings?.intervalSeconds ?? 10;
+    const counter = make("span", "ng-feature__count");
+    let dots = [];
     function updateDots() {
-      dots.forEach((dot, index) => dot.setAttribute('aria-current', String(index === active)));
+      const focused = document.activeElement;
+      const focusedIndex = focused?.classList.contains('ng-feature__dot') ? Number(focused.dataset.index) : null;
+      dots.forEach(dot => dot.remove());
+      dots = [];
+      const windowSize = innerWidth < 380 ? 1 : innerWidth <= 768 ? 3 : 7;
+      const start = items.length <= windowSize ? 0 : Math.max(0, Math.min(active - Math.floor(windowSize / 2), items.length - windowSize));
+      const stop = Math.min(items.length, start + windowSize);
+      for (let index = start; index < stop; index++) {
+        const dot = make('button', 'ng-feature__dot');
+        dot.type = 'button'; dot.dataset.index = String(index);
+        dot.setAttribute('aria-label', 'Show featured title ' + (index + 1) + ': ' + (items[index].Name || 'Untitled'));
+        dot.setAttribute('aria-current', String(index === active));
+        dot.addEventListener('click', () => show(index, true));
+        dots.push(dot); pager.insertBefore(dot, next);
+      }
+      counter.textContent = (active + 1) + ' / ' + items.length;
+      if (items.length > windowSize && !counter.isConnected) pager.insertBefore(counter, next);
+      if (focusedIndex !== null) (dots.find(d => Number(d.dataset.index) === focusedIndex) || dots.find(d => d.getAttribute('aria-current') === 'true'))?.focus({ preventScroll: true });
     }
+
     function canAutoplay() {
       const bounds = root.getBoundingClientRect();
       const visibleHeight = Math.min(bounds.bottom, innerHeight) - Math.max(bounds.top, 0);
@@ -473,12 +544,13 @@
       const target = (index + items.length) % items.length;
       if (target === active) { scheduleAutoplay(); return; }
       const outgoing = activeSlide;
-      const incoming = slides[target];
+      const incoming = slideAt(target);
       const direction = index === active - 1 || (index >= 0 && target === active - 1) ? -1 : 1;
-      if (outgoing.contains(document.activeElement)) dots[target].focus({ preventScroll: true });
+      const moveFocus = outgoing.contains(document.activeElement);
       active = target;
       activeSlide = incoming;
       updateDots();
+      if (moveFocus) pager.querySelector("[aria-current=true]")?.focus({ preventScroll: true });
       if (manual) status.textContent = `Featured title ${active + 1} of ${items.length}: ${items[active].Name || 'Untitled'}`;
       if (timer) clearTimeout(timer);
       timer = null;
@@ -494,8 +566,10 @@
       const duration = durationValue.endsWith('ms') ? parsedDuration : parsedDuration * 1000;
       if (reducedMotion.matches || duration <= 0) {
         outgoing.remove();
+        slides.delete([...slides.entries()].find(([, node]) => node === outgoing)?.[0]);
         incoming.style.transform = 'translate3d(0, 0, 0)';
         incoming.style.transition = '';
+        preloadNext();
         scheduleAutoplay();
         return;
       }
@@ -509,9 +583,11 @@
         incoming.removeEventListener('transitionend', onEnd);
         clearTimeout(fallback);
         outgoing.remove();
+        slides.delete([...slides.entries()].find(([, node]) => node === outgoing)?.[0]);
         outgoing.style.transform = '';
         incoming.style.transform = 'translate3d(0, 0, 0)';
         transitionCleanup = null;
+        preloadNext();
         scheduleAutoplay();
       };
       const onEnd = event => { if (event.target === incoming && event.propertyName === 'transform') finish(); };
@@ -528,6 +604,7 @@
       pause.setAttribute('aria-label', manuallyPaused ? 'Resume featured titles' : 'Pause featured titles');
       pause.setAttribute('aria-pressed', String(manuallyPaused));
       pause.dataset.state = manuallyPaused ? 'paused' : 'playing';
+      schedule();
       scheduleAutoplay();
     });
     root.addEventListener('keydown', event => {
@@ -556,13 +633,15 @@
     root.addEventListener('pointerleave', scheduleAutoplay);
     root.addEventListener('focusin', scheduleAutoplay);
     root.addEventListener('focusout', () => queueMicrotask(scheduleAutoplay));
+    const resized = () => { updateDots(); scheduleAutoplay(); };
+    window.addEventListener('resize', resized);
     document.addEventListener('visibilitychange', scheduleAutoplay);
     window.addEventListener('scroll', scheduleAutoplay, { passive: true });
     reducedMotion.addEventListener('change', scheduleAutoplay);
     const intersection = typeof IntersectionObserver === 'function'
       ? new IntersectionObserver(scheduleAutoplay, { threshold: [0, 0.15] })
       : null;
-    pager.append(previous, ...dots, next, pause);
+    pager.append(previous, next, pause);
     activeSlide.inert = false;
     activeSlide.setAttribute('aria-hidden', 'false');
     track.append(activeSlide);
@@ -570,7 +649,12 @@
     updateDots();
     page.insertBefore(root, page.firstChild);
     intersection?.observe(root);
+    function preloadNext() { if (!disposed && items.length > 1) { const image = new Image(); image.src = art(api, items[(active + 1) % items.length], "Backdrop"); } }
+    preloadNext();
     scheduleAutoplay();
+    root.__ngIdle = () => !manuallyPaused && !root.contains(document.activeElement) && !(hoverCapable.matches && root.matches(":hover")) && !document.hidden && !transitionCleanup;
+    root.addEventListener("pointerleave", schedule);
+    root.addEventListener("focusout", schedule);
     root.__ngCleanup = () => {
       disposed = true;
       if (timer) clearTimeout(timer);
@@ -579,49 +663,103 @@
       intersection?.disconnect();
       document.removeEventListener('visibilitychange', scheduleAutoplay);
       window.removeEventListener('scroll', scheduleAutoplay);
+      window.removeEventListener('resize', resized);
       reducedMotion.removeEventListener('change', scheduleAutoplay);
     };
     return root;
   }
 
+  function clearNavigation() {
+    navigationRequest++; navigationKey = null; navigationHost = null; navigationLoading = false; navigationFinished = false;
+    document.querySelectorAll('.ng-home-links').forEach(node => node.remove());
+  }
+  async function syncNavigation() {
+    const api = client(), owner = api?.getCurrentUserId(), page = document.querySelector('#indexPage:not(.hide)');
+    if (!owner || !page || !themeReady()) { clearNavigation(); return; }
+    const settings = await loadSettings(api);
+    if (!settings?.enabled || !settings.homeLinksEnabled || typeof api.getUserViews !== 'function') { clearNavigation(); return; }
+    const host = document.querySelector('.skinHeader:not(.osdHeader) .headerTabs');
+    if (!host) return;
+    const key = JSON.stringify([owner, settings.homeLinks]);
+    if (key === navigationKey && host === navigationHost && (navigationLoading || navigationFinished)) return;
+    clearNavigation(); navigationKey = key; navigationHost = host; navigationLoading = true;
+    const turn = navigationRequest;
+    try {
+      const response = await api.getUserViews(owner), views = response?.Items || [];
+      if (destroyed || turn !== navigationRequest || api.getCurrentUserId() !== owner || !document.querySelector('#indexPage:not(.hide)') || !host.isConnected) return;
+      const nav = make('nav', 'ng-home-links'); nav.setAttribute('aria-label', 'Additional Home destinations');
+      const destinations = new Set();
+      for (const link of settings.homeLinks) {
+        let hash, name;
+        if (link.kind === 'collections') { hash = '#/list?type=BoxSet'; name = 'Collections'; }
+        else {
+          const library = views.find(view => view.Id === link.libraryId);
+          if (!library) continue;
+          name = library.Name || 'Library';
+          const type = library.CollectionType || '';
+          const route = type === 'movies' ? 'movies' : type === 'tvshows' ? 'tv' : 'list';
+          hash = '#/' + route + '?' + (route === 'list' ? 'parentId' : 'topParentId') + '=' + encodeURIComponent(library.Id) + '&collectionType=' + encodeURIComponent(type);
+        }
+        if (destinations.has(hash)) continue;
+        destinations.add(hash);
+        const anchor = make('a', 'ng-home-link', typeof link.label === 'string' && link.label.trim() ? link.label.trim() : name);
+        anchor.href = hash; nav.append(anchor);
+      }
+        if (nav.childElementCount) host.append(nav);
+        navigationFinished = true;
+    } catch { if (turn === navigationRequest) navigationKey = null; }
+    finally { if (turn === navigationRequest) navigationLoading = false; }
+  }
+  async function syncPublicBranding() {
+    if (destroyed || client()?.getCurrentUserId() || publicBrandingLoading || Date.now() - publicBrandingAt < 60000) return;
+    publicBrandingLoading = true; publicBrandingAt = Date.now();
+    try {
+      const base = location.pathname.replace(/\/web\/(?:index\.html)?$/i, '');
+      const response = await fetch(base + '/NoirGlass/Branding', { credentials: 'same-origin', cache: 'no-store' });
+      if (!response.ok) return;
+      const value = await response.json();
+      if (!destroyed && !client()?.getCurrentUserId()) document.documentElement.classList.toggle('ng-hide-branding', value.enabled === true && value.hideBranding === true);
+    } catch { /* presentation flags are optional */ }
+    finally { publicBrandingLoading = false; }
+  }
   async function sync() {
     if (destroyed) return;
-    if (!themeReady()) { request += 1; removeFeature(); return; }
+    if (!themeReady()) { request++; removeFeature(); return; }
     const page = document.querySelector(SELECTOR);
-    if (!page || !visible(page)) {
-      request += 1;
-      removeFeature();
-      return;
-    }
-    if (page === currentPage && currentFeature?.isConnected) return;
-    if (loading || !page.querySelector('.card')) return;
-    const api = client();
-    if (!api || !api.getCurrentUserId()) return;
-    const owner = api.getCurrentUserId();
-    if (!(await loadSettings(api))?.enabled) { removeFeature(); return; }
-    if (destroyed || loading || page !== document.querySelector(SELECTOR) || !visible(page)) return;
+    if (!page || !visible(page)) { request++; removeFeature(); return; }
+    const api = client(), owner = api?.getCurrentUserId();
+    if (!owner) return;
+    const settings = await loadSettings(api);
+    if (!settings?.enabled) { removeFeature(); return; }
+    if (destroyed || page !== document.querySelector(SELECTOR)) return;
+    const key = JSON.stringify([settings.featuredItemCount, settings.pinnedItemIds, settings.intervalSeconds]);
+    const periodic = settings.lineupRefreshMinutes > 0 && lineupAt > 0 && Date.now() - lineupAt >= settings.lineupRefreshMinutes * 60000;
+    const rotating = periodic || (lineupRevision !== null && settings.rotationRevision !== lineupRevision);
+    const needsLineup = !lineup.length || rotating || key !== lineupKey;
+    if (currentFeature?.isConnected && !needsLineup) return;
+    if (loading || (currentFeature?.isConnected && !currentFeature.__ngIdle())) return;
+    if (!page.querySelector('.card')) return;
     loading = true;
     const turn = ++request;
     try {
-      const candidates = await loadItems(api);
-      const loaded = await Promise.all(candidates.map(item => imageLoads(art(api, item, 'Backdrop'))));
-      const items = candidates.filter((item, index) => loaded[index]);
-      if (destroyed || !themeReady() || api.getCurrentUserId() !== owner || turn !== request || page !== document.querySelector(SELECTOR) || !visible(page) || !items.length) return;
+      const items = needsLineup ? await loadItems(api, rotating, turn) : lineup;
+      if (destroyed || !themeReady() || api.getCurrentUserId() !== owner || turn !== request || page !== document.querySelector(SELECTOR) || !visible(page) || !items.length || (currentFeature?.isConnected && !currentFeature.__ngIdle())) return;
       removeFeature();
-      currentFeature = createFeature(page, api, items);
-      currentPage = page;
+      lineup = items; lineupKey = key; lineupRevision = settings.rotationRevision;
+      if (needsLineup) lineupAt = Date.now();
+      currentFeature = createFeature(page, api, items); currentPage = page;
     } catch (error) {
-      // A failed or unsupported API call must leave Jellyfin's native home intact.
-      console.warn('[NoirGlass] Featured titles unavailable:', error?.message || error);
+      if (error?.name !== 'AbortError') console.warn('[NoirGlass] Featured titles unavailable:', error?.message || error);
     } finally { loading = false; }
   }
+
   function schedule() {
     if (destroyed || scheduled) return;
     scheduled = true;
     scheduleTimer = setTimeout(() => {
       scheduleTimer = null;
       scheduled = false;
-      if (!destroyed) { syncIdentity(); syncDashboard(); sync(); syncDetail(); }
+      if (!destroyed) { syncIdentity(); syncDashboard(); sync(); syncDetail(); syncNavigation(); syncPublicBranding(); }
     }, 150);
   }
   const observer = new MutationObserver(schedule);
@@ -636,6 +774,9 @@
       request += 1;
       if (scheduleTimer) clearTimeout(scheduleTimer);
       scheduleTimer = null;
+      clearTimeout(preferencesTimer);
+      clearNavigation();
+      document.documentElement.classList.remove("ng-hide-branding");
       observer.disconnect();
       removeEventListener('hashchange', schedule);
       removeEventListener('popstate', schedule);
@@ -647,5 +788,15 @@
       delete window.__NoirGlassCompanion;
     }
   };
+  function monitorPreferences() {
+    preferencesTimer = setTimeout(async () => {
+      if (destroyed) return;
+      const api = client();
+      if (!document.hidden && api?.getCurrentUserId() && themeReady() && document.querySelector("#indexPage:not(.hide)")) await loadSettings(api, true);
+      if (!document.hidden) schedule();
+      if (!destroyed) monitorPreferences();
+    }, 60000);
+  }
+  monitorPreferences();
   schedule();
 })();

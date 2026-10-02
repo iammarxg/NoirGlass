@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using NoirGlass.Plugin;
 using NoirGlass.Plugin.Configuration;
@@ -31,6 +36,16 @@ Check(SettingsController.NormalizeInterval(-4) == 5 && SettingsController.Normal
 Check(Plugin.PluginId == "72f7ec75-08a4-4f5b-90fa-df751666c621", "Plugin GUID survives rename");
 Check(typeof(SettingsController).IsDefined(typeof(AuthorizeAttribute)), "Settings route requires authentication");
 Check(new PluginConfiguration().ThemeDashboard, "Dashboard styling defaults to enabled");
+Check(new PluginConfiguration().FeaturedIntervalSeconds == 10 && new PluginConfiguration().FeaturedItemCount == 10 && new PluginConfiguration().LineupRefreshMinutes == 360, "New configurations use ten-second slides, ten titles and six-hour rotation");
+Check(SettingsController.NormalizeCount(2500) == 2500 && SettingsController.NormalizeCount(0) == 1, "Featured count has no arbitrary theme cap");
+var manyPins = string.Join('\n', Enumerable.Range(1, 12).Select(value => value.ToString("x32")));
+Check(SettingsController.ParsePinnedIds(manyPins).Length == 12, "Pins are not capped at five");
+var rotationConfig = new PluginConfiguration();
+var firstRevision = SettingsController.RotateConfiguration(rotationConfig);
+Check(firstRevision != SettingsController.RotateConfiguration(rotationConfig), "Each manual rotation changes its revision");
+var rotateMethod = typeof(SettingsController).GetMethod(nameof(SettingsController.Rotate))!;
+Check(rotateMethod.GetCustomAttributes<AuthorizeAttribute>().Any(attribute => attribute.Policy == "RequiresElevation"), "Rotate endpoint requires administrator elevation");
+Check(typeof(SettingsController).GetMethod(nameof(SettingsController.Branding))!.IsDefined(typeof(AllowAnonymousAttribute)), "Login branding has an explicit public presentation-only endpoint");
 var settingsSerializer = new System.Xml.Serialization.XmlSerializer(typeof(PluginConfiguration));
 using (var serialized = new StringWriter())
 {
@@ -51,7 +66,7 @@ try
     using (var reader = File.OpenRead(newPath))
     {
         var restored = (PluginConfiguration)serializer.Deserialize(reader)!;
-        Check(!restored.Enabled && restored.PinnedItemIds == "1234567890abcdef1234567890abcdef" && restored.FeaturedIntervalSeconds == 15 && restored.ThemeDashboard,
+        Check(!restored.Enabled && restored.PinnedItemIds == "1234567890abcdef1234567890abcdef" && restored.FeaturedIntervalSeconds == 10 && restored.ThemeDashboard,
             "Pre-rename settings migrate with the default autoplay interval");
     }
     Check(File.Exists(oldPath), "Migration preserves the previous configuration");
@@ -60,6 +75,20 @@ try
     Check(await File.ReadAllTextAsync(newPath) == "existing NoirGlass settings", "Migration never overwrites NoirGlass settings");
 }
 finally { Directory.Delete(configurationDirectory, true); }
+
+using (var reader = new StringReader("<PluginConfiguration><FeaturedIntervalSeconds>15</FeaturedIntervalSeconds></PluginConfiguration>"))
+{
+    var restored = (PluginConfiguration)settingsSerializer.Deserialize(reader)!;
+    Check(restored.FeaturedIntervalSeconds == 15 && restored.FeaturedItemCount == 10 && restored.LineupRefreshMinutes == 360, "Existing saved autoplay survives additive configuration defaults");
+}
+var configured = new PluginConfiguration { HomeLinksEnabled = true, HideBranding = true, HomeLinks = [new HomeNavigationLink { LibraryId = "1234567890abcdef1234567890abcdef", Label = "Cinema" }] };
+using (var serialized = new StringWriter())
+{
+    settingsSerializer.Serialize(serialized, configured);
+    using var reader = new StringReader(serialized.ToString());
+    var restored = (PluginConfiguration)settingsSerializer.Deserialize(reader)!;
+    Check(restored.HomeLinksEnabled && restored.HideBranding && restored.HomeLinks[0].Label == "Cinema", "Ordered navigation and branding settings round-trip");
+}
 
 var services = new ServiceCollection().BuildServiceProvider();
 var builder = new ApplicationBuilder(services);
@@ -128,3 +157,29 @@ try
     Check((await new StreamReader(staticIndex.Response.Body).ReadToEndAsync()).Contains("data-noirglass-plugin"), "Static SendFile response is transformed");
 }
 finally { File.Delete(fixturePath); }
+
+// An isolated controller host verifies authorization without starting Jellyfin
+// or constructing its plugin/configuration services.
+var hostBuilder = WebApplication.CreateBuilder();
+hostBuilder.Logging.ClearProviders();
+hostBuilder.WebHost.UseUrls("http://127.0.0.1:0");
+hostBuilder.Services.AddControllers().AddApplicationPart(typeof(SettingsController).Assembly);
+hostBuilder.Services.AddAuthentication("fixture").AddScheme<AuthenticationSchemeOptions, FixtureAuthenticationHandler>("fixture", _ => { });
+hostBuilder.Services.AddAuthorization(options => options.AddPolicy("RequiresElevation", policy => policy.RequireAuthenticatedUser().RequireClaim("fixture-admin", "true")));
+await using (var app = hostBuilder.Build())
+{
+    app.UseAuthentication(); app.UseAuthorization(); app.MapControllers();
+    await app.StartAsync();
+    var address = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!.Addresses.Single();
+    using var client = new HttpClient { BaseAddress = new Uri(address) };
+    Check((await client.GetAsync("/NoirGlass/Settings")).StatusCode == System.Net.HttpStatusCode.Unauthorized, "HTTP settings rejects anonymous requests");
+    using var publicResponse = await client.GetAsync("/NoirGlass/Branding");
+    var publicJson = System.Text.Json.JsonDocument.Parse(await publicResponse.Content.ReadAsStringAsync());
+    Check(publicResponse.IsSuccessStatusCode && publicJson.RootElement.EnumerateObject().Count() == 2 && publicJson.RootElement.TryGetProperty("hideBranding", out _), "Public branding exposes only presentation flags");
+    Check((await client.PostAsync("/NoirGlass/Rotate", null)).StatusCode == System.Net.HttpStatusCode.Unauthorized, "HTTP rotation rejects anonymous requests");
+    client.DefaultRequestHeaders.Add("X-NoirGlass-Test-Role", "viewer");
+    Check((await client.PostAsync("/NoirGlass/Rotate", null)).StatusCode == System.Net.HttpStatusCode.Forbidden, "HTTP rotation rejects non-administrators");
+    client.DefaultRequestHeaders.Remove("X-NoirGlass-Test-Role"); client.DefaultRequestHeaders.Add("X-NoirGlass-Test-Role", "admin");
+    Check((await client.PostAsync("/NoirGlass/Rotate", null)).StatusCode == System.Net.HttpStatusCode.ServiceUnavailable, "Authorized rotation degrades safely without plugin services");
+    await app.StopAsync();
+}

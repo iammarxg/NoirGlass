@@ -15,12 +15,17 @@ npm run test:docs
 npm run test:plugin
 npm run test:companion
 npm run test:autoplay
+npm run test:home-options
+npm run test:formats
+npm run test:plugin-settings
+npm run test:branding
+npm run test:responsive
 npm run test:ui
 npm run test:dashboard
 npm run test:dashboard-layout
 npm run test:polish
 npm run test:release
-node scripts/check-release-version.mjs v1.0.0
+node scripts/check-release-version.mjs v1.2.0
 npm audit --audit-level=high
 ```
 
@@ -29,6 +34,10 @@ npm audit --audit-level=high
 `npm run build:plugin` compiles official Jellyfin 12.1 packages, embeds the browser payload in `NoirGlass.Plugin.dll`, and produces the deterministic ZIP and catalog checksum. `build:all` runs both builds. The ZIP target suffix remains `12.1.0` regardless of the product version.
 
 Static checks validate CSS parsing, token documentation, deterministic output, bundled assets/licenses, links/screenshots, and ZIP checksum. Plugin tests cover injection, base URLs, authenticated settings, and configuration loading. Playwright fixtures cover fallback, duplicate loading, badges, routes, autoplay/pause behavior, reduced motion, unrelated-media isolation, and compatibility.
+
+The resolution-first suites use [the shared viewport matrix](../scripts/viewports.mjs): twelve conventional 16:9 sizes from 854x480 through 3840x2160, followed by 16:10, 4:3, ultrawide, 32:9, portrait and mobile layouts. `test:responsive` checks shared controls, header geometry, compact tracks, native icon states, continuous dialogs and splash layering; `test:dashboard-layout` measures full-shell geometry and resizing across the same matrix.
+
+`test:home-options` covers paginated discovery, large counts with bounded slide/image rendering, permission-filtered links, recreated navigation, rotation revisions, idle deferral and failure recovery. `test:formats` checks selected-stream evidence and explicit source labels; `test:plugin-settings` exercises the administrator form without contacting a server. Plugin HTTP tests verify that configuration requires authentication, rotation requires administrator access, and the public branding response exposes only its two visual flags.
 
 ## Temporary Playwright preview
 
@@ -48,7 +57,7 @@ node scripts/browser-command.mjs companion
 
 The helper on `127.0.0.1:4319` controls a Playwright browser; it does not start Jellyfin or change saved Custom CSS. Authentication stays in memory. The companion command previews the browser payload; only installing the real plugin tests server-side injection. Use `node scripts/browser-command.mjs disable-companion` to test CSS-only fallback.
 
-Local item IDs belong in ignored `.local/instance.json`. Keep authentication files, credentials, private logo previews, reference screenshots, and cloned reference repositories out of public commits. Use Playwright for rendered-page verification at 1920×1080, 1440×900, and 390×844. Public screenshots must use a permitted test library.
+Local item IDs belong in ignored `.local/instance.json`. Keep authentication files, credentials, private logo previews, reference screenshots, and cloned reference repositories out of public commits. Use Playwright for rendered-page verification across the shared 16:9-first viewport matrix. Public screenshots must use a permitted test library.
 
 Keep technical test reports in ignored `.local/verification/` storage.
 
@@ -58,7 +67,7 @@ The [component coverage matrix](UI-COVERAGE.md) separates live audit selectors f
 
 `test:dashboard` exercises authenticated administrator detection, direct routes, base URLs, native CSS precedence, preference changes, duplicate payloads, stale results, sign-out, and stylesheet failure. The loader reads only Jellyfin's existing local Custom CSS preferences, and uses the authenticated API client for plugin settings and branding.
 
-`npm run test:dashboard-layout` checks the full native header/spacer/sidebar shell at 1440×900, 1920×1080, 2560×1440, 3440×1440, 3840×2160, and 390×844. Geometry assertions cover page and inner-form width, header clearance, native overview grids, plugin settings, table pagination, Metadata Manager panes, resizing, and post-import spacing overrides. User Settings and dialogs retain independent sizing. Results are written to ignored `test-results/dashboard-layout/`.
+`npm run test:dashboard-layout` checks the full native header/spacer/sidebar shell across all twenty-two matrix viewports. Geometry assertions cover page and inner-form width, header clearance, native overview grids, plugin settings, table pagination, Metadata Manager panes, resizing, and post-import spacing overrides. User Settings and dialogs retain independent sizing. Results are written to ignored `test-results/dashboard-layout/`.
 
 `npm run test:polish` checks field-group widths, compact native controls, spacious exceptions, label/help alignment, favorite state transitions, hover/focus colors, and short/scrolling confirmations at the same six resolutions. Shared prompt fixtures cover restart, shutdown, delete, uninstall, restore, refresh, scan, scheduled tasks and playback errors without attaching server operations. Results are kept in ignored `test-results/polish/`.
 

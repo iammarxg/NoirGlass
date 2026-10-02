@@ -1,6 +1,6 @@
 /* Native manual, visual, Quick Connect and recovery flows remain available. */
 #loginPage {
-  background-color: var(--ng-bg);
+  background-color: var(--ng-transparent) !important;
   color: var(--ng-text);
 }
 #loginPage > .padded-left.padded-right.padded-bottom-page {
@@ -49,3 +49,6 @@
 #loginPage .button-submit:hover { background: var(--ng-text); }
 #loginPage .cardText { color: var(--ng-text); }
 #loginPage .cardImageContainer { border-radius: var(--ng-radius-card); }
+
+html:has(#loginPage:not(.hide)) .backgroundContainer.withBackdrop { background: var(--ng-transparent) !important; }
+html:has(#loginPage:not(.hide)) .backgroundContainer:not(.withBackdrop) { background: var(--ng-bg) !important; }

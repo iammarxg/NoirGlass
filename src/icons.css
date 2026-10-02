@@ -36,7 +36,8 @@
   #itemDetailPage :is(#childrenContent, #childrenCollapsible) .listViewUserDataButtons .more_vert { mask-image: url("../assets/icons/more.svg"); }
   #videoOsdPage .videoOsdBottom .buttons .material-icons { width: var(--ng-player-icon-size); height: var(--ng-player-icon-size); }
   #videoOsdPage .btnPlay .material-icons { mask-image: url("../assets/icons/play.svg"); }
-  #videoOsdPage .btnPause .material-icons { mask-image: url("../assets/icons/pause.svg"); }
+  #videoOsdPage .btnPause .material-icons.pause { mask-image: url("../assets/icons/pause.svg"); animation: ng-show-pause var(--ng-icon-state-duration) var(--ng-ease); }
+  #videoOsdPage .btnPause .material-icons.play_arrow { mask-image: url("../assets/icons/play.svg"); animation: ng-show-play var(--ng-icon-state-duration) var(--ng-ease); }
   #videoOsdPage .btnRewind .material-icons { mask-image: url("../assets/icons/rewind.svg"); }
   #videoOsdPage .btnFastForward .material-icons { mask-image: url("../assets/icons/forward.svg"); }
   #videoOsdPage :is(.btnPreviousChapter, .btnPreviousTrack) .material-icons { mask-image: url("../assets/icons/previous.svg"); }
@@ -80,3 +81,6 @@
     height: var(--ng-player-icon-size) !important;
   }
 }
+
+@keyframes ng-show-play { from { opacity: 0; transform: scale(.8); } to { opacity: 1; transform: scale(1); } }
+@keyframes ng-show-pause { from { opacity: 0; transform: scale(.8); } to { opacity: 1; transform: scale(1); } }

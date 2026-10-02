@@ -10,6 +10,11 @@
 /* NoirGlass public tokens. */
 :root {
   --ng-companion-contract: 1;
+  --ng-glass-opacity-scale: 1;
+  --ng-format-badges-display: flex;
+  --ng-icon-state-duration: 200ms;
+  --ng-admin-brand-inset: 12px;
+  --ng-feature-logo-height: min(12svh, var(--ng-logo-height));
   --ng-dashboard-contract: 1;
   --ng-bg: #000;
   --ng-surface: #151517;
@@ -20,8 +25,8 @@
   --ng-text-on-image: #ffffffdb;
   --ng-primary-bg: #f2f2f5;
   --ng-primary-text: #0b0b0d;
-  --ng-secondary-bg: #80808a42;
-  --ng-secondary-hover: #9696a05c;
+  --ng-secondary-bg: rgb(128 128 138 / clamp(0, calc(0.25882352941176473 * var(--ng-glass-opacity-scale)), 1));
+  --ng-secondary-hover: rgb(150 150 160 / clamp(0, calc(0.3607843137254902 * var(--ng-glass-opacity-scale)), 1));
   --ng-border: #ffffff1a;
   --ng-hairline: #ffffff14;
   --ng-transparent: transparent;
@@ -92,11 +97,11 @@
   --ng-player-top-scrim: linear-gradient(to bottom, #000000b8, transparent);
   --ng-login-width: 440px;
   --ng-login-padding: clamp(24px, 4vw, 48px);
-  --ng-login-background: linear-gradient(135deg, #16161a, #0d0d10 60%, #000);
+  --ng-login-background: var(--ng-dialog-glass);
   --ng-login-title-size: 32px;
   /* tvOS-inspired surfaces and proportions. */
-  --ng-nav-glass: #222226b8;
-  --ng-nav-solid: #19191ce8;
+  --ng-nav-glass: rgb(34 34 38 / clamp(0, calc(0.7215686274509804 * var(--ng-glass-opacity-scale)), 1));
+  --ng-nav-solid: rgb(25 25 28 / clamp(0, calc(0.9098039215686274 * var(--ng-glass-opacity-scale)), 1));
   --ng-nav-width: 248px;
   --ng-nav-radius: 26px;
   --ng-nav-inset: 22px;
@@ -105,14 +110,14 @@
   --ng-nav-selection: #f3f3f5;
   --ng-nav-selection-text: #151517;
   --ng-nav-border: #ffffff21;
-  --ng-header-scrolled: #0d0d10d9;
-  --ng-chrome-glass: #34343bb8;
-  --ng-home-chrome-glass: #30303880;
-  --ng-home-selected-glass: #f3f3f5bd;
-  --ng-home-secondary-glass: linear-gradient(145deg, #ffffff24, #ffffff0a), #27272d80;
-  --ng-home-secondary-hover-glass: linear-gradient(145deg, #ffffff35, #ffffff16), #27272d8c;
+  --ng-header-scrolled: rgb(13 13 16 / clamp(0, calc(0.8509803921568627 * var(--ng-glass-opacity-scale)), 1));
+  --ng-chrome-glass: rgb(52 52 59 / clamp(0, calc(0.7215686274509804 * var(--ng-glass-opacity-scale)), 1));
+  --ng-home-chrome-glass: rgb(48 48 56 / clamp(0, calc(0.5019607843137255 * var(--ng-glass-opacity-scale)), 1));
+  --ng-home-selected-glass: rgb(243 243 245 / clamp(0, calc(0.7411764705882353 * var(--ng-glass-opacity-scale)), 1));
+  --ng-home-secondary-glass: linear-gradient(145deg, rgb(255 255 255 / clamp(0, calc(0.1411764705882353 * var(--ng-glass-opacity-scale)), 1)), rgb(255 255 255 / clamp(0, calc(0.0392156862745098 * var(--ng-glass-opacity-scale)), 1))), rgb(39 39 45 / clamp(0, calc(0.5019607843137255 * var(--ng-glass-opacity-scale)), 1));
+  --ng-home-secondary-hover-glass: linear-gradient(145deg, rgb(255 255 255 / clamp(0, calc(0.20784313725490197 * var(--ng-glass-opacity-scale)), 1)), rgb(255 255 255 / clamp(0, calc(0.08627450980392157 * var(--ng-glass-opacity-scale)), 1))), rgb(39 39 45 / clamp(0, calc(0.5490196078431373 * var(--ng-glass-opacity-scale)), 1));
   --ng-home-glass-border: #ffffff42;
-  --ng-chrome-hover: #ffffff36;
+  --ng-chrome-hover: rgb(255 255 255 / clamp(0, calc(0.21176470588235294 * var(--ng-glass-opacity-scale)), 1));
   --ng-chrome-border: #ffffff30;
   --ng-chrome-border-width: 1px;
   --ng-chrome-icon-size: 21px;
@@ -120,7 +125,7 @@
   --ng-chrome-group-gap: 3px;
   --ng-chrome-tab-height: 42px;
   --ng-chrome-group-padding: 4px;
-  --ng-feature-height: clamp(590px, 82svh, 920px);
+  --ng-feature-height: 78svh;
   --ng-feature-title-size: clamp(38px, 4.8vw, 72px);
   --ng-feature-content-width: 620px;
   --ng-feature-scrim: linear-gradient(90deg, #000000b5, #0000004d 46%, transparent 76%), linear-gradient(0deg, #000 0%, #00000091 18%, #00000012 56%, transparent);
@@ -131,22 +136,22 @@
   --ng-feature-dot-active-width: 22px;
   --ng-feature-slide-duration: 650ms;
   --ng-library-grid-gap: clamp(24px, 2.6vw, 42px);
-  --ng-poster-actions-bg: #151519d9;
+  --ng-poster-actions-bg: rgb(21 21 25 / clamp(0, calc(0.8509803921568627 * var(--ng-glass-opacity-scale)), 1));
   --ng-poster-action-size: 40px;
   --ng-poster-play-size: 54px;
   --ng-poster-action-gap: 3px;
   --ng-poster-action-inset: 12px;
   --ng-poster-action-padding: 6px;
-  --ng-track-surface: #24242abb;
-  --ng-track-hover: #35353dc9;
+  --ng-track-surface: rgb(36 36 42 / clamp(0, calc(0.7333333333333333 * var(--ng-glass-opacity-scale)), 1));
+  --ng-track-hover: rgb(53 53 61 / clamp(0, calc(0.788235294117647 * var(--ng-glass-opacity-scale)), 1));
   --ng-track-border: #ffffff2b;
-  --ng-track-row-height: 66px;
+  --ng-track-row-height: 44px;
   --ng-track-icon-size: 20px;
   --ng-track-label-size: 13px;
   --ng-track-label-width: 112px;
   --ng-track-select-end-padding: 34px;
-  --ng-track-badge-pull: -8px;
-  --ng-format-badge-bg: #ffffff1c;
+  --ng-track-badge-pull: 0px;
+  --ng-format-badge-bg: rgb(255 255 255 / clamp(0, calc(0.10980392156862745 * var(--ng-glass-opacity-scale)), 1));
   --ng-format-badge-border: #ffffff38;
   --ng-format-badge-height: 24px;
   --ng-format-badge-font-size: 11px;
@@ -156,13 +161,13 @@
   --ng-episode-action-size: 40px;
   --ng-episode-dock-padding: 5px;
   --ng-episode-dock-gap: 2px;
-  --ng-episode-dock-bg: #37373ec9;
+  --ng-episode-dock-bg: rgb(55 55 62 / clamp(0, calc(0.788235294117647 * var(--ng-glass-opacity-scale)), 1));
   --ng-episode-dock-border: #ffffff38;
   --ng-episode-card-lift: -3px;
   --ng-search-heading-size: clamp(26px, 2.5vw, 38px);
   --ng-search-content-width: 880px;
   --ng-search-field-height: 72px;
-  --ng-search-field-bg: #2b2b30b8;
+  --ng-search-field-bg: rgb(43 43 48 / clamp(0, calc(0.7215686274509804 * var(--ng-glass-opacity-scale)), 1));
   --ng-search-input-font-size: 24px;
   --ng-search-input-line-height: 1.2;
   --ng-search-input-padding: 28px;
@@ -175,7 +180,7 @@
   --ng-osd-padding: clamp(20px, 3vw, 44px);
   --ng-player-control-size: 44px;
   --ng-player-control-gap: 6px;
-  --ng-player-dock-bg: #2b2b318c;
+  --ng-player-dock-bg: rgb(43 43 49 / clamp(0, calc(0.5490196078431373 * var(--ng-glass-opacity-scale)), 1));
   --ng-player-dock-border: #ffffff47;
   --ng-player-dock-padding: 6px;
   --ng-player-dock-gap: 3px;
@@ -184,7 +189,7 @@
   --ng-player-title-size: 21px;
   --ng-player-timeline-track: #ffffff59;
   --ng-player-chapter-tick: #ffffff73;
-  --ng-player-control-hover: #ffffff30;
+  --ng-player-control-hover: rgb(255 255 255 / clamp(0, calc(0.18823529411764706 * var(--ng-glass-opacity-scale)), 1));
   --ng-player-control-active: #f2f2f5;
   --ng-player-timeline-height: 4px;
   --ng-player-bottom-padding: 22px;
@@ -195,23 +200,23 @@
   --ng-field-radius: 14px;
   --ng-field-height: 48px;
   --ng-field-padding: 16px;
-  --ng-field-bg: #292930a3;
-  --ng-field-hover: #383840b8;
+  --ng-field-bg: rgb(41 41 48 / clamp(0, calc(0.6392156862745098 * var(--ng-glass-opacity-scale)), 1));
+  --ng-field-hover: rgb(56 56 64 / clamp(0, calc(0.7215686274509804 * var(--ng-glass-opacity-scale)), 1));
   --ng-field-border: #ffffff38;
   --ng-field-placeholder: #ebebf599;
-  --ng-primary-glass: #f2f2f5d9;
+  --ng-primary-glass: rgb(242 242 245 / clamp(0, calc(0.8509803921568627 * var(--ng-glass-opacity-scale)), 1));
   --ng-danger: #ff9b98;
-  --ng-danger-bg: #962b303d;
+  --ng-danger-bg: rgb(150 43 48 / clamp(0, calc(0.23921568627450981 * var(--ng-glass-opacity-scale)), 1));
   --ng-success: #99dfbd;
   --ng-disabled-opacity: .45;
   --ng-touch-target: 44px;
-  --ng-dialog-glass: #1e1e24ed;
+  --ng-dialog-glass: rgb(30 30 36 / clamp(0, calc(0.9294117647058824 * var(--ng-glass-opacity-scale)), 1));
   --ng-dialog-clearance: 16px;
   --ng-dialog-available-width: calc(100vw - var(--ng-dialog-clearance) * 2);
   --ng-dialog-available-height: calc(100dvh - var(--ng-dialog-clearance) * 2);
   --ng-dialog-menu-width: 28rem;
   --ng-dialog-editor-width: 56rem;
-  --ng-dialog-footer-bg: #292930e8;
+  --ng-dialog-footer-bg: rgb(41 41 48 / clamp(0, calc(0.9098039215686274 * var(--ng-glass-opacity-scale)), 1));
   --ng-dialog-backdrop: #0009;
   --ng-admin-row-height: 44px;
   --ng-admin-gap: 16px;
@@ -219,7 +224,7 @@
   --ng-admin-form-width: 56rem;
   --ng-admin-page-gutter: 32px;
   --ng-admin-page-top-gap: 24px;
-  --ng-admin-panel-bg: #25252b80;
+  --ng-admin-panel-bg: rgb(37 37 43 / clamp(0, calc(0.5019607843137255 * var(--ng-glass-opacity-scale)), 1));
   --ng-admin-table-stripe: #ffffff04;
   --ng-admin-table-min-width: 36rem;
   --ng-stats-width: 28rem;
@@ -241,7 +246,7 @@
     --ng-episode-columns: minmax(0, 1fr);
     --ng-episode-image-width: 100%;
     --ng-episode-content-columns: minmax(0, 1fr);
-    --ng-feature-height: clamp(520px, 78svh, 740px);
+    --ng-feature-height: 78svh;
     --ng-feature-title-size: clamp(34px, 9vw, 48px);
     --ng-search-field-height: 58px;
     --ng-search-input-font-size: 19px;
@@ -252,7 +257,7 @@
     --ng-library-grid-gap: 20px;
     --ng-chrome-button-size: 44px;
     --ng-chrome-group-padding: 2px;
-    --ng-track-row-height: 62px;
+    --ng-track-row-height: 44px;
     --ng-poster-action-size: 44px;
     --ng-episode-action-size: 44px;
     --ng-player-control-size: 44px;
@@ -265,12 +270,12 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  :root { --ng-motion-duration: var(--ng-reduced-duration); --ng-feature-slide-duration: var(--ng-reduced-duration); --ng-card-lift: 0px; }
+  :root { --ng-motion-duration: var(--ng-reduced-duration); --ng-feature-slide-duration: var(--ng-reduced-duration); --ng-icon-state-duration: var(--ng-reduced-duration); --ng-card-lift: 0px; }
 }
 
 body { background-color: var(--ng-bg); }
-.libraryPage:not(.itemDetailPage):not(#videoOsdPage) { background-color: var(--ng-bg); }
-html:has(.libraryPage:not(.hide):not(#videoOsdPage), #loginPage:not(.hide)) .backgroundContainer:not(.withBackdrop) {
+.libraryPage:not(.itemDetailPage):not(#videoOsdPage):not(#loginPage) { background-color: var(--ng-bg) !important; }
+html:has(.libraryPage:not(.hide):not(#videoOsdPage):not(#loginPage)) .backgroundContainer:not(.withBackdrop) {
   background-color: var(--ng-bg) !important;
 }
 :where(.libraryPage, #loginPage, #videoOsdPage) {
@@ -282,4 +287,8 @@ html:has(.libraryPage:not(.hide):not(#videoOsdPage), #loginPage:not(.hide)) .bac
 /* Opaque fallback stays usable when backdrop-filter is unavailable. */
 @supports not (backdrop-filter: blur(1px)) {
   :root { --ng-secondary-bg: #202026; --ng-control-blur: none; --ng-osd-blur: none; --ng-nav-glass: var(--ng-nav-solid); --ng-home-chrome-glass: var(--ng-nav-solid); --ng-home-selected-glass: var(--ng-nav-selection); --ng-home-secondary-glass: var(--ng-secondary-bg); --ng-home-secondary-hover-glass: var(--ng-secondary-hover); --ng-player-dock-bg: var(--ng-nav-solid); }
+}
+
+@media (max-width: 23.75rem) {
+  :root { --ng-nav-height: 116px; }
 }

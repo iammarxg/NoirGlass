@@ -62,6 +62,11 @@ jobs:
       - run: npm run test:plugin
       - run: npm run test:companion
       - run: npm run test:autoplay
+      - run: npm run test:home-options
+      - run: npm run test:responsive
+      - run: npm run test:formats
+      - run: npm run test:plugin-settings
+      - run: npm run test:branding
       - run: npm run test:ui
       - run: npm run test:dashboard
       - run: npm run test:dashboard-layout
@@ -75,6 +80,7 @@ jobs:
             test-results/ui/
             test-results/dashboard-layout/
             test-results/polish/
+            test-results/responsive/
       - run: npm run test:release
       - name: Verify release versions and changelog
         env:

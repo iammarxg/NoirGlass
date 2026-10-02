@@ -4,6 +4,25 @@ Changes for each NoirGlass release are recorded here. GitHub release notes inclu
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-02
+
+### Added
+
+- Configurable featured-title count with a default of ten, periodic lineup replacement, and administrator Rotate Now.
+- Optional Home links for Collections and authorized libraries, plus a setting to hide Web branding.
+- Global glass opacity, optional detail badges, and expanded source/track format labels.
+
+### Changed
+
+- New autoplay configurations default to ten seconds; saved intervals remain unchanged.
+- Compact glass track selectors with a shared format-badge strip.
+
+### Fixed
+
+- State-aware Play/Pause icons, viewport-scaled Home artwork, and mobile glass navigation.
+- Login splash visibility, continuous dialog surfaces, page backgrounds, and Dashboard brand spacing.
+- Contained mobile task tables, long repository URLs, narrow profile rows and short-screen player docks.
+
 ## [1.1.2] - 2026-10-02
 
 ### Fixed

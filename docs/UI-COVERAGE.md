@@ -53,7 +53,7 @@ The local audit contains 163 captures across 55 route variants, including 15 act
 
 ## Dashboard layout
 
-[Full-shell fixtures](../scripts/test-dashboard-layout.mjs) reproduce the inspected native toolbar, independent header spacer, sidebar offsets, capped page/form wrappers, and overview grid margins. `test:dashboard-layout` checks 60 geometry states across 1440×900, 1920×1080, 2560×1440, 3440×1440, 3840×2160, and 390×844, including resizing without navigation. Assertions measure actual field width and header clearance rather than relying only on document overflow.
+[Full-shell fixtures](../scripts/test-dashboard-layout.mjs) reproduce the inspected native toolbar, independent header spacer, sidebar offsets, capped page/form wrappers, and overview grid margins. `test:dashboard-layout` checks 220 geometry states across the 16:9-first viewport matrix, including resizing without navigation. Assertions measure actual field width and header clearance rather than relying only on document overflow.
 
 | Family | Geometry checked |
 | --- | --- |
@@ -70,12 +70,12 @@ The local audit contains 163 captures across 55 route variants, including 15 act
 
 Favorite tests follow native `data-isfavorite`, `ratingbutton-withrating` and `btnUserDataOn` states across poster, detail, episode, list and player controls, including hover/focus and post-import color overrides. Navigation hearts retain their original treatment. Native simple-confirmation markup is checked for centered compact geometry, long-content scrolling, aligned header/footer and safe Cancel dismissal. Larger editors remain covered by the shared UI suite; restart/shutdown/delete/uninstall/restore/refresh/scan/task/playback-error fixtures cover presentation only, without server actions.
 
-Live checks passed 42 form/confirmation states across the six resolutions, six unauthenticated login layouts, sixteen Desktop/Mobile editor flows, and safe opening/cancellation of actual Restart and Shutdown prompts in both Legacy modes. The 62-state Dashboard shell check also passed after field compaction. Favorite transitions were exercised in fixtures; live poster/detail/episode captures verified visible outline silhouettes without changing stored favorites. Administration captures remain private.
+Current live captures and geometry records remain private; fixture tests exercise state changes without saving favorites or confirming server operations.
 
-## Verification artifacts
+## Resolution-first verification
 
-The Dashboard layout preview passed 62 live states: all 21 core destinations at 2560px; Overview, General, Devices, Plugins, plugin settings, and Metadata Manager at all six fixture resolutions; and five desktop resizes without navigation. Actual Desktop and Mobile Legacy modes were used. Checks required loaded content, available page/form width, header clearance, reachable table footers, native tree/editor behavior, and no document overflow. CSS was substituted temporarily; saved settings and server configuration were unchanged.
+[The viewport matrix](../scripts/viewports.mjs) covers twelve conventional 16:9 resolutions from 480p to 4K before ten alternate-aspect layouts. Responsive fixtures check header hit targets, both player docks, continuous dialogs, splash layers, track controls, long profile names, bare task tables and document overflow. Intentional table and shelf scrolling stays inside its native container.
 
-The candidate was temporarily previewed in 61 live states, including all 21 core Dashboard routes at 1440px, native Desktop/Mobile Legacy Settings, menus, details, episodes, and Home at 1920px/390px, and eight media editing dialogs in both modes. No document overflow was found in those states. Native desktop and mobile playback, seeking, and audio/subtitle menus also passed. Dashboard preview used the candidate browser payload and in-memory branding substitution; the rebuilt server plugin was not installed during this pass.
+Live previews use temporary CSS and browser payload injection on an existing server, with read-only settings-response substitution for new options. They never install a candidate plugin or change saved CSS. Local plugin HTTP tests establish authentication and administrator-only rotation behavior; testing the rebuilt backend on a server requires installation and restart. Unavailable and consequential states use source-backed fixtures.
 
-`test-results/ui/coverage.json` records each executed fixture, viewport, selector family, audit capture name, and result. Screenshots and live candidate measurements are kept locally for review. Fixture assertions validate presentation and small synthetic interactions; they do not establish successful playback, server administration, credential creation, or plugin installation. Browser/OS-owned file choosers, share sheets, and select popups stay native.
+Screenshots, baseline defects, repair checks and technical reports stay in ignored `.local/verification/` and `test-results/` storage. Browser/OS-owned file choosers, sharing sheets and native select popups remain native.

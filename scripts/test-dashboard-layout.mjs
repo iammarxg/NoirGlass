@@ -3,6 +3,7 @@ import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { root } from './build.mjs';
+import { sixteenNine, adaptedViewports } from './viewports.mjs';
 
 const css = await readFile(path.resolve(root, process.env.NOIRGLASS_TEST_CSS || 'dist/noirglass.min.css'), 'utf8');
 const dir = path.join(root, 'test-results/dashboard-layout');
@@ -12,7 +13,7 @@ await mkdir(dir, { recursive: true });
 // content and direct forms each have their own native width cap. The real
 // application owns breakpoint/grid behavior, scrolling and route offsets.
 const scaffold = `
-  html{font-size:14.88px}*{box-sizing:border-box}body{margin:0}
+  html{font-size:14.88px;background:#101010}*{box-sizing:border-box}body{margin:0;background:transparent!important}
   .MuiAppBar-root{position:fixed;left:240px;right:0;top:0;z-index:100}
   .MuiToolbar-root,.header-spacer{height:48px;min-height:48px}
   .MuiToolbar-root{display:flex;align-items:center;padding:0 16px}
@@ -60,14 +61,14 @@ const fixtures = [
   { id: 'metadata', metadata: true, markup: `<aside class="editPageSidebar editPageSidebar-withcontent"><div class="libraryTree">${'<a class="jstree-anchor" href="#">Library item</a>'.repeat(40)}</div></aside><div class="editPageInnerContent"><h1>Metadata editor</h1><form>${field.repeat(15)}</form></div>` },
   { id: 'metadata-tree', metadata: true, treeOnly: true, markup: `<aside class="editPageSidebar"><div class="libraryTree">${'<a class="jstree-anchor" href="#">Library item</a>'.repeat(40)}</div></aside><div class="editPageInnerContent" hidden></div>` }
 ];
-const sizes = [[1440,900],[1920,1080],[2560,1440],[3440,1440],[3840,2160],[390,844]];
+const sizes = [...sixteenNine, ...adaptedViewports];
 const browser = await chromium.launch({ headless: true });
 const results = [];
 function shell(fixture, width) {
   const classes = ['dashboardDocument',fixture.metadata?'metadata':'',fixture.tabs?'tabs-shell':'',fixture.container?'container-shell':''].join(' ');
   const content = fixture.metadata ? fixture.markup : `<div class="content-primary">${fixture.markup}</div>`;
   const body = fixture.container ? `<div class="MuiContainer-root">${fixture.markup}</div>` : `<div class="page mainAnimatedPage ${fixture.page || ''} ${fixture.metadata?'metadataEditorPage':''}">${content}</div>`;
-  return `<!doctype html><html class="layout-${width===390?'mobile':'desktop'}"><head><style>${scaffold}</style></head><body class="${classes}"><header class="MuiAppBar-root MuiPaper-root"><div class="MuiToolbar-root">Native toolbar</div>${fixture.tabs?'<nav class="MuiTabs-root"><button class="MuiTab-root">Profile</button></nav>':''}</header><aside class="MuiDrawer-paper">Native sidebar</aside><main><div class="header-spacer"></div><div class="skinBody">${body}</div></main></body></html>`;
+  return `<!doctype html><html class="layout-${width<=500?'mobile':'desktop'}"><head><style>${scaffold}</style></head><body class="${classes}"><header class="MuiAppBar-root MuiPaper-root"><div class="MuiToolbar-root">Native toolbar</div>${fixture.tabs?'<nav class="MuiTabs-root"><button class="MuiTab-root">Profile</button></nav>':''}</header><aside class="MuiDrawer-paper">Native sidebar</aside><main><div class="header-spacer"></div><div class="skinBody">${body}</div></main></body></html>`;
 }
 async function check(page, fixture, width, height) {
   const geometry = await page.evaluate(fixture => {
@@ -81,19 +82,20 @@ async function check(page, fixture, width, height) {
       tree:fixture.metadata&&rect(document.querySelector('.libraryTree')),editor:fixture.metadata&&rect(document.querySelector('.editPageInnerContent')),
       overflow:document.documentElement.scrollWidth>innerWidth };
   }, fixture);
-  const gutter=width===390?16:32,gap=width===390?16:24,offset=fixture.metadata||width<900?0:240;
+  const gutter=width<=768?16:32,gap=width<=768?16:24,offset=fixture.metadata||width<900?0:240;
   assert.equal(geometry.header.height,fixture.tabs?96:48,`${fixture.id} ${width}: AppBar border must not enlarge native toolbar`);
   assert.equal(geometry.header.bottom,geometry.spacer.bottom,`${fixture.id}: header/spacer mismatch`);
   assert(!geometry.overflow,`${fixture.id} ${width}: document overflow`);
+  assert.equal(await page.locator('html').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(0, 0, 0)','Dashboard canvas overrides native gray');
   assert(Math.abs(geometry.heading.y-(geometry.header.bottom+gap))<1,`${fixture.id} ${width}: heading clearance`);
   if(fixture.metadata) {
     if(geometry.tree.width>0) assert(geometry.tree.y>=geometry.header.bottom+gap-1,'Fixed tree must clear header');
     if(!fixture.treeOnly) {
       assert.equal(geometry.editor.y,geometry.header.bottom+gap);
-      assert(geometry.editor.x>=width*(width===390?0:0.25),'Keep native split');
+      assert(geometry.editor.x>=width*(width<=599?0:0.25),'Keep native split');
       assert(geometry.editor.x+geometry.editor.width<=width,'Editor stays in its pane');
-      if(width===390) assert.equal(geometry.tree.width,0,'Mobile editor retains native tree dismissal');
-    } else if(width===390) assert.equal(geometry.tree.width,width-4,'Mobile tree uses native full width');
+      if(width<=599) assert.equal(geometry.tree.width,0,'Mobile editor retains native tree dismissal');
+    } else if(width<=599) assert.equal(geometry.tree.width,width-4,'Mobile tree uses native full width');
   } else {
     assert.equal(geometry.content.x,offset,`${fixture.id}: keep native sidebar offset`);
     assert.equal(geometry.content.width,geometry.available,`${fixture.id}: use available width`);
@@ -101,7 +103,7 @@ async function check(page, fixture, width, height) {
     assert.equal(geometry.heading.x,offset+gutter,`${fixture.id}: inline gutter`);
     if(fixture.form) {
       assert.equal(geometry.form.width,geometry.available-gutter*2,`${fixture.id}: remove native inner form cap`);
-      const expectedField=width===390?geometry.form.width:Math.min(geometry.form.width,Math.max(320,Math.min(geometry.form.width*.5,Math.max(geometry.form.width*.25,48*14.88))));
+      const expectedField=width<=768?geometry.form.width:Math.min(geometry.form.width,Math.max(320,Math.min(geometry.form.width*.5,Math.max(geometry.form.width*.25,48*14.88))));
       assert(Math.abs(geometry.field.width-expectedField)<1,`${fixture.id}: compact fields within full-width form`);
     }
     if(fixture.cards) {

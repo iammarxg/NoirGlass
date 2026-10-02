@@ -3,7 +3,7 @@
   padding-block-start: 0 !important;
 }
 #indexPage:has(.ng-feature) #homeTab .homeSectionsContainer {
-  margin-block-start: calc(-1 * var(--ng-section-space)) !important;
+  margin-block-start: 0 !important;
   position: relative;
   z-index: 1;
   display: flex;
@@ -49,14 +49,14 @@
 #indexPage .ng-feature__content {
   position: absolute;
   inset-inline-start: var(--ng-gutter);
-  inset-block-end: var(--ng-section-space);
+  inset-block-end: calc(var(--ng-control-height) + var(--ng-space-lg) + var(--ng-space-md));
   max-width: min(var(--ng-feature-content-width), calc(100% - var(--ng-gutter) * 2));
   z-index: 1;
 }
 #indexPage .ng-feature__logo {
   display: block;
   width: min(100%, var(--ng-logo-width));
-  max-height: var(--ng-logo-height);
+  max-height: var(--ng-feature-logo-height);
   object-fit: contain;
   object-position: left bottom;
   margin-block-end: var(--ng-space-sm);
@@ -132,7 +132,7 @@
   position: absolute;
   z-index: 2;
   inset-inline-end: var(--ng-gutter);
-  inset-block-end: var(--ng-section-space);
+  inset-block-end: var(--ng-space-lg);
 }
 #indexPage .ng-feature__arrow { padding-inline: var(--ng-space-md); }
 #indexPage .ng-feature__pause { gap: var(--ng-space-xs); padding-inline: var(--ng-space-md); }
@@ -172,16 +172,37 @@
 }
 @media (max-width: 48rem) {
   #indexPage:has(.ng-feature) #homeTab .homeSectionsContainer {
-    margin-block-start: calc(-1 * var(--ng-space-sm)) !important;
+    margin-block-start: 0 !important;
   }
   #indexPage .ng-feature__content {
-    inset-block-end: calc(var(--ng-section-space) + var(--ng-control-height) + var(--ng-space-lg));
+    inset-block-end: calc(var(--ng-control-height) + var(--ng-space-lg) + var(--ng-space-md));
   }
   #indexPage .ng-feature__overview { display: none; }
   #indexPage .ng-feature__pager {
     inset-inline-start: var(--ng-gutter);
     inset-inline-end: auto;
-    inset-block-end: calc(var(--ng-section-space) + var(--ng-space-sm));
+    inset-block-end: var(--ng-space-lg);
   }
   #indexPage .ng-feature__action { padding-inline: var(--ng-space-lg); }
+}
+
+#indexPage .ng-feature__pager { max-width: calc(100% - var(--ng-gutter) * 2); gap: var(--ng-space-xs); }
+#indexPage .ng-feature__count { color: var(--ng-text-secondary); font-size: var(--ng-small-font-size); white-space: nowrap; }
+@media (max-height: 36rem) {
+  #indexPage .ng-feature__overview { display: none; }
+  #indexPage .ng-feature__title { font-size: min(var(--ng-feature-title-size), var(--ng-title-size)); }
+}
+
+#indexPage .ng-feature__dot {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--ng-touch-target); height: var(--ng-touch-target); background: var(--ng-transparent);
+}
+#indexPage .ng-feature__dot::before {
+  content: ""; width: var(--ng-feature-dot-size); height: var(--ng-feature-dot-size);
+  border-radius: var(--ng-radius-pill); background: var(--ng-feature-dot);
+}
+#indexPage .ng-feature__dot[aria-current="true"] { width: var(--ng-touch-target); background: var(--ng-transparent); }
+#indexPage .ng-feature__dot[aria-current="true"]::before { width: var(--ng-feature-dot-active-width); background: var(--ng-feature-dot-active); }
+@media (max-width: 48rem) {
+  #indexPage .ng-feature__pause { width: var(--ng-touch-target); padding-inline: var(--ng-space-xs); font-size: 0; gap: 0; }
 }

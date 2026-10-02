@@ -40,8 +40,8 @@ const catalogUrl = 'https://github.com/iammarxg/NoirGlass/releases/latest/downlo
 assert(readme.includes(catalogUrl) && setup.includes(catalogUrl), 'README and setup must use the latest release catalog');
 assert(readme.includes('<details>') && readme.includes('<summary>Screenshots</summary>') && readme.includes('</details>'), 'README screenshots must be collapsed');
 const screenshotSection = readme.match(/<details>\s*<summary>Screenshots<\/summary>([\s\S]*?)<\/details>/)?.[1] || '';
-for (const name of ['desktop-feature','mobile-feature','desktop-navigation','mobile-navigation','desktop-detail','mobile-detail','desktop-library','mobile-library','desktop-search-results','mobile-search-results','desktop-episodes','mobile-episodes','login-desktop','login-mobile']) assert(screenshotSection.includes(`${name}.png`), `Missing gallery preview: ${name}`);
-assert.equal((screenshotSection.match(/!\[/g) || []).length,14,'Gallery must contain seven desktop/mobile pairs');
+for (const name of ['desktop-feature','mobile-feature','desktop-navigation','mobile-navigation','desktop-detail','mobile-detail','desktop-library','mobile-library','desktop-search-results','mobile-search-results','desktop-episodes','mobile-episodes','player-desktop','player-mobile','login-desktop','login-mobile']) assert(screenshotSection.includes(`${name}.png`), `Missing gallery preview: ${name}`);
+assert.equal((screenshotSection.match(/!\[/g) || []).length,16,'Gallery must contain eight desktop/mobile pairs');
 assert(readme.includes('Tested on Jellyfin 12.1.'), 'README must retain the Jellyfin testing target');
 assert(readme.includes('Desktop (Legacy)') && readme.includes('Mobile (Legacy)'), 'README must retain the supported display modes');
 assert(!readme.includes('tv-feature.png'), 'The removed TV-size feature showcase must not return to the README');
@@ -95,7 +95,7 @@ for (const filename of ['README.md','CHANGELOG.md','docs/SETUP.md','docs/CUSTOMI
 }
 const tvos = JSON.parse(await readFile(path.join(root,'reference/tvos-page-matrix.json'),'utf8'));
 for (const page of ['home','navigation','search','library','movie-and-series-detail','episodes','player']) assert(tvos.screens.some(screen => screen.page === page), `Missing tvOS research page ${page}`);
-assert.equal(declared.size,211,'Every public token must be documented');
+assert.equal(declared.size,216,'Every public token must be documented');
 assert(!/mediabar|slides-container|ss-settings|guardPlugin|silencePluginMedia|ng-companion-active/i.test(first + companion),'Distribution must not contain third-party hero integration');
 for (const old of ['dist/jellytv.min.css','dist/jellytv.user.js','dist/noirlucent.min.css','dist/noirlucent.companion.js','dist/NoirLucent.Plugin_12.1.0.zip']) await assert.rejects(readFile(path.join(root,old)),{code:'ENOENT'});
 console.log(`Checks passed: ${declared.size} tokens, ${modules.length} modules, deterministic minification, reference coverage, fonts, plugin package and documentation links.`);
