@@ -8,7 +8,15 @@
 }
 :is(#myPreferencesMenuPage, #userProfilePage, #quickConnectPreferencesPage,
     #displayPreferencesPage, #homeScreenPreferencesPage, #playbackPreferencesPage,
-    #controlsPreferencesPage, #forgotPasswordPage, .pluginConfigurationPage) .content-primary {
+    #controlsPreferencesPage, #forgotPasswordPage) .content-primary {
+  width: auto;
+  max-width: var(--ng-admin-form-width);
+  padding-inline: var(--ng-admin-gap);
+  box-sizing: border-box;
+  margin-inline: auto;
+}
+/* Plugin pages inside Dashboard use its desktop-first page sizing. */
+body:not(.dashboardDocument) .pluginConfigurationPage .content-primary {
   width: auto;
   max-width: var(--ng-admin-form-width);
   padding-inline: var(--ng-admin-gap);

@@ -8,12 +8,12 @@
     "category": "General",
     "versions": [
       {
-        "version": "1.1.0.0",
-        "changelog": "### Added\n\n- Shared glass controls, dialogs, editors, user Settings, and compact Dashboard panels, tables, menus, and pickers.\n- Optional administrator Dashboard styling with native server/per-user Custom CSS precedence and a default-on Theme Dashboard setting.\n- Component and Dashboard-loader browser fixtures for accessibility states, responsive layouts, failure handling, and route cleanup.\n\n### Changed\n\n- Extended browsing lists and alternate artwork views, playback menus and statistics, and documented customization tokens for forms and administration.",
+        "version": "1.1.1.0",
+        "changelog": "### Fixed\n\n- Dashboard pages now use the available desktop width instead of a narrow form column, including overview panels, tables, plugin cards, and plugin settings.\n- Restored clearance below the Dashboard header and removed borders that changed its native height.\n- Added desktop-first page gutters with mobile adaptations while preserving user Settings and dialog widths.\n- Added full Dashboard shell geometry checks through ultrawide and 4K resolutions.",
         "targetAbi": "12.1.0.0",
-        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.1.0/NoirGlass.Plugin_12.1.0.zip",
-        "checksum": "16f1c60eaff6405e8b7f99badcebcc0f",
-        "timestamp": "2026-09-30T18:50:41.000Z"
+        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.1.1/NoirGlass.Plugin_12.1.0.zip",
+        "checksum": "6575d756dd57e55b53884b9e7f9fa448",
+        "timestamp": "2026-10-01T20:42:42.000Z"
       }
     ]
   }

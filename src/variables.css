@@ -212,8 +212,10 @@
   --ng-dialog-backdrop: #0009;
   --ng-admin-row-height: 44px;
   --ng-admin-gap: 16px;
-  --ng-admin-content-width: 72rem;
+  --ng-admin-content-width: 100%;
   --ng-admin-form-width: 56rem;
+  --ng-admin-page-gutter: 32px;
+  --ng-admin-page-top-gap: 24px;
   --ng-admin-panel-bg: #25252b80;
   --ng-admin-table-stripe: #ffffff04;
   --ng-admin-table-min-width: 36rem;
@@ -254,6 +256,8 @@
     --ng-player-icon-size: 21px;
     --ng-player-title-size: 17px;
     --ng-admin-gap: 12px;
+    --ng-admin-page-gutter: 16px;
+    --ng-admin-page-top-gap: 16px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

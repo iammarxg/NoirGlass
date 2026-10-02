@@ -56,6 +56,8 @@ The [component coverage matrix](UI-COVERAGE.md) separates live audit selectors f
 
 `test:dashboard` exercises authenticated administrator detection, direct routes, base URLs, native CSS precedence, preference changes, duplicate payloads, stale results, sign-out, and stylesheet failure. The loader reads only Jellyfin's existing local Custom CSS preferences, and uses the authenticated API client for plugin settings and branding.
 
+`npm run test:dashboard-layout` checks the full native header/spacer/sidebar shell at 1440×900, 1920×1080, 2560×1440, 3440×1440, 3840×2160, and 390×844. Geometry assertions cover page and inner-form width, header clearance, native overview grids, plugin settings, table pagination, Metadata Manager panes, resizing, and post-import spacing overrides. User Settings and dialogs retain independent sizing. Results are written to ignored `test-results/dashboard-layout/`.
+
 For a temporary Dashboard preview, use `node scripts/browser-command.mjs dashboard-preview` after signing in. This substitutes the local candidate stylesheet in the browser's branding response only; it does not edit saved CSS or install a plugin. Restore the native client with `disable-companion` or close the temporary browser.
 
 ## Release process

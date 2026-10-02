@@ -4,6 +4,15 @@ Changes for each NoirGlass release are recorded here. GitHub release notes inclu
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-02
+
+### Fixed
+
+- Dashboard pages now use the available desktop width instead of a narrow form column, including overview panels, tables, plugin cards, and plugin settings.
+- Restored clearance below the Dashboard header and removed borders that changed its native height.
+- Added desktop-first page gutters with mobile adaptations while preserving user Settings and dialog widths.
+- Added full Dashboard shell geometry checks through ultrawide and 4K resolutions.
+
 ## [1.1.0] - 2026-10-01
 
 ### Added

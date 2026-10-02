@@ -11,6 +11,7 @@ body.dashboardDocument { color: var(--ng-text); background: var(--ng-bg); }
   border: var(--ng-chrome-border-width) solid var(--ng-border);
 }
 .dashboardDocument :is(.MuiAppBar-root, .dashboard-appBar) { background: var(--ng-nav-glass) !important; backdrop-filter: var(--ng-control-blur); color: var(--ng-text); }
+.dashboardDocument .MuiAppBar-root { border: none; border-radius: 0; }
 .dashboardDocument .MuiDrawer-paper { background: var(--ng-nav-glass); backdrop-filter: var(--ng-control-blur); border-radius: 0; border-inline-end: var(--ng-chrome-border-width) solid var(--ng-border); }
 .dashboardDocument .MuiListItemIcon-root { color: inherit; }
 .dashboardDocument .MuiDrawer-paper .MuiListItemButton-root.Mui-selected :is(.MuiTypography-root, .MuiListItemText-primary, .MuiListItemText-secondary) { color: var(--ng-nav-selection-text) !important; }
@@ -37,7 +38,28 @@ body.dashboardDocument { color: var(--ng-text); background: var(--ng-bg); }
 .dashboardDocument .MuiTablePagination-toolbar { flex-wrap: wrap; gap: var(--ng-space-xs); padding: var(--ng-space-xs); }
 .dashboardDocument .MuiTablePagination-spacer { flex: 0; }
 .dashboardDocument :is(.page, .content-primary, .readOnlyContent) { color: var(--ng-text); font-family: var(--ng-font); min-width: 0; max-width: 100%; }
-.dashboardDocument .content-primary { max-width: var(--ng-admin-form-width); padding-inline: var(--ng-admin-gap); box-sizing: border-box; }
+/* Jellyfin owns the header spacer and sidebar offsets. Size the actual page
+   content, not the shell or portaled editors; add only the gap below the spacer. */
+.dashboardDocument .mainAnimatedPage:not(.metadataEditorPage) .content-primary,
+.dashboardDocument main > .skinBody > .MuiContainer-root {
+  width: 100%;
+  max-width: var(--ng-admin-content-width);
+  margin-inline: 0;
+  padding-inline: var(--ng-admin-page-gutter);
+  padding-block-start: var(--ng-admin-page-top-gap);
+  box-sizing: border-box;
+}
+.dashboardDocument .metadataEditorPage { padding-block-start: var(--ng-admin-page-top-gap) !important; }
+/* Native page forms have a separate 54em cap; keep compact field groups native. */
+.dashboardDocument .mainAnimatedPage:not(.metadataEditorPage) .content-primary > form {
+  width: 100%;
+  max-width: 100%;
+}
+/* The tree is fixed independently of the editor's normal flow. */
+.dashboardDocument .metadataEditorPage .editPageSidebar {
+  padding-block-start: var(--ng-admin-page-top-gap);
+  box-sizing: border-box;
+}
 .dashboardDocument :is(.inputContainer, .selectContainer, .checkboxContainer) { margin-block-end: var(--ng-admin-gap); }
 .dashboardDocument :is(.MuiCardContent-root, .MuiCardActions-root) { padding: var(--ng-admin-gap); }
 .dashboardDocument :is(.MuiCardActionArea-root, .MuiCardContent-root) { overflow-wrap: anywhere; }
@@ -50,6 +72,5 @@ body.dashboardDocument { color: var(--ng-text); background: var(--ng-bg); }
 .dashboardDocument .libraryPage :is(.padded-left, .padded-right) { padding-inline: var(--ng-admin-gap); }
 @media (max-width: 48rem) {
   .dashboardDocument .MuiTableCell-root { padding: 0 var(--ng-space-sm); }
-  .dashboardDocument .MuiContainer-root { padding-inline: var(--ng-admin-gap); }
   .dashboardDocument .MuiDialog-paper { max-height: var(--ng-dialog-available-height); }
 }

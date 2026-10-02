@@ -51,7 +51,22 @@ The local audit contains 163 captures across 55 route variants, including 15 act
 
 `test:dashboard` verifies direct Dashboard, Metadata Manager, and plugin settings loads; administrator-only activation; CSS server/user order; disabled server CSS; user-only imports; pasted CSS; anonymous/non-admin/disabled/unconfigured fallbacks; base URLs; duplicates; route exit; sign-out; destruction; stale requests and client replacement; local preference changes; failed imports; and stylesheet compatibility. It follows [Jellyfin's Custom CSS order](https://github.com/jellyfin/jellyfin-web/blob/master/src/components/CustomCss.tsx) and reads the two local preferences used by [userSettings](https://github.com/jellyfin/jellyfin-web/blob/master/src/scripts/settings/userSettings.js).
 
+## Dashboard layout
+
+[Full-shell fixtures](../scripts/test-dashboard-layout.mjs) reproduce the inspected native toolbar, independent header spacer, sidebar offsets, capped page/form wrappers, and overview grid margins. `test:dashboard-layout` checks 60 geometry states across 1440×900, 1920×1080, 2560×1440, 3440×1440, 3840×2160, and 390×844, including resizing without navigation. Assertions measure actual field width and header clearance rather than relying only on document overflow.
+
+| Family | Geometry checked |
+| --- | --- |
+| React and plugin configuration forms | Full available width, uncapped inner forms, desktop/mobile gutters, header clearance |
+| Overview and plugin cards | Native grid margins, readable columns, available page width |
+| Devices and Activity-style tables | Contained horizontal scrolling and reachable pagination |
+| Metadata Manager | Native desktop split; mobile tree and editor states; clearance in both panes |
+| Header and resize transitions | Native toolbar/spacer alignment, tabbed header height, responsive spacing |
+| Independent surfaces | User Settings and portaled dialog sizing; post-import spacing overrides |
+
 ## Verification artifacts
+
+The Dashboard layout preview passed 62 live states: all 21 core destinations at 2560px; Overview, General, Devices, Plugins, plugin settings, and Metadata Manager at all six fixture resolutions; and five desktop resizes without navigation. Actual Desktop and Mobile Legacy modes were used. Checks required loaded content, available page/form width, header clearance, reachable table footers, native tree/editor behavior, and no document overflow. CSS was substituted temporarily; saved settings and server configuration were unchanged.
 
 The candidate was temporarily previewed in 61 live states, including all 21 core Dashboard routes at 1440px, native Desktop/Mobile Legacy Settings, menus, details, episodes, and Home at 1920px/390px, and eight media editing dialogs in both modes. No document overflow was found in those states. Native desktop and mobile playback, seeking, and audio/subtitle menus also passed. Dashboard preview used the candidate browser payload and in-memory branding substitution; the rebuilt server plugin was not installed during this pass.
 

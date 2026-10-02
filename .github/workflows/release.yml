@@ -64,12 +64,15 @@ jobs:
       - run: npm run test:autoplay
       - run: npm run test:ui
       - run: npm run test:dashboard
+      - run: npm run test:dashboard-layout
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: noirglass-ui-fixtures
           if-no-files-found: ignore
-          path: test-results/ui/
+          path: |
+            test-results/ui/
+            test-results/dashboard-layout/
       - run: npm run test:release
       - name: Verify release versions and changelog
         env:
