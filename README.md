@@ -6,6 +6,24 @@ NoirGlass gives Jellyfin's browser interface, Jellyfin Web, a cinematic, Apple T
 - **Plugin:** adds a featured Home carousel—a rotating display of titles from each user's accessible library.
 - **Plugin:** adds source-format badges and applies the theme to the administrator Dashboard.
 
+<details>
+<summary>Screenshots</summary>
+
+Desktop and mobile previews from a Jellyfin library.
+
+| View | Desktop | Mobile |
+| --- | --- | --- |
+| Home | ![Home on desktop](docs/images/desktop-feature.png) | ![Home on mobile](docs/images/mobile-feature.png) |
+| Navigation | ![Navigation on desktop](docs/images/desktop-navigation.png) | ![Navigation on mobile](docs/images/mobile-navigation.png) |
+| Details | ![Details on desktop](docs/images/desktop-detail.png) | ![Details on mobile](docs/images/mobile-detail.png) |
+| Library | ![Library on desktop](docs/images/desktop-library.png) | ![Library on mobile](docs/images/mobile-library.png) |
+| Search | ![Search on desktop](docs/images/desktop-search-results.png) | ![Search on mobile](docs/images/mobile-search-results.png) |
+| Episodes | ![Episodes on desktop](docs/images/desktop-episodes.png) | ![Episodes on mobile](docs/images/mobile-episodes.png) |
+| Player | ![Player on desktop](docs/images/player-desktop.png) | ![Player on mobile](docs/images/player-mobile.png) |
+| Login | ![Login on desktop](docs/images/login-desktop.png) | ![Login on mobile](docs/images/login-mobile.png) |
+
+</details>
+
 ## Requirements
 
 Tested on Jellyfin 12.1. Use Jellyfin Web with the **Dark** theme and **Desktop (Legacy)** or **Mobile (Legacy)** display mode. These settings are under **Settings → Display**.
@@ -52,24 +70,6 @@ This adds more space between shelf cards and makes glass backgrounds more transp
 ## Remove
 
 Delete the import and your NoirGlass overrides, save, and refresh. If installed, uninstall the plugin and restart Jellyfin. Your media and metadata are unaffected.
-
-<details>
-<summary>Screenshots</summary>
-
-Desktop and mobile previews from a Jellyfin library.
-
-| View | Desktop | Mobile |
-| --- | --- | --- |
-| Home | ![Home on desktop](docs/images/desktop-feature.png) | ![Home on mobile](docs/images/mobile-feature.png) |
-| Navigation | ![Navigation on desktop](docs/images/desktop-navigation.png) | ![Navigation on mobile](docs/images/mobile-navigation.png) |
-| Details | ![Details on desktop](docs/images/desktop-detail.png) | ![Details on mobile](docs/images/mobile-detail.png) |
-| Library | ![Library on desktop](docs/images/desktop-library.png) | ![Library on mobile](docs/images/mobile-library.png) |
-| Search | ![Search on desktop](docs/images/desktop-search-results.png) | ![Search on mobile](docs/images/mobile-search-results.png) |
-| Episodes | ![Episodes on desktop](docs/images/desktop-episodes.png) | ![Episodes on mobile](docs/images/mobile-episodes.png) |
-| Player | ![Player on desktop](docs/images/player-desktop.png) | ![Player on mobile](docs/images/player-mobile.png) |
-| Login | ![Login on desktop](docs/images/login-desktop.png) | ![Login on mobile](docs/images/login-mobile.png) |
-
-</details>
 
 ## More information
 
