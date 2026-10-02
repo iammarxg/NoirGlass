@@ -8,12 +8,12 @@
     "category": "General",
     "versions": [
       {
-        "version": "1.1.1.0",
-        "changelog": "### Fixed\n\n- Dashboard pages now use the available desktop width instead of a narrow form column, including overview panels, tables, plugin cards, and plugin settings.\n- Restored clearance below the Dashboard header and removed borders that changed its native height.\n- Added desktop-first page gutters with mobile adaptations while preserving user Settings and dialog widths.\n- Added full Dashboard shell geometry checks through ultrawide and 4K resolutions.",
+        "version": "1.1.2.0",
+        "changelog": "### Fixed\n\n- Narrowed ordinary field groups across Dashboard, Settings, login and editors while preserving full-width pages, Search, multiline editors and track selectors.\n- Replaced favorite glyphs with white outline hearts and filled red hearts that follow native favorite state, including hover and keyboard focus.\n- Centered compact Legacy confirmations on mobile, removed their inset header strip and kept long content scrolling above reachable buttons.\n- Added field, favorite and confirmation checks through ultrawide and 4K resolutions, with configurable field sizing and favorite color.",
         "targetAbi": "12.1.0.0",
-        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.1.1/NoirGlass.Plugin_12.1.0.zip",
-        "checksum": "6575d756dd57e55b53884b9e7f9fa448",
-        "timestamp": "2026-10-01T20:42:42.000Z"
+        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.1.2/NoirGlass.Plugin_12.1.0.zip",
+        "checksum": "bfc443aefec28d34b1cc8b89a69aab54",
+        "timestamp": "2026-10-02T00:36:46.000Z"
       }
     ]
   }

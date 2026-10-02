@@ -1,3 +1,12 @@
+/* Compact the complete field group, never its page or form. Native inline
+   controls keep their explicit sizing; search, tracks and multiline editors
+   retain their own layouts. Children are not given a second percentage. */
+:is(.inputContainer, .selectContainer):has(.emby-input:not(textarea):not([type="search"]):not([type="file"]):not([type="range"]):not([type="color"]), .emby-select):not(:has(textarea)):not(:is(#searchPage *, .searchfields *, .trackSelections *, .inputContainer-inline, .selectContainer-inline)):not([style*="width:"]):not([style*="width :"]),
+.MuiFormControl-root:has(> .MuiInputBase-root):not(:has(.MuiInputBase-multiline, textarea, input[type="search"], input[type="file"], input[type="range"], input[type="color"])):not(:is(#searchPage *, .trackSelections *, .MuiTablePagination-root *)):not([style*="width:"]):not([style*="width :"]) {
+  width: min(100%, max(var(--ng-form-field-min-width), var(--ng-form-field-width))) !important;
+  min-width: 0;
+  box-sizing: border-box;
+}
 /* Native controls only: subtitle renderers and appearance previews are excluded.
    Stable MUI names also cover portals mounted outside the application root. */
 :is(.emby-input, .emby-textarea, .emby-select, .emby-button,

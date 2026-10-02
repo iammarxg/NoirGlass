@@ -65,6 +65,7 @@ jobs:
       - run: npm run test:ui
       - run: npm run test:dashboard
       - run: npm run test:dashboard-layout
+      - run: npm run test:polish
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
@@ -73,6 +74,7 @@ jobs:
           path: |
             test-results/ui/
             test-results/dashboard-layout/
+            test-results/polish/
       - run: npm run test:release
       - name: Verify release versions and changelog
         env:

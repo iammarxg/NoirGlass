@@ -51,3 +51,32 @@
   #videoOsdPage .btnFullscreen .material-icons { mask-image: url("../assets/icons/fullscreen.svg"); }
   #videoOsdPage .btnFullscreen .material-icons.fullscreen_exit { mask-image: url("../assets/icons/fullscreen-exit.svg"); }
 }
+
+/* Favorite state belongs to Jellyfin. Do not alter navigation heart glyphs.
+   Rating buttons retain the same native glyph in both states, so use their
+   data attribute (or the older userdata state class), not the glyph name. */
+:is(button[data-isfavorite], button[data-method="markFavorite"], button.btnUserRating, button.ratingbutton):has(:is(.favorite, .favorite_border)) {
+  color: var(--ng-text) !important;
+}
+:is(button[data-isfavorite="true"], button[data-method="markFavorite"].btnUserDataOn:not([data-isfavorite="false"]), button.ratingbutton-withrating:not([data-isfavorite="false"])):has(:is(.favorite, .favorite_border)) {
+  color: var(--ng-favorite-color) !important;
+}
+@supports (mask-image: linear-gradient(black, black)) {
+  :is(button[data-isfavorite], button[data-method="markFavorite"], button.btnUserRating, button.ratingbutton) :is(.favorite, .favorite_border) {
+    display: inline-block !important;
+    width: var(--ng-chrome-icon-size) !important;
+    height: var(--ng-chrome-icon-size) !important;
+    flex: none !important;
+    font-size: 0 !important;
+    color: inherit !important;
+    background: currentColor !important;
+    mask: url("../assets/icons/heart.svg") center / contain no-repeat !important;
+  }
+  :is(button[data-isfavorite="true"], button[data-method="markFavorite"].btnUserDataOn:not([data-isfavorite="false"]), button.ratingbutton-withrating:not([data-isfavorite="false"])) :is(.favorite, .favorite_border) {
+    mask-image: url("../assets/icons/heart-filled.svg") !important;
+  }
+  #videoOsdPage .btnUserRating :is(.favorite, .favorite_border) {
+    width: var(--ng-player-icon-size) !important;
+    height: var(--ng-player-icon-size) !important;
+  }
+}

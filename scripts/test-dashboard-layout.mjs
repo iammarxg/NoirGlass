@@ -101,7 +101,8 @@ async function check(page, fixture, width, height) {
     assert.equal(geometry.heading.x,offset+gutter,`${fixture.id}: inline gutter`);
     if(fixture.form) {
       assert.equal(geometry.form.width,geometry.available-gutter*2,`${fixture.id}: remove native inner form cap`);
-      assert.equal(geometry.field.width,geometry.form.width,`${fixture.id}: fields use form width`);
+      const expectedField=width===390?geometry.form.width:Math.min(geometry.form.width,Math.max(320,Math.min(geometry.form.width*.5,Math.max(geometry.form.width*.25,48*14.88))));
+      assert(Math.abs(geometry.field.width-expectedField)<1,`${fixture.id}: compact fields within full-width form`);
     }
     if(fixture.cards) {
       assert.equal(geometry.cards.length,fixture.cards);

@@ -24,6 +24,9 @@ const kinds = {
 
 export const groups = [
   { id: 'forms', label: 'Forms, dialogs & administration', rows: [
+    ['form-field-width','Form field width','Sets the width of ordinary field groups including their labels and help text.','size'],
+    ['form-field-min-width','Form field minimum width','Keeps ordinary fields readable without exceeding their container.','length'],
+    ['favorite-color','Favorite heart color','Colors filled hearts for favorited media, including hover and keyboard focus.','color'],
     ['field-radius','Field corners','Rounds text inputs, selectors, and compact form buttons.','radius'],
     ['field-height','Standard field height','Sets the minimum height of standard form fields.','length'],
     ['field-padding','Field text padding','Sets horizontal spacing inside standard form fields.','length'],

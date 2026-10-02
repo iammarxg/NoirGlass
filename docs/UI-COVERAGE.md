@@ -64,6 +64,14 @@ The local audit contains 163 captures across 55 route variants, including 15 act
 | Header and resize transitions | Native toolbar/spacer alignment, tabbed header height, responsive spacing |
 | Independent surfaces | User Settings and portaled dialog sizing; post-import spacing overrides |
 
+## Compact fields, favorites and confirmations
+
+[Polish fixtures](../scripts/test-polish.mjs) exercise all six Dashboard resolutions with CSS alone. Ordinary Legacy and MUI field wrappers narrow together with their labels/help text; Search, track selectors, multiline editors, file/range/checkbox controls and explicit compact widths retain their sizing. Nested fields cap their minimum at their container width.
+
+Favorite tests follow native `data-isfavorite`, `ratingbutton-withrating` and `btnUserDataOn` states across poster, detail, episode, list and player controls, including hover/focus and post-import color overrides. Navigation hearts retain their original treatment. Native simple-confirmation markup is checked for centered compact geometry, long-content scrolling, aligned header/footer and safe Cancel dismissal. Larger editors remain covered by the shared UI suite; restart/shutdown/delete/uninstall/restore/refresh/scan/task/playback-error fixtures cover presentation only, without server actions.
+
+Live checks passed 42 form/confirmation states across the six resolutions, six unauthenticated login layouts, sixteen Desktop/Mobile editor flows, and safe opening/cancellation of actual Restart and Shutdown prompts in both Legacy modes. The 62-state Dashboard shell check also passed after field compaction. Favorite transitions were exercised in fixtures; live poster/detail/episode captures verified visible outline silhouettes without changing stored favorites. Administration captures remain private.
+
 ## Verification artifacts
 
 The Dashboard layout preview passed 62 live states: all 21 core destinations at 2560px; Overview, General, Devices, Plugins, plugin settings, and Metadata Manager at all six fixture resolutions; and five desktop resizes without navigation. Actual Desktop and Mobile Legacy modes were used. Checks required loaded content, available page/form width, header clearance, reachable table footers, native tree/editor behavior, and no document overflow. CSS was substituted temporarily; saved settings and server configuration were unchanged.

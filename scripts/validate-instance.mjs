@@ -31,7 +31,7 @@ async function theme(page) {
   await page.evaluate(() => {
     document.querySelector('#noirglass-preview')?.remove();
   });
-  await page.addStyleTag({content:'@import url("https://noirglass.invalid/dist/noirglass.min.css");'}).then(h=>h.evaluate(e=>e.id='noirglass-preview'));
+  await page.addStyleTag({content:'@import url("https://noirglass.invalid/dist/noirglass.min.css");'}).then(h=>h.evaluate(e=>{e.id='noirglass-preview';document.body.append(e);}));
   await page.waitForFunction(()=>getComputedStyle(document.documentElement).getPropertyValue('--ng-bg').trim()==='#000');
   await page.evaluate(()=>document.fonts.ready);
 }
@@ -86,7 +86,7 @@ try {
     await capture(page,`${mode}-detail`);
     assert(await page.locator('#itemDetailPage:not(.hide) .btnPlay').isVisible());
     pass(`${mode}: detail actions and artwork`);
-    await page.addStyleTag({content:':root{--ng-primary-bg:rgb(210,220,230)}',id:'override'});
+    await page.locator('#noirglass-preview').evaluate(e=>{e.textContent+='\n:root{--ng-primary-bg:rgb(210,220,230)}';});
     await page.waitForTimeout(250);
     assert.equal(await page.locator('#itemDetailPage:not(.hide) .btnPlay').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(210, 220, 230)');
     pass(`${mode}: override after import`);

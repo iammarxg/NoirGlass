@@ -37,6 +37,9 @@ For a default that changes on mobile, repeat its media query after the import, a
 
 | Setting / variable | What it does | Possible values & examples | Default | Responsive / fallback |
 | --- | --- | --- | --- | --- |
+| **Form field width**<br>`--ng-form-field-width` | Sets the width of ordinary field groups including their labels and help text. | Non-negative CSS length or percentage<br>Examples: `100%`, `240px` | `clamp(25%, 48rem, 50%)` | Mobile (up to 48rem): 100% |
+| **Form field minimum width**<br>`--ng-form-field-min-width` | Keeps ordinary fields readable without exceeding their container. | Non-negative CSS length (px, rem, vw, svh); min(), max(), and clamp() also work<br>Examples: `24px`, `clamp(16px,2vw,32px)` | `320px` | — |
+| **Favorite heart color**<br>`--ng-favorite-color` | Colors filled hearts for favorited media, including hover and keyboard focus. | CSS color: hex, rgb/rgba, hsl/hsla, or a named color<br>Examples: `#f5f5f7`, `rgba(255,255,255,.65)` | `#ff453a` | — |
 | **Field corners**<br>`--ng-field-radius` | Rounds text inputs, selectors, and compact form buttons. | Non-negative CSS length or percentage<br>Examples: `14px`, `50%` | `14px` | — |
 | **Standard field height**<br>`--ng-field-height` | Sets the minimum height of standard form fields. | Non-negative CSS length (px, rem, vw, svh); min(), max(), and clamp() also work<br>Examples: `24px`, `clamp(16px,2vw,32px)` | `48px` | — |
 | **Field text padding**<br>`--ng-field-padding` | Sets horizontal spacing inside standard form fields. | Non-negative CSS length (px, rem, vw, svh); min(), max(), and clamp() also work<br>Examples: `24px`, `clamp(16px,2vw,32px)` | `16px` | — |

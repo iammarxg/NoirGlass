@@ -95,7 +95,7 @@ for (const filename of ['README.md','CHANGELOG.md','docs/SETUP.md','docs/CUSTOMI
 }
 const tvos = JSON.parse(await readFile(path.join(root,'reference/tvos-page-matrix.json'),'utf8'));
 for (const page of ['home','navigation','search','library','movie-and-series-detail','episodes','player']) assert(tvos.screens.some(screen => screen.page === page), `Missing tvOS research page ${page}`);
-assert.equal(declared.size,208,'Every public token must be documented');
+assert.equal(declared.size,211,'Every public token must be documented');
 assert(!/mediabar|slides-container|ss-settings|guardPlugin|silencePluginMedia|ng-companion-active/i.test(first + companion),'Distribution must not contain third-party hero integration');
 for (const old of ['dist/jellytv.min.css','dist/jellytv.user.js','dist/noirlucent.min.css','dist/noirlucent.companion.js','dist/NoirLucent.Plugin_12.1.0.zip']) await assert.rejects(readFile(path.join(root,old)),{code:'ENOENT'});
 console.log(`Checks passed: ${declared.size} tokens, ${modules.length} modules, deterministic minification, reference coverage, fonts, plugin package and documentation links.`);

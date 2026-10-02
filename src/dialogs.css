@@ -13,6 +13,53 @@
 }
 .dialog.formDialog { max-width: min(var(--ng-dialog-editor-width), var(--ng-dialog-available-width)) !important; display: flex; flex-direction: column; }
 .dialog.formDialog .formDialogContent { flex: 1 1 auto; }
+/* The native simple-confirmation template uses btnOption; larger editors do
+   not. Override its low-resolution fullscreen sizing without changing menus. */
+.dialog.formDialog.centeredDialog:has(.btnOption) {
+  position: fixed !important;
+  inset: 50% auto auto 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: min(var(--ng-dialog-menu-width), var(--ng-dialog-available-width), calc(100% - var(--ng-dialog-clearance) * 2)) !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: var(--ng-dialog-available-height) !important;
+  margin: 0 !important;
+  align-items: stretch !important;
+  overflow: hidden;
+}
+.dialog.formDialog.centeredDialog:has(.btnOption) :is(.formDialogHeader, .formDialogFooter) {
+  width: 100%;
+  margin: 0 !important;
+  padding: var(--ng-space-md) !important;
+  box-sizing: border-box;
+  background: var(--ng-transparent);
+}
+.dialog.formDialog.centeredDialog:has(.btnOption) .formDialogHeaderTitle {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: var(--ng-section-font-size);
+  text-align: center;
+}
+.dialog.formDialog.centeredDialog:has(.btnOption) .formDialogContent {
+  width: 100%;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  flex: 0 1 auto;
+  padding-inline: var(--ng-space-md);
+}
+.dialog.formDialog.centeredDialog:has(.btnOption) .dialogContentInner {
+  padding: 0 !important;
+  overflow-wrap: anywhere;
+}
+.dialog.formDialog.centeredDialog:has(.btnOption) .formDialogFooter {
+  justify-content: center;
+}
+.dialog.formDialog.centeredDialog:has(.btnOption) .btnOption {
+  margin: 0;
+  min-height: var(--ng-touch-target);
+  padding: var(--ng-space-sm) var(--ng-field-padding);
+}
 .dialog.actionSheet { max-width: min(var(--ng-dialog-menu-width), var(--ng-dialog-available-width)) !important; }
 .dialog :is(.formDialogContent, .dialogContent, .scrollY, .dialogScrollArea) {
   min-height: 0;
@@ -44,6 +91,17 @@
 }
 .dialog :is(.fab, .btnBrowseAllImages) { background: var(--ng-primary-glass) !important; color: var(--ng-primary-text) !important; }
 .dialog :is(.btnDeleteImage, .button-delete) { color: var(--ng-danger); }
+.dialog .emby-button.button-cancel {
+  color: var(--ng-text) !important;
+  background: var(--ng-home-secondary-glass) !important;
+  border: var(--ng-chrome-border-width) solid var(--ng-chrome-border);
+  backdrop-filter: var(--ng-control-blur);
+}
+.dialog .emby-button.button-cancel:hover { background: var(--ng-home-secondary-hover-glass) !important; }
+.dialog :is(.emby-button.button-delete, .btnOption[data-id="delete"], .btnOption[data-id="uninstall"], .btnOption[data-id="shutdown"]) {
+  color: var(--ng-danger) !important;
+  background: var(--ng-danger-bg) !important;
+}
 .dialog :is(.dialogTitle, .formDialogHeaderTitle) { font-family: var(--ng-font-display); font-weight: var(--ng-heading-weight); overflow-wrap: anywhere; }
 .actionSheet :is(.actionSheetMenuItem, .listItem) {
   min-height: var(--ng-touch-target);

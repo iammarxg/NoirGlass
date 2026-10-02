@@ -27,7 +27,7 @@ async function preview() {
   css = await readFile(path.join(root, 'dist/noirglass.min.css'), 'utf8');
   await page.waitForLoadState('networkidle', {timeout:15000}).catch(() => {});
   await page.locator('#noirglass-preview').evaluateAll(elements => elements.forEach(e => e.remove()));
-  await page.addStyleTag({ content: '@import url("https://noirglass.invalid/dist/noirglass.min.css");' }).then(h => h.evaluate(e => { e.id = 'noirglass-preview'; }));
+  await page.addStyleTag({ content: '@import url("https://noirglass.invalid/dist/noirglass.min.css");' }).then(h => h.evaluate(e => { e.id = 'noirglass-preview'; document.body.append(e); }));
   await page.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--ng-bg').trim() !== '');
   await page.evaluate(() => document.fonts.ready);
 }

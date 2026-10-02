@@ -189,6 +189,9 @@
   --ng-player-timeline-height: 4px;
   --ng-player-bottom-padding: 22px;
   /* Shared forms and compact administration. */
+  --ng-form-field-width: clamp(25%, 48rem, 50%);
+  --ng-form-field-min-width: 320px;
+  --ng-favorite-color: #ff453a;
   --ng-field-radius: 14px;
   --ng-field-height: 48px;
   --ng-field-padding: 16px;
@@ -258,6 +261,7 @@
     --ng-admin-gap: 12px;
     --ng-admin-page-gutter: 16px;
     --ng-admin-page-top-gap: 16px;
+    --ng-form-field-width: 100%;
   }
 }
 @media (prefers-reduced-motion: reduce) {

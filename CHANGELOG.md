@@ -4,6 +4,15 @@ Changes for each NoirGlass release are recorded here. GitHub release notes inclu
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-10-02
+
+### Fixed
+
+- Narrowed ordinary field groups across Dashboard, Settings, login and editors while preserving full-width pages, Search, multiline editors and track selectors.
+- Replaced favorite glyphs with white outline hearts and filled red hearts that follow native favorite state, including hover and keyboard focus.
+- Centered compact Legacy confirmations on mobile, removed their inset header strip and kept long content scrolling above reachable buttons.
+- Added field, favorite and confirmation checks through ultrawide and 4K resolutions, with configurable field sizing and favorite color.
+
 ## [1.1.1] - 2026-10-02
 
 ### Fixed
