@@ -1,14 +1,57 @@
-# Development
+# Development and contributing
 
-Build and test the NoirGlass theme and plugin for Jellyfin target ABI **12.1.0.0**. See [installation](../README.md), [setup](SETUP.md), and [customization](CUSTOMIZATION.md).
+This guide is for your first NoirGlass source build. To install the released theme or plugin instead, use [the README](../README.md) and [Setup](SETUP.md).
 
-## Build and checks
+NoirGlass has three parts: CSS that styles Jellyfin Web, a browser script that adds the carousel and badges, and a server plugin that loads that script and supplies settings. In source and test commands, the browser script is called the **companion**; it is not a separate userscript installation.
 
-Use Node 22 and the .NET 10 SDK. From the project directory:
+## Prerequisites
 
-```powershell
-npm ci --ignore-scripts
-npx playwright install chromium
+Install **Git**, **Node.js 22** with npm, and the **.NET 10 SDK**. The server plugin targets Jellyfin's **12.1.0.0 ABI**—the plugin interface version it must match.
+
+Clone [the repository](https://github.com/iammarxg/NoirGlass) and open a terminal in its root directory. You do not need a running Jellyfin server for the automated browser fixtures or plugin tests.
+
+## Build your first candidate
+
+1. Install locked dependencies and the test browser:
+
+   ```sh
+   npm ci --ignore-scripts
+   npx playwright install chromium
+   ```
+
+2. Build the theme and plugin:
+
+   ```sh
+   npm run build:all
+   ```
+
+3. Run the basic source and documentation checks:
+
+   ```sh
+   npm run check
+   npm run test:docs
+   npm run test:plugin
+   ```
+
+| Output | Purpose |
+| --- | --- |
+| `dist/noirglass.min.css` | Single-import theme with embedded Inter, icons, and license notices. |
+| `dist/noirglass.companion.js` | Browser payload embedded in the plugin. |
+| `dist/NoirGlass.Plugin_12.1.0.zip` | Installable server plugin; the suffix identifies its Jellyfin target, not the NoirGlass release version. |
+| `manifest.json` | Plugin catalog entry with version, download URL, changelog, and ZIP checksum. |
+
+`npm run build` builds CSS, copies the browser script, and regenerates the variable tables in [Customization](CUSTOMIZATION.md). It reads defaults from CSS and explanations from the documentation metadata; it does not rewrite the README. `npm run build:plugin` builds the server plugin and catalog. `build:all` runs both.
+
+## Check your change
+
+A **fixture** is a small test page or test server that reproduces a component without connecting to your library. Fixtures allow testing error, permission, and destructive-confirmation states safely; they do not establish that a real server operation works.
+
+Run the suites related to your change, then the full list before preparing a release:
+
+<details>
+<summary>Full local validation commands</summary>
+
+```sh
 npm run build:all
 npm run check
 npm run test:docs
@@ -25,64 +68,74 @@ npm run test:dashboard
 npm run test:dashboard-layout
 npm run test:polish
 npm run test:release
-node scripts/check-release-version.mjs v1.2.0
+node scripts/check-release-version.mjs
 npm audit --audit-level=high
 ```
 
-`npm run build` concatenates the explicit CSS module order, minifies with `clean-css`, embeds Inter/original SVGs/license notices, copies the browser payload, and updates the variable guide in `docs/CUSTOMIZATION.md`. Defaults come from CSS; explanations and value examples come from `scripts/token-docs.mjs`. It does not rewrite the README.
+</details>
 
-`npm run build:plugin` compiles official Jellyfin 12.1 packages, embeds the browser payload in `NoirGlass.Plugin.dll`, and produces the deterministic ZIP and catalog checksum. `build:all` runs both builds. The ZIP target suffix remains `12.1.0` regardless of the product version.
+| Test group | What it checks |
+| --- | --- |
+| Static and documentation | CSS parsing, variable coverage, links, screenshots, licenses, catalog checksum, and customization examples. |
+| Plugin | Web-page script injection, server base URLs, configuration compatibility, authentication, and administrator-only rotation. |
+| Companion and Home | Duplicate loading, native fallback, route cleanup, autoplay, large title counts, pins, refresh, and permission-filtered links. |
+| Formats, settings, branding | Stream/source evidence, the settings form, and targeted logo removal. |
+| Responsive and shared UI | Header/control geometry, dialogs, splash layers, fields, favorite states, and player docks. |
+| Dashboard | CSS precedence, administrator access, direct loads, cleanup, failure recovery, and full-shell layouts. |
+| Release | Version/changelog consistency and release-note generation. |
 
-Static checks validate CSS parsing, token documentation, deterministic output, bundled assets/licenses, links/screenshots, and ZIP checksum. Plugin tests cover injection, base URLs, authenticated settings, and configuration loading. Playwright fixtures cover fallback, duplicate loading, badges, routes, autoplay/pause behavior, reduced motion, unrelated-media isolation, and compatibility.
+The [shared viewport matrix](../scripts/viewports.mjs) tests twelve 16:9 sizes from 854×480 to 3840×2160 first, then ten alternate-aspect and mobile sizes. Some component-specific suites use smaller sets; see [UI coverage](UI-COVERAGE.md) for their purpose and evidence. A reproducible build produces the same bytes from the same source and dependencies; CI builds twice and compares asset hashes.
 
-The resolution-first suites use [the shared viewport matrix](../scripts/viewports.mjs): twelve conventional 16:9 sizes from 854x480 through 3840x2160, followed by 16:10, 4:3, ultrawide, 32:9, portrait and mobile layouts. `test:responsive` checks shared controls, header geometry, compact tracks, native icon states, continuous dialogs and splash layering; `test:dashboard-layout` measures full-shell geometry and resizing across the same matrix.
+## Preview on an existing Jellyfin server
 
-`test:home-options` covers paginated discovery, large counts with bounded slide/image rendering, permission-filtered links, recreated navigation, rotation revisions, idle deferral and failure recovery. `test:formats` checks selected-stream evidence and explicit source labels; `test:plugin-settings` exercises the administrator form without contacting a server. Plugin HTTP tests verify that configuration requires authentication, rotation requires administrator access, and the public branding response exposes only its two visual flags.
+Use temporary Playwright injection to review a candidate without changing saved Custom CSS or installing the plugin. Playwright is the browser automation tool used by these helpers.
 
-## Temporary Playwright preview
+1. Set the server URL and open the browser. In PowerShell:
 
-Use your existing Jellyfin server; no container is needed. In PowerShell:
+   ```powershell
+   $env:NOIRGLASS_URL = "https://your-jellyfin.example"
+   npm run browser
+   ```
 
-```powershell
-$env:NOIRGLASS_URL = "https://your-jellyfin.example"
-npm run browser
-```
+2. Sign in manually in that browser. In a second terminal, apply the local CSS and optional browser payload:
 
-Sign in manually. In a second terminal:
+   ```sh
+   npm run preview
+   node scripts/browser-command.mjs companion
+   ```
 
-```powershell
-npm run preview
-node scripts/browser-command.mjs companion
-```
+3. For a temporary administration preview, run:
 
-The helper on `127.0.0.1:4319` controls a Playwright browser; it does not start Jellyfin or change saved Custom CSS. Authentication stays in memory. The companion command previews the browser payload; only installing the real plugin tests server-side injection. Use `node scripts/browser-command.mjs disable-companion` to test CSS-only fallback.
+   ```sh
+   node scripts/browser-command.mjs dashboard-preview
+   ```
 
-Local item IDs belong in ignored `.local/instance.json`. Keep authentication files, credentials, private logo previews, reference screenshots, and cloned reference repositories out of public commits. Use Playwright for rendered-page verification across the shared 16:9-first viewport matrix. Public screenshots must use a permitted test library.
+4. Test CSS-only fallback with `node scripts/browser-command.mjs disable-companion`, or close the temporary browser when finished.
 
-Keep technical test reports in ignored `.local/verification/` storage.
+The helper listens on `127.0.0.1:4319`. Authentication stays in memory; previews change browser responses rather than saved server configuration. The companion preview does not test server-side script injection—installing the real plugin and restarting a test server is necessary for that.
 
-## Shared UI coverage
+Keep local item IDs in ignored `.local/instance.json`, reports in `.local/verification/`, and fixture output in `test-results/`. Do not commit credentials, authentication files, account/server details, or private administration images. Public screenshots must use a permitted test library.
 
-The [component coverage matrix](UI-COVERAGE.md) separates live audit selectors from synthetic fixtures and conditional surfaces. `test:ui` renders stable Legacy/MUI class families at three viewport sizes and writes screenshots and measurements to ignored `test-results/ui/`. Fixtures use small structural scaffolds rather than a live Jellyfin server; destructive and credential actions are never submitted.
+## Contribution checklist
 
-`test:dashboard` exercises authenticated administrator detection, direct routes, base URLs, native CSS precedence, preference changes, duplicate payloads, stale results, sign-out, and stylesheet failure. The loader reads only Jellyfin's existing local Custom CSS preferences, and uses the authenticated API client for plugin settings and branding.
+1. Make a focused change on a branch and update its user-facing documentation.
+2. For a new CSS variable, add its description, accepted values, and examples to [the metadata map](../scripts/token-docs.mjs); rebuild the customization table.
+3. Run relevant tests, inspect rendered pages when appearance changes, and check native actions remain usable.
+4. Rebuild generated files and include them with source changes. Check the diff for private data and unrelated changes.
+5. Describe what changed and which checks passed when opening a pull request.
 
-`npm run test:dashboard-layout` checks the full native header/spacer/sidebar shell across all twenty-two matrix viewports. Geometry assertions cover page and inner-form width, header clearance, native overview grids, plugin settings, table pagination, Metadata Manager panes, resizing, and post-import spacing overrides. User Settings and dialogs retain independent sizing. Results are written to ignored `test-results/dashboard-layout/`.
+## Release checklist
 
-`npm run test:polish` checks field-group widths, compact native controls, spacious exceptions, label/help alignment, favorite state transitions, hover/focus colors, and short/scrolling confirmations at the same six resolutions. Shared prompt fixtures cover restart, shutdown, delete, uninstall, restore, refresh, scan, scheduled tasks and playback errors without attaching server operations. Results are kept in ignored `test-results/polish/`.
+These steps publish files publicly; use them only for a reviewed release:
 
-For a temporary Dashboard preview, use `node scripts/browser-command.mjs dashboard-preview` after signing in. This substitutes the local candidate stylesheet in the browser's branding response only; it does not edit saved CSS or install a plugin. Restore the native client with `disable-companion` or close the temporary browser.
+1. Set the version in [package metadata](../package.json) to `MAJOR.MINOR.PATCH` and the version in [the plugin project](../plugin/NoirGlass.Plugin/NoirGlass.Plugin.csproj) to `MAJOR.MINOR.PATCH.0`, with the same first three numbers. Update the npm lockfile, and add a dated `## [MAJOR.MINOR.PATCH] - YYYY-MM-DD` section to [the changelog](../CHANGELOG.md). Preserve previous entries.
+2. Build and run the full validation list. Review generated CSS, browser payload, catalog, ZIP, and documentation.
+3. Push the reviewed source to `main` and wait for its validation job to pass.
+4. Create and push an annotated `vMAJOR.MINOR.PATCH` tag for that commit. The workflow verifies that the commit belongs to `main` and all release versions match.
+5. Wait for both **build-and-test** and **publish** to pass. Verify the three downloadable assets, catalog checksum, release notes, comparison link, and installation URLs.
 
-## Release process
+The [workflow](../.github/workflows/release.yml) validates pushes to `main` and pull requests without publishing. A version-tag push triggers publication. Release notes combine the curated changelog section with GitHub-generated notes and a comparison to the previous published stable tag; the first release links to its commit history.
 
-The [GitHub Actions workflow](../.github/workflows/release.yml) validates pushes to `main`, pull requests, and semantic version tags such as `v1.0.0`. Only a tag publishes a release; the tagged commit must be on `main` and the tag must match npm and plugin versions.
+If a run fails without creating a release, use **Actions → Release NoirGlass → Run workflow**, choose `main`, and enter the existing tag. This retries that tagged source with the selected workflow; it does not move the tag. Existing releases and drafts are never overwritten.
 
-Before tagging, review and include the generated CSS, browser payload, and customization table with the source. CI uses Node 22 and .NET 10 to rebuild, run static/plugin/browser checks, verify deterministic output and ZIP checksum, and reject drift in the tagged generated files. It publishes the tested CSS, plugin ZIP, and `manifest.json` as GitHub release assets; the catalog version and URLs come from the release version.
-
-Add a dated section to [CHANGELOG.md](../CHANGELOG.md) for each release using `## [MAJOR.MINOR.PATCH] - YYYY-MM-DD`, with concise highlights and optional Added/Changed/Fixed headings. Keep previous sections intact and move completed items out of Unreleased. Builds use the matching section for the plugin catalog; release notes combine it with GitHub-generated notes and one comparison link. The previous tag is the highest earlier published stable release reachable from the new tag; the first release links to its commit history.
-
-Push `main` and wait for validation to pass before pushing the reviewed annotated release tag. Published releases and existing drafts are never overwritten by the workflow.
-
-If a release run fails without creating a release, use the workflow's **Run workflow** option on `main` with the existing tag. This rebuilds and tests that tagged source with the current workflow; it does not move the tag. Release-note generation runs in the publish job because GitHub requires write access for that API.
-
-The workflow does not create tags or push source changes. Publishing requires a reviewed version-tag push. CDN `@latest` can lag the GitHub release, so test the [compatibility fallback and version pinning](SETUP.md#versions-and-cdn-caching) during rollout.
+The workflow does not create tags for you. During release verification, check [CDN caching and version pinning](SETUP.md#versions-and-cdn-caching) to confirm that installation URLs serve the intended files.

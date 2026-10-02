@@ -1,12 +1,31 @@
-# UI coverage
+# Interface coverage
 
-NoirGlass styles native controls without replacing their labels, routing, focus management, or submission handlers. The component fixtures use stable classes from the Legacy UI audit and [Jellyfin elements](https://github.com/jellyfin/jellyfin-web/tree/master/src/elements), [shared components](https://github.com/jellyfin/jellyfin-web/tree/master/src/components), and [Dashboard source](https://github.com/jellyfin/jellyfin-web/tree/master/src/apps/dashboard). Generated Emotion class names are excluded.
+This reference explains which parts of Jellyfin Web NoirGlass styles and how those styles are checked. It is intended for contributors investigating a visual issue; for installation, use [the README](../README.md).
 
-The local audit contains 163 captures across 55 route variants, including 15 actual Mobile (Legacy) captures and all 21 core Dashboard destinations. Those captures establish which native elements exist; they are not a claim that every server operation was exercised. Administration images and account/server details stay in ignored storage.
+NoirGlass changes presentation while keeping Jellyfin's labels, navigation, playback, focus handling, and action handlers. Tests target stable Legacy and MUI classes. MUI is the component library used by Jellyfin's React administration pages; generated styling class names are avoided.
 
-## Component matrix
+## What the evidence means
 
-[UI fixtures](../scripts/ui-fixtures.mjs) and [assertions](../scripts/test-ui.mjs) cover the families below; `test:ui` runs them at 1920×1080, 1440×900, and 390×844. Its mobile fixtures use the mobile class and touch input; actual Legacy display modes are checked separately in the live preview. Named live captures are local audit evidence, not public screenshots.
+- **Live inspection** opens a real Jellyfin page to establish its markup, layout, and available controls.
+- **Browser fixtures** reproduce component markup locally so selected, disabled, error, long-label, and confirmation states can be checked safely.
+- **Server tests** check plugin injection, configuration, authentication, and permissions separately from appearance.
+
+A styled confirmation does not prove that a restart, delete, or restore operation was performed. Consequential operations and credential forms are tested without submitting them. Actual Legacy mobile mode is checked separately from a narrow desktop or fixture viewport.
+
+## Areas covered
+
+| Area | Main surfaces |
+| --- | --- |
+| Sign-in and navigation | Login, recovery, Quick Connect, header, drawer, tabs, and account menus. |
+| Browsing | Home, Library views, Search, filters, sort menus, poster actions, and empty results. |
+| Details and editing | Movie/series/season/episode/person pages, track controls, badges, metadata, images, subtitles, and pickers. |
+| User Settings | Profile, Display, Home, Playback, Subtitles, and input preferences. |
+| Dashboard | Forms, cards, tables, users, libraries, devices, plugin pages, tasks, and Metadata Manager. |
+| Playback | Transport controls, timeline, nested menus, statistics, and conditional next-video/error surfaces. |
+| Conditional content | Music, books, photos, Live TV, Cast, SyncPlay, and populated collections use shared fixtures where no live example is available. |
+
+<details>
+<summary>Detailed component selectors and evidence</summary>
 
 | Component family | Stable selectors | Live audit capture | Browser fixture / assertion | Result |
 | --- | --- | --- | --- | --- |
@@ -47,13 +66,20 @@ The local audit contains 163 captures across 55 route variants, including 15 act
 | Remote Cast/SyncPlay/server selection | `.actionSheet`, `.MuiMenuItem-root`, `.MuiDialog-paper` | `cast-desktop`, `syncplay-desktop`, `mobile-syncplay` | `conditional`: populated menu rows only; no connection/group creation | Live selectors / fixtures passed |
 | Save/delete/authorize/install/API-key confirmations | `.formDialog`, `.MuiDialog-paper`, `.button-delete` | Controls inventoried without activation | `conditional`, `mui-dialog`: synthetic confirmations; no credentials or mutations | Live selectors / fixtures passed |
 
-## Dashboard loader
+</details>
 
-`test:dashboard` verifies direct Dashboard, Metadata Manager, and plugin settings loads; administrator-only activation; CSS server/user order; disabled server CSS; user-only imports; pasted CSS; anonymous/non-admin/disabled/unconfigured fallbacks; base URLs; duplicates; route exit; sign-out; destruction; stale requests and client replacement; local preference changes; failed imports; and stylesheet compatibility. It follows [Jellyfin's Custom CSS order](https://github.com/jellyfin/jellyfin-web/blob/master/src/components/CustomCss.tsx) and reads the two local preferences used by [userSettings](https://github.com/jellyfin/jellyfin-web/blob/master/src/scripts/settings/userSettings.js).
+The capture names in the detailed table refer to private local audit records, not downloadable screenshots. **Live selectors / fixtures passed** means the native component was identified and its presentation assertions passed; it does not mean every action was executed. **Shared fixture passed** denotes structural test coverage without a populated live example.
 
-## Dashboard layout
+Fixture structure is based on [Jellyfin elements](https://github.com/jellyfin/jellyfin-web/tree/master/src/elements), [shared components](https://github.com/jellyfin/jellyfin-web/tree/master/src/components), and [Dashboard source](https://github.com/jellyfin/jellyfin-web/tree/master/src/apps/dashboard).
 
-[Full-shell fixtures](../scripts/test-dashboard-layout.mjs) reproduce the inspected native toolbar, independent header spacer, sidebar offsets, capped page/form wrappers, and overview grid margins. `test:dashboard-layout` checks 220 geometry states across the 16:9-first viewport matrix, including resizing without navigation. Assertions measure actual field width and header clearance rather than relying only on document overflow.
+## Responsive checks
+
+[The viewport matrix](../scripts/viewports.mjs) covers twelve 16:9 resolutions from 480p to 4K before ten alternate-aspect and mobile layouts. Responsive checks measure control positions, usable touch targets, header clearance, and page overflow. Shelves and wide tables may scroll inside their containers.
+
+The shared UI suite runs at 1920×1080, 1440×900, and 390×844. Full Dashboard and responsive suites use the wider matrix; polish tests focus on six desktop/mobile sizes.
+
+<details>
+<summary>Dashboard geometry assertions</summary>
 
 | Family | Geometry checked |
 | --- | --- |
@@ -64,18 +90,26 @@ The local audit contains 163 captures across 55 route variants, including 15 act
 | Header and resize transitions | Native toolbar/spacer alignment, tabbed header height, responsive spacing |
 | Independent surfaces | User Settings and portaled dialog sizing; post-import spacing overrides |
 
-## Compact fields, favorites and confirmations
+</details>
 
-[Polish fixtures](../scripts/test-polish.mjs) exercise all six Dashboard resolutions with CSS alone. Ordinary Legacy and MUI field wrappers narrow together with their labels/help text; Search, track selectors, multiline editors, file/range/checkbox controls and explicit compact widths retain their sizing. Nested fields cap their minimum at their container width.
+## Dashboard and plugin behavior
 
-Favorite tests follow native `data-isfavorite`, `ratingbutton-withrating` and `btnUserDataOn` states across poster, detail, episode, list and player controls, including hover/focus and post-import color overrides. Navigation hearts retain their original treatment. Native simple-confirmation markup is checked for centered compact geometry, long-content scrolling, aligned header/footer and safe Cancel dismissal. Larger editors remain covered by the shared UI suite; restart/shutdown/delete/uninstall/restore/refresh/scan/task/playback-error fixtures cover presentation only, without server actions.
+The Dashboard suite checks administrator-only activation, direct routes, CSS precedence, disabled preferences, compatibility, duplicate loading, failed requests, route exit, and sign-out. It follows [Jellyfin's Custom CSS order](https://github.com/jellyfin/jellyfin-web/blob/master/src/components/CustomCss.tsx).
 
-Current live captures and geometry records remain private; fixture tests exercise state changes without saving favorites or confirming server operations.
+Home suites check autoplay, configured title counts, pins, permission-filtered links, lineup replacement, interaction pauses, reduced motion, and native fallback. Format tests check selected-stream metadata and explicit source labels without guessing missing formats.
 
-## Resolution-first verification
+## Fields, favorites, and dialogs
 
-[The viewport matrix](../scripts/viewports.mjs) covers twelve conventional 16:9 resolutions from 480p to 4K before ten alternate-aspect layouts. Responsive fixtures check header hit targets, both player docks, continuous dialogs, splash layers, track controls, long profile names, bare task tables and document overflow. Intentional table and shelf scrolling stays inside its native container.
+Polish fixtures check that ordinary fields narrow with their labels and help text while Search, multiline editors, and track controls remain spacious. Favorite hearts follow Jellyfin's state and retain their color during hover or keyboard focus.
 
-Live previews use temporary CSS and browser payload injection on an existing server, with read-only settings-response substitution for new options. They never install a candidate plugin or change saved CSS. Local plugin HTTP tests establish authentication and administrator-only rotation behavior; testing the rebuilt backend on a server requires installation and restart. Unavailable and consequential states use source-backed fixtures.
+Confirmation fixtures cover restart, shutdown, delete, uninstall, restore, refresh, scans, scheduled tasks, and playback errors. Tests open or reproduce these surfaces and verify alignment, scrolling, buttons, and cancellation; they do not execute the server operation. Larger editors have separate sizing checks.
 
-Screenshots, baseline defects, repair checks and technical reports stay in ignored `.local/verification/` and `test-results/` storage. Browser/OS-owned file choosers, sharing sheets and native select popups remain native.
+Browser and operating-system file choosers, sharing sheets, and native select popups remain native.
+
+## Reproduce a check
+
+Use [Development](DEVELOPMENT.md#check-your-change) to install prerequisites and run the appropriate suite. Fixture screenshots and measurements are written to ignored `test-results/` folders.
+
+For real-page inspection, follow [the temporary preview instructions](DEVELOPMENT.md#preview-on-an-existing-jellyfin-server). Candidate CSS and browser scripts can be injected without changing saved CSS. Backend integration still requires installing the candidate plugin and restarting a test server.
+
+Keep private audit captures, account/server details, and technical reports under ignored `.local/` storage. Publish only inspected screenshots from a permitted test library.

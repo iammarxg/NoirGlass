@@ -1,6 +1,8 @@
 # Changelog
 
-Changes for each NoirGlass release are recorded here. GitHub release notes include the matching section and a link to the release's commit history.
+Use this page to see what changed in each NoirGlass release. The newest released version appears first; **Added**, **Changed**, and **Fixed** group its highlights.
+
+**Unreleased** holds changes planned for a future release. Published sections keep their original dates and entries. GitHub release notes use the matching section and include a commit-history comparison link. For installation, start with [the README](README.md).
 
 ## [Unreleased]
 

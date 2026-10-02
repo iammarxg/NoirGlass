@@ -67,7 +67,7 @@ assert.equal(createHash('md5').update(archive).digest('hex'),manifest[0].version
 assert((await readFile(path.join(root,'LICENSE'),'utf8')).includes('Ammar Alghamdi'),'MIT copyright name must match the requested owner');
 assert(first.includes('SIL OPEN FONT LICENSE') && first.includes('Permission is hereby granted'),'Distribution must retain both licenses');
 assert((await readFile(path.join(root,'dist/fonts/OFL.txt'),'utf8')).includes('SIL OPEN FONT LICENSE'));
-for (const filename of ['README.md','CHANGELOG.md','docs/SETUP.md','docs/CUSTOMIZATION.md','docs/DEVELOPMENT.md','docs/UI-COVERAGE.md']) {
+for (const filename of ['README.md','CHANGELOG.md','docs/SETUP.md','docs/CUSTOMIZATION.md','docs/DEVELOPMENT.md','docs/UI-COVERAGE.md','assets/fonts/PROVENANCE.md']) {
   const markdown = await readFile(path.join(root,filename),'utf8');
   assert(!/MediaBar|NoirLucent|Ubuntu|pre-rename|--nl-|\.nl-|\bpending\b|\bunverified\b/i.test(markdown), `Historical or internal-status content in ${filename}`);
   assert(!/\b(?:before|after) publication\b|\buntil then\b|\buntil[^\n.]*\bpublished\b/i.test(markdown), `Temporary publication instructions in ${filename}`);

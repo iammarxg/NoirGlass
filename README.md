@@ -1,10 +1,57 @@
 # NoirGlass
 
-NoirGlass is a cinematic Jellyfin Web theme inspired by Apple TV, with spacious artwork, translucent controls, and a single CSS import. An optional server plugin adds a featured Home carousel and format badges.
+NoirGlass gives Jellyfin's browser interface, Jellyfin Web, a cinematic, Apple TV-inspired appearance: large artwork, spacious browsing, and translucent controls. Install the CSS theme for the new look, then add the optional server plugin if you want extra features.
 
-- **CSS theme:** responsive media pages, glass menus and forms, user Settings, and native player controls.
-- **Optional plugin:** configurable featured titles, lineup rotation, smooth autoplay, and keyboard/touch navigation.
-- **Optional plugin:** selected-track format badges, explicit source labels, and configured CSS on administrator Dashboard pages.
+- **Theme:** styles media pages, menus, user Settings, and native playback controls.
+- **Plugin:** adds a featured Home carousel—a rotating display of titles from each user's accessible library.
+- **Plugin:** adds source-format badges and applies the theme to the administrator Dashboard.
+
+## Requirements
+
+Tested on Jellyfin 12.1. Use Jellyfin Web with the **Dark** theme and **Desktop (Legacy)** or **Mobile (Legacy)** display mode. These settings are under **Settings → Display**.
+
+## Install the theme
+
+1. Back up your existing Custom CSS and remove other full-theme imports.
+2. Choose one installation location: **Dashboard → Branding → Custom CSS** for everyone (administrator required), or **Settings → Display → Custom CSS** for your account.
+3. Paste this line, save, and refresh Jellyfin Web:
+
+```css
+@import url("https://cdn.jsdelivr.net/gh/iammarxg/NoirGlass@latest/dist/noirglass.min.css");
+```
+
+The import loads the theme, fonts, and icons. The CSS theme works without the plugin.
+
+## Add the optional plugin
+
+An administrator can add this catalog URL under **Dashboard → Plugins → Catalog → Repositories**:
+
+```text
+https://github.com/iammarxg/NoirGlass/releases/latest/download/manifest.json
+```
+
+Install **NoirGlass** from the catalog and **restart Jellyfin**. Keep the CSS import installed.
+
+Open **Dashboard → Plugins → NoirGlass** to configure featured titles, autoplay, library links, and branding. Defaults are **10 titles**, **10-second slide changes**, and **six-hour lineup refreshes**. See the [setup guide](docs/SETUP.md) for steps and troubleshooting.
+
+Format badges describe the source file and selected tracks; they do not guarantee the browser's playback quality.
+
+## Customize
+
+A CSS variable is a named setting for colors, spacing, or sizing. Add your overrides after the import in the same field:
+
+```css
+:root {
+  --ng-card-gap: 32px;
+  --ng-glass-opacity-scale: .8;
+}
+```
+
+This adds more space between shelf cards and makes glass backgrounds more transparent. Explore the [customization guide](docs/CUSTOMIZATION.md) for three presets and all settings.
+
+## Remove
+
+Delete the import and your NoirGlass overrides, save, and refresh. If installed, uninstall the plugin and restart Jellyfin. Your media and metadata are unaffected.
 
 <details>
 <summary>Screenshots</summary>
@@ -24,45 +71,12 @@ Desktop and mobile previews from a Jellyfin library.
 
 </details>
 
-## Install
+## More information
 
-Choose Jellyfin's **Dark** theme and a **Legacy** display mode. Remove other full-theme imports, then paste:
-
-```css
-@import url("https://cdn.jsdelivr.net/gh/iammarxg/NoirGlass@latest/dist/noirglass.min.css");
-```
-
-Use **Dashboard → Branding → Custom CSS** for everyone, or **Settings → Display → Custom CSS** for one user. Choose one location.
-
-For the optional plugin, add this repository under **Dashboard → Plugins → Catalog → Repositories**, install NoirGlass, and **restart Jellyfin**:
-
-```text
-https://github.com/iammarxg/NoirGlass/releases/latest/download/manifest.json
-```
-
-Under **Dashboard → Plugins → NoirGlass**, choose the featured count (**10** by default), pin titles, and set autoplay (**10 seconds** for new configurations, **5–60 seconds**, or **0** to disable). Automatic titles refresh every **six hours**, with configurable timing and **Rotate Now**. Optional settings add library links and hide Web branding. Autoplay pauses on hover, focus, hidden/off-screen content, and reduced motion; Pause/Resume controls the current tab.
-
-See [setup guide](docs/SETUP.md) for plugin settings and installation details.
-
-See the [changelog](CHANGELOG.md) for release highlights.
-
-## Customize or remove
-
-Add overrides after the import:
-
-```css
-:root {
-  --ng-card-gap: 32px;
-  --ng-glass-opacity-scale: .8;
-}
-```
-
-See [all variables and responsive overrides](docs/CUSTOMIZATION.md). To remove the theme, delete the import or pasted CSS and refresh. Uninstall the optional plugin and restart Jellyfin to remove its enhancements.
-
-## Compatibility
-
-Tested on Jellyfin 12.1. Use Desktop (Legacy) or Mobile (Legacy).
+- [Setup and troubleshooting](docs/SETUP.md)
+- [Release changelog](CHANGELOG.md)
+- [Contributing and development](docs/DEVELOPMENT.md)
 
 ## License
 
-[MIT](LICENSE) © Ammar Alghamdi. Bundled Inter uses the [SIL Open Font License](assets/fonts/OFL.txt). Inspired by Apple TV; no affiliation or endorsement by Apple, Dolby, or Jellyfin. No proprietary artwork, logos, or fonts are bundled.
+[MIT](LICENSE) © Ammar Alghamdi. Bundled Inter uses the [SIL Open Font License](assets/fonts/OFL.txt); see [font provenance](assets/fonts/PROVENANCE.md). Inspired by Apple TV, with no affiliation or endorsement by Apple, Dolby, or Jellyfin. No proprietary artwork, logos, or fonts are bundled.
