@@ -60,6 +60,7 @@ assert.match(workflow,/ref: \$\{\{ needs.build-and-test.outputs.commit \}\}/, 'P
 assert.match(workflow,/group: noirglass-publication/);
 assert.match(workflow,/ref: \$\{\{ github.workflow_sha \}\}/, 'Retries obtain automation from the exact workflow revision');
 assert.match(workflow,/run: node \.release-tools\/scripts\/prepare-release.mjs/, 'Old release tags do not need to contain the new helper');
+assert.match(workflow.slice(workflow.indexOf('\n  publish:')),/run: npm ci --ignore-scripts[\s\S]*name: Prepare version publication/, 'Fresh publication runners install version-check dependencies');
 assert.match(workflow,/ALLOW_CREATE_TAG: \$\{\{ github.event_name == 'push' && github.ref == 'refs\/heads\/main' \}\}/);
 assert.equal((workflow.match(/if: steps.prepare.outputs.publish == 'true'/g)||[]).length,4, 'Existing releases skip all publishing mutations');
 function publicationFixture(releases = [], tagCommit = null, failure = null) {

@@ -136,6 +136,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install publication dependencies
+        run: npm ci --ignore-scripts
       - name: Prepare version publication
         id: prepare
         env:
