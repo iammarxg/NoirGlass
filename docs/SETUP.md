@@ -82,6 +82,8 @@ Server Custom CSS is applied first, then the user's Display Custom CSS. The plug
 
 The CSS import uses `@latest` to follow releases. A content delivery network (CDN) stores cached copies of files, so a theme update may reach browsers later than the GitHub release.
 
+If an update still shows old styling, open [jsDelivr's purge tool](https://www.jsdelivr.com/tools/purge), enter the CSS URL from your import, and complete the purge. Then reload Jellyfin with the browser cache cleared. You can keep your existing `@latest` import; purging does not change saved Jellyfin settings.
+
 For a fixed release, replace `latest` in the import URL with a released Git tag, keeping the `@` prefix. The [release list](https://github.com/iammarxg/NoirGlass/releases) shows available tags. The plugin catalog URL follows the latest GitHub release.
 
 Keep the theme and plugin on compatible releases. Their internal CSS markers let the plugin check compatibility; leave those markers unchanged. If compatible CSS is unavailable, native Home and administration remain usable.

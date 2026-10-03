@@ -6,20 +6,28 @@
 <div data-role="content"><div class="content-primary">
 <form id="NoirGlassConfigForm">
 <h1>NoirGlass</h1>
+<section class="ng-plugin-section" aria-labelledby="NoirGlassEnhancementsHeading">
+<h2 id="NoirGlassEnhancementsHeading">Enhancements</h2>
 <div class="checkboxContainer"><label class="emby-checkbox-label"><input id="NoirGlassEnabled" type="checkbox" is="emby-checkbox"><span>Enable NoirGlass enhancements</span></label></div>
 <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="NoirGlassDashboard" type="checkbox" is="emby-checkbox"><span>Theme Dashboard</span></label><div class="fieldDescription">Use configured NoirGlass CSS on administration pages; respects each user's Display preferences.</div></div>
+</section>
+<section class="ng-plugin-section" aria-labelledby="NoirGlassFeaturedHeading">
+<h2 id="NoirGlassFeaturedHeading">Featured Home</h2>
 <div class="inputContainer"><label class="inputLabel" for="NoirGlassCount">Featured title count</label><input id="NoirGlassCount" class="emby-input" type="number" min="1" max="2147483647" step="1" required><div class="fieldDescription">10 by default. Choose any positive whole number; fewer appear when the accessible library is smaller.</div></div>
 <div class="inputContainer"><label class="inputLabel" for="NoirGlassPinned">Pinned item IDs</label><textarea id="NoirGlassPinned" is="emby-textarea" class="emby-textarea" rows="4"></textarea><div class="fieldDescription">Optional movie or series IDs, one per line, in order. Accessible titles stay first; automatic titles fill the configured count.</div></div>
 <div class="inputContainer"><label class="inputLabel" for="NoirGlassInterval">Slide interval (seconds)</label><input id="NoirGlassInterval" class="emby-input" type="number" min="0" max="60" step="1" required><div class="fieldDescription">10 seconds for new configurations; saved values are preserved. Enter 0 to disable autoplay or 5–60 seconds.</div></div>
 <div class="inputContainer"><label class="inputLabel" for="NoirGlassRefresh">Replace automatic titles every (minutes)</label><input id="NoirGlassRefresh" class="emby-input" type="number" min="0" max="2147483647" step="1" required><div class="fieldDescription">360 minutes (six hours) by default. Enter 0 to disable periodic replacement; pins remain in place.</div></div>
 <button id="NoirGlassRotate" is="emby-button" type="button" class="raised emby-button">Rotate now</button>
 <p id="NoirGlassRotationStatus" class="fieldDescription" role="status">Uses saved settings; open Home pages detect the request within a minute and update when idle.</p>
-<h2>Optional Features</h2>
+</section>
+<section class="ng-plugin-section" aria-labelledby="NoirGlassOptionalHeading">
+<h2 id="NoirGlassOptionalHeading">Optional Features</h2>
 <div class="checkboxContainer"><label class="emby-checkbox-label"><input id="NoirGlassHideBranding" type="checkbox" is="emby-checkbox"><span>Hide Jellyfin branding</span></label><div class="fieldDescription">Hide Web logos and branding wordmarks, including login. Keep server names, the favicon and important settings information.</div></div>
 <div class="checkboxContainer"><label class="emby-checkbox-label"><input id="NoirGlassHomeLinks" type="checkbox" is="emby-checkbox"><span>Add Home navigation links</span></label><div class="fieldDescription">Each user sees only libraries they can access; native Home and Favorites remain available.</div></div>
 <div class="selectContainer"><label class="selectLabel" for="NoirGlassLibrary">Library or collection destination</label><select id="NoirGlassLibrary" class="emby-select"><option value="collections">Collections</option></select></div>
 <button id="NoirGlassAddLink" is="emby-button" class="raised emby-button" type="button">Add link</button>
 <div id="NoirGlassLinkList" aria-label="Configured Home links"></div>
+</section>
 <button is="emby-button" type="submit" class="raised button-submit block emby-button"><span>Save</span></button>
 </form>
 </div></div>
@@ -31,15 +39,18 @@
  function renderLinks(){
   const list=field('NoirGlassLinkList');list.replaceChildren();
   links.forEach((link,index)=>{
-   const row=document.createElement('div');row.className='inputContainer';
+   const row=document.createElement('div');row.className='ng-plugin-link-row';
+   const container=document.createElement('div');container.className='inputContainer';
    const label=document.createElement('label');label.className='inputLabel';label.textContent=link.Kind==='collections'?'Collections':views.find(v=>v.Id===link.LibraryId)?.Name || 'Library';
    const input=document.createElement('input');input.className='emby-input';input.value=link.Label || '';input.placeholder='Use destination name';input.setAttribute('aria-label','Display label for '+label.textContent);
-   input.addEventListener('input',()=>link.Label=input.value);label.append(input);row.append(label);
+   input.id='NoirGlassLinkLabel-'+index;label.htmlFor=input.id;
+   input.addEventListener('input',()=>link.Label=input.value);container.append(label,input);row.append(container);
+   const actions=document.createElement('div');actions.className='ng-plugin-link-actions';row.append(actions);
    for(const [name,offset]of [['Move up',-1],['Move down',1],['Remove',0]]){
     const button=document.createElement('button');button.type='button';button.className='raised emby-button';button.textContent=name;button.setAttribute('aria-label',name+' '+label.firstChild.textContent);
     button.disabled=offset!==0&&(index+offset<0||index+offset>=links.length);
     button.addEventListener('click',()=>{if(!offset)links.splice(index,1);else [links[index],links[index+offset]]=[links[index+offset],links[index]];renderLinks();});
-    row.append(button);
+    actions.append(button);
    }
    list.append(row);
   });

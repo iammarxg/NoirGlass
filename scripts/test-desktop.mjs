@@ -81,7 +81,9 @@ try {
     await page.addStyleTag({content:css});
     const pinned=await page.locator('#NoirGlassPinned').boundingBox(), label=await page.locator('label[for=NoirGlassPinned]').boundingBox(), form=await page.locator('#NoirGlassConfigForm').boundingBox();
     assert(pinned.y>=label.y+label.height,'Pinned editor sits below its label');
-    assert(Math.abs(pinned.width-form.width)<1,'Multiline editor uses the available form width');
+    const pinnedContainer=await page.locator('#NoirGlassPinned').evaluate(e=>e.parentElement.getBoundingClientRect().width);
+    assert(Math.abs(pinned.width-pinnedContainer)<1,'Multiline editor fills its bounded section');
+    assert(form.width<=56*14.88+.1,'Plugin form is bounded independently of its page shell');
     for(const container of await page.locator('.checkboxContainer:has(>.fieldDescription)').all()){
       const l=await container.locator('label').boundingBox(),h=await container.locator('.fieldDescription').boundingBox();
       assert(h.y>=l.y+l.height,'Description flows below its checkbox');

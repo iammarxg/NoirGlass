@@ -8,12 +8,12 @@
     "category": "General",
     "versions": [
       {
-        "version": "1.2.1.0",
-        "changelog": "### Changed\n\n- Home, Favorites, Collections, and enabled library shortcuts share one glass navigation capsule.\n- Featured Home controls use arrows and pagination without the count or Pause button; automatic interaction pauses remain available.\n\n### Fixed\n\n- Desktop plugin configuration labels, checkbox descriptions, and the full-width pinned-title editor.\n- Detail overview expansion controls align with their text instead of the far edge of the page.\n- The Desktop sign-in header retains a visible Home action when Jellyfin branding is hidden.\n- Desktop image-editor actions wrap within narrow artwork cards instead of clipping.\n- Desktop Home tabs match the Movies glass palette; detail tracks use slim stacked rows with format badges above them.\n- The Desktop sign-in card is opaque, with centered compact controls, evenly spaced actions, and a clear header and runtime Jellyfin branding above the sign-in heading.",
+        "version": "1.2.2.0",
+        "changelog": "### Changed\n\n- Standard Desktop plugin forms use a bounded column, and NoirGlass settings have grouped sections, aligned link-editor actions, and a compact Save button.\n- Release checks verify the CSS CDN alias against the latest published version and report stale-cache recovery instructions.\n- GitHub automatically publishes new release versions after successful validation on main; existing releases remain unchanged.",
         "targetAbi": "12.1.0.0",
-        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.2.1/NoirGlass.Plugin_12.1.0.zip",
-        "checksum": "5887c1cab355e5157e464436fe151d34",
-        "timestamp": "2026-10-02T22:23:03.000Z"
+        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.2.2/NoirGlass.Plugin_12.1.0.zip",
+        "checksum": "6e648d6384fcc1258f65cf211e9ac1e4",
+        "timestamp": "2026-10-03T17:19:52.000Z"
       }
     ]
   }

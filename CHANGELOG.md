@@ -6,8 +6,12 @@ Use this page to see what changed in each NoirGlass release. The newest released
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-10-03
+
 ### Changed
 
+- Standard Desktop plugin forms use a bounded column, and NoirGlass settings have grouped sections, aligned link-editor actions, and a compact Save button.
+- Release checks verify the CSS CDN alias against the latest published version and report stale-cache recovery instructions.
 - GitHub automatically publishes new release versions after successful validation on main; existing releases remain unchanged.
 
 ## [1.2.1] - 2026-10-03

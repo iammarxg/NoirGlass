@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>NoirGlass.Plugin</AssemblyName>
-    <Version>1.2.1.0</Version>
+    <Version>1.2.2.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Jellyfin.Controller" Version="12.1.0" ExcludeAssets="runtime" />

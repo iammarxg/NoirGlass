@@ -61,6 +61,7 @@ npm run test:autoplay
 npm run test:home-options
 npm run test:formats
 npm run test:plugin-settings
+npm run test:plugin-forms
 npm run test:branding
 npm run test:responsive
 npm run test:ui
@@ -70,6 +71,7 @@ npm run test:desktop
 npm run test:login
 npm run test:polish
 npm run test:release
+npm run test:cdn
 node scripts/check-release-version.mjs
 npm audit --audit-level=high
 ```
@@ -85,6 +87,7 @@ npm audit --audit-level=high
 | Responsive and shared UI | Header/control geometry, dialogs, splash layers, fields, favorite states, and player docks. |
 | Dashboard | CSS precedence, administrator access, direct loads, cleanup, failure recovery, and full-shell layouts. |
 | Desktop polish | Unified Home navigation, long-link scrolling, plugin form alignment, and overview expansion at popular desktop sizes followed by the full desktop matrix; Mobile Home is checked separately. |
+| Plugin forms | Bounded Desktop form columns, multiline editors, label alignment, wrapping link actions, disabled controls, reordering, and empty lists. |
 | Release | Version/changelog consistency and release-note generation. |
 
 The [shared viewport matrix](../scripts/viewports.mjs) tests twelve 16:9 sizes from 854×480 to 3840×2160 first, then ten alternate-aspect and mobile sizes. Some component-specific suites use smaller sets; see [UI coverage](UI-COVERAGE.md) for their purpose and evidence. A reproducible build produces the same bytes from the same source and dependencies; CI builds twice and compares asset hashes.
@@ -143,3 +146,5 @@ Release notes combine the curated changelog section with GitHub-generated notes 
 If validation fails before a tag exists, fix the problem and push to `main` again. If a tag exists but publication failed, use **Actions → Release NoirGlass → Run workflow**, choose `main`, and enter the existing tag. This retries that tagged source with the selected workflow; it does not move the tag. An already-published release is a successful no-op; drafts are never overwritten.
 
 During release verification, check [CDN caching and version pinning](SETUP.md#versions-and-cdn-caching) to confirm that installation URLs serve the intended files.
+
+The publication job compares jsDelivr's `@latest` version and CSS SHA-256 with the latest published release. It tries five times, 30 seconds apart, with a 10-second timeout per request. A persistent mismatch adds a warning and purge instructions to the job summary; it does not undo a successful release. Run `npm run test:cdn` to check current, stale, delayed, timeout, and unavailable responses without network requests.

@@ -102,7 +102,8 @@ async function check(page, fixture, width, height) {
     assert(geometry.available>=width-offset-20,`${fixture.id}: only native scrollbars may reduce available width`);
     assert.equal(geometry.heading.x,offset+gutter,`${fixture.id}: inline gutter`);
     if(fixture.form) {
-      assert.equal(geometry.form.width,geometry.available-gutter*2,`${fixture.id}: remove native inner form cap`);
+      const expectedForm=fixture.id==='plugin-settings'&&width>500?Math.min(geometry.available-gutter*2,56*14.88):geometry.available-gutter*2;
+      assert(Math.abs(geometry.form.width-expectedForm)<1,`${fixture.id}: bounded plugin form or full-width Dashboard form`);
       const expectedField=width<=768?geometry.form.width:Math.min(geometry.form.width,Math.max(320,Math.min(geometry.form.width*.5,Math.max(geometry.form.width*.25,48*14.88))));
       assert(Math.abs(geometry.field.width-expectedField)<1,`${fixture.id}: compact fields within full-width form`);
     }
@@ -139,7 +140,7 @@ try {
   await page.setViewportSize({width:2560,height:1440});await page.setContent(shell(fixtures[1],2560));await page.addStyleTag({content:css});
   await page.addStyleTag({content:':root{--ng-admin-page-gutter:40px;--ng-admin-page-top-gap:30px}'});
   assert.equal((await page.locator('h1').boundingBox()).x,280);assert.equal((await page.locator('h1').boundingBox()).y,78);
-  assert.equal((await page.locator('.content-primary>form').boundingBox()).width,2240);
+  assert(Math.abs((await page.locator('.content-primary>form').boundingBox()).width-56*14.88)<1,'Plugin form keeps its own width while page gutter overrides apply');
   // User Settings and portaled editors retain their independent width limits.
   await page.setContent(`<!doctype html><html class="layout-desktop"><head><style>${scaffold}</style></head><body><div id="displayPreferencesPage"><div class="content-primary">${field}</div></div><div class="pluginConfigurationPage"><div class="content-primary">${field}</div></div><div class="dialog formDialog"><form>${field}</form></div></body></html>`);
   await page.addStyleTag({content:css});

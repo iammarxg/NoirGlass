@@ -80,3 +80,33 @@ body:not(.dashboardDocument) .pluginConfigurationPage .content-primary {
 .layout-desktop .pluginConfigurationPage .checkboxContainer > .fieldDescription {
   margin-block-start: var(--ng-space-xs);
 }
+
+/* Bound the form, not Dashboard's page shell or its tables and grids. */
+.layout-desktop .pluginConfigurationPage .content-primary > form,
+.layout-desktop .dashboardDocument .pluginConfigurationPage:not(.metadataEditorPage) .content-primary > form {
+  width: 100%; max-width: var(--ng-admin-form-width);
+  margin-inline: 0; box-sizing: border-box;
+}
+.layout-desktop .pluginConfigurationPage :is(.inputContainer, .selectContainer) > :is(.inputLabel, .selectLabel) {
+  display: block; margin-block-end: var(--ng-space-xs);
+}
+.layout-desktop .pluginConfigurationPage :is(.inputContainer, .selectContainer) > :is(.emby-input, .emby-select, .emby-textarea) { width: 100%; }
+.layout-desktop .pluginConfigurationPage :is(.inputContainer, .selectContainer, .checkboxContainer) { min-width: 0; }
+.layout-desktop .pluginConfigurationPage form :is(button[type="submit"].block, .button-submit.block) {
+  width: min(100%, var(--ng-form-field-min-width)); max-width: 100%; margin-inline: 0;
+}
+.layout-desktop .pluginConfigurationPage .ng-plugin-section {
+  padding: var(--ng-admin-gap); margin-block: var(--ng-admin-gap);
+  background: var(--ng-admin-panel-bg); border: var(--ng-chrome-border-width) solid var(--ng-border);
+  border-radius: var(--ng-radius-panel); box-sizing: border-box;
+}
+.layout-desktop .pluginConfigurationPage .ng-plugin-section > h2 { margin-block: 0 var(--ng-admin-gap); }
+.layout-desktop .pluginConfigurationPage .ng-plugin-link-row {
+  display: flex; flex-wrap: wrap; align-items: end; gap: var(--ng-space-sm);
+  margin-block: var(--ng-admin-gap); min-width: 0;
+}
+.layout-desktop .pluginConfigurationPage .ng-plugin-link-row > .inputContainer { margin-block: 0; flex: none; }
+.layout-desktop .pluginConfigurationPage .ng-plugin-link-actions {
+  display: flex; flex-wrap: wrap; gap: var(--ng-space-xs); min-width: 0; max-width: 100%;
+}
+.layout-desktop .pluginConfigurationPage .ng-plugin-link-actions .emby-button { margin: 0; }
