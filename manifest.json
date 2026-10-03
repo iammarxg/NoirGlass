@@ -8,12 +8,12 @@
     "category": "General",
     "versions": [
       {
-        "version": "1.2.0.0",
-        "changelog": "### Added\n\n- Configurable featured-title count with a default of ten, periodic lineup replacement, and administrator Rotate Now.\n- Optional Home links for Collections and authorized libraries, plus a setting to hide Web branding.\n- Global glass opacity, optional detail badges, and expanded source/track format labels.\n\n### Changed\n\n- New autoplay configurations default to ten seconds; saved intervals remain unchanged.\n- Compact glass track selectors with a shared format-badge strip.\n\n### Fixed\n\n- State-aware Play/Pause icons, viewport-scaled Home artwork, and mobile glass navigation.\n- Login splash visibility, continuous dialog surfaces, page backgrounds, and Dashboard brand spacing.\n- Contained mobile task tables, long repository URLs, narrow profile rows and short-screen player docks.",
+        "version": "1.2.1.0",
+        "changelog": "### Changed\n\n- Home, Favorites, Collections, and enabled library shortcuts share one glass navigation capsule.\n- Featured Home controls use arrows and pagination without the count or Pause button; automatic interaction pauses remain available.\n\n### Fixed\n\n- Desktop plugin configuration labels, checkbox descriptions, and the full-width pinned-title editor.\n- Detail overview expansion controls align with their text instead of the far edge of the page.\n- The Desktop sign-in header retains a visible Home action when Jellyfin branding is hidden.\n- Desktop image-editor actions wrap within narrow artwork cards instead of clipping.\n- Desktop Home tabs match the Movies glass palette; detail tracks use slim stacked rows with format badges above them.\n- The Desktop sign-in card is opaque, with centered compact controls, evenly spaced actions, and a clear header and runtime Jellyfin branding above the sign-in heading.",
         "targetAbi": "12.1.0.0",
-        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.2.0/NoirGlass.Plugin_12.1.0.zip",
-        "checksum": "a69800f66c1d2d132ff3bac12d1ba652",
-        "timestamp": "2026-10-02T01:50:29.000Z"
+        "sourceUrl": "https://github.com/iammarxg/NoirGlass/releases/download/v1.2.1/NoirGlass.Plugin_12.1.0.zip",
+        "checksum": "5887c1cab355e5157e464436fe151d34",
+        "timestamp": "2026-10-02T22:23:03.000Z"
       }
     ]
   }

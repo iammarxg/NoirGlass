@@ -66,3 +66,17 @@ body:not(.dashboardDocument) .pluginConfigurationPage .content-primary {
 .libraryPage :is(.bannerCard, .backdropCard, .squareCard) .cardBox { border-radius: var(--ng-radius-card); }
 .libraryPage .itemsContainer:not(.scrollSlider):has(> :is(.bannerCard, .backdropCard, .squareCard)) { max-width: 100%; }
 .libraryPage :is(.noItemsMessage, .emptyMessage) { color: var(--ng-text-secondary); padding: var(--ng-space-lg); }
+
+/* Plugin forms do not always initialize Jellyfin's native field layout. */
+.layout-desktop .pluginConfigurationPage .inputContainer:has(textarea) > :is(label, textarea) {
+  display: block;
+}
+.layout-desktop .pluginConfigurationPage .inputContainer > textarea {
+  width: 100%;
+}
+.layout-desktop .pluginConfigurationPage .checkboxContainer:has(> .fieldDescription) {
+  display: block;
+}
+.layout-desktop .pluginConfigurationPage .checkboxContainer > .fieldDescription {
+  margin-block-start: var(--ng-space-xs);
+}

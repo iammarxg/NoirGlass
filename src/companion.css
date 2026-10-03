@@ -101,8 +101,7 @@
   gap: var(--ng-space-sm);
 }
 #indexPage .ng-feature__action,
-#indexPage .ng-feature__arrow,
-#indexPage .ng-feature__pause {
+#indexPage .ng-feature__arrow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -125,8 +124,7 @@
   box-shadow: none;
 }
 #indexPage .ng-feature__action:hover,
-#indexPage .ng-feature__arrow:hover,
-#indexPage .ng-feature__pause:hover { background: var(--ng-home-secondary-hover-glass); }
+#indexPage .ng-feature__arrow:hover { background: var(--ng-home-secondary-hover-glass); }
 #indexPage .ng-feature__action--primary:hover { background: var(--ng-text); }
 #indexPage .ng-feature__pager {
   position: absolute;
@@ -135,19 +133,6 @@
   inset-block-end: var(--ng-space-lg);
 }
 #indexPage .ng-feature__arrow { padding-inline: var(--ng-space-md); }
-#indexPage .ng-feature__pause { gap: var(--ng-space-xs); padding-inline: var(--ng-space-md); }
-#indexPage .ng-feature__pause[hidden] { display: none; }
-#indexPage .ng-feature__pause::before {
-  content: "";
-  display: block;
-  width: var(--ng-chrome-icon-size);
-  height: var(--ng-chrome-icon-size);
-  background: currentColor;
-  mask: url("../assets/icons/pause.svg") center / contain no-repeat;
-}
-#indexPage .ng-feature__pause[data-state="paused"]::before {
-  mask-image: url("../assets/icons/play.svg");
-}
 #indexPage .ng-feature__status {
   position: absolute;
   opacity: 0;
@@ -187,7 +172,6 @@
 }
 
 #indexPage .ng-feature__pager { max-width: calc(100% - var(--ng-gutter) * 2); gap: var(--ng-space-xs); }
-#indexPage .ng-feature__count { color: var(--ng-text-secondary); font-size: var(--ng-small-font-size); white-space: nowrap; }
 @media (max-height: 36rem) {
   #indexPage .ng-feature__overview { display: none; }
   #indexPage .ng-feature__title { font-size: min(var(--ng-feature-title-size), var(--ng-title-size)); }
@@ -203,6 +187,3 @@
 }
 #indexPage .ng-feature__dot[aria-current="true"] { width: var(--ng-touch-target); background: var(--ng-transparent); }
 #indexPage .ng-feature__dot[aria-current="true"]::before { width: var(--ng-feature-dot-active-width); background: var(--ng-feature-dot-active); }
-@media (max-width: 48rem) {
-  #indexPage .ng-feature__pause { width: var(--ng-touch-target); padding-inline: var(--ng-space-xs); font-size: 0; gap: 0; }
-}

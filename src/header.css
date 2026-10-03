@@ -101,6 +101,24 @@ html:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .emby-tab-button-act
   box-shadow: var(--ng-shadow-control);
 }
 .skinHeader:not(.osdHeader) .emby-tab-button-active::after { display: none; }
+/* Desktop Home reuses the Movies navigation palette. */
+html.layout-desktop:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .emby-tab-button {
+  opacity: 1;
+  color: var(--ng-text-secondary);
+}
+html.layout-desktop:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .emby-tab-button-active,
+html.layout-desktop:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .emby-tab-button-active:hover {
+  background: var(--ng-nav-selection);
+  color: var(--ng-nav-selection-text);
+  box-shadow: none;
+}
+html.layout-desktop:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .emby-tab-button:not(.emby-tab-button-active):hover { color: var(--ng-text); }
+html.layout-desktop:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .headerTabs:has(> .ng-home-links),
+html.layout-desktop:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .headerTabs:not(:has(> .ng-home-links)) .emby-tabs-slider {
+  background: var(--ng-chrome-glass); border-color: var(--ng-chrome-border);
+}
+html.layout-desktop:has(#indexPage:not(.hide)) .ng-home-link { color: var(--ng-text-secondary); }
+html.layout-desktop:has(#indexPage:not(.hide)) .ng-home-link:hover { color: var(--ng-text); }
 @media (min-width: 62.5rem) {
   html:has(.libraryPage:not(.hide)) .headerTabs.sectionTabs {
     position: absolute;
@@ -219,23 +237,42 @@ html:has(#indexPage:not(.hide)) .mainDrawer a.navMenuOption[href="#/home"] :is(.
 }
 .ng-home-links {
   display: inline-flex; vertical-align: middle; gap: var(--ng-chrome-group-gap);
-  max-width: 100%; overflow-x: auto; padding: var(--ng-chrome-group-padding);
-  border: var(--ng-chrome-border-width) solid var(--ng-chrome-border);
-  border-radius: var(--ng-radius-pill); background: var(--ng-home-chrome-glass);
-  backdrop-filter: var(--ng-control-blur); box-sizing: border-box;
+  min-width: 0; flex: none; box-sizing: border-box;
 }
 .ng-home-link {
-  display: inline-flex; align-items: center; flex: none; min-height: var(--ng-touch-target);
+  display: inline-flex; align-items: center; flex: none; min-height: var(--ng-chrome-tab-height);
   padding-inline: var(--ng-space-md); color: var(--ng-text);
   font: var(--ng-control-weight) var(--ng-small-font-size) var(--ng-font);
   border-radius: var(--ng-radius-pill); text-decoration: none;
 }
 .ng-home-link:hover { background: var(--ng-chrome-hover); }
-.skinHeader:not(.osdHeader) .headerTabs:has(> .ng-home-links) { display: flex; align-items: center; gap: var(--ng-space-xs); }
-.skinHeader:not(.osdHeader) .headerTabs:has(> .ng-home-links) > .tabs-viewmenubar { flex: 0 0 auto; max-width: 100%; }
-.ng-home-links { min-width: 0; flex: 1 1 auto; }
+/* One visual capsule; Jellyfin retains ownership of its Home/Favorites tabs. */
+.skinHeader:not(.osdHeader) .headerTabs:has(> .ng-home-links) {
+  display: flex; align-items: center; gap: var(--ng-chrome-group-gap);
+  padding: var(--ng-chrome-group-padding); box-sizing: border-box;
+  border: var(--ng-chrome-border-width) solid var(--ng-home-glass-border);
+  border-radius: var(--ng-radius-pill); background: var(--ng-home-chrome-glass);
+  backdrop-filter: var(--ng-control-blur); overflow-x: auto;
+  scrollbar-width: none;
+}
+.skinHeader:not(.osdHeader) .headerTabs:has(> .ng-home-links) > .tabs-viewmenubar {
+  flex: none; width: auto !important; max-width: none; overflow: visible;
+}
+html:has(#indexPage:not(.hide)) .skinHeader:not(.osdHeader) .headerTabs:has(> .ng-home-links) .emby-tabs-slider {
+  border: 0; padding: 0; background: var(--ng-transparent); backdrop-filter: none;
+}
+.skinHeader:not(.osdHeader) .headerTabs:has(> .ng-home-links) :is(button, a):focus-visible {
+  outline-offset: calc(-1 * var(--ng-focus-offset));
+}
 .ng-home-link:focus-visible { outline: var(--ng-focus-width) solid var(--ng-focus-color); outline-offset: calc(-1 * var(--ng-focus-offset)); }
 html.ng-hide-branding .skinHeader .pageTitleWithDefaultLogo,
 html.ng-hide-branding :is(.skinHeader, #loginPage) img:is([src*="banner-light"], [src*="banner-dark"], [src*="icon-transparent"]),
 html.ng-hide-branding .MuiDrawer-paper a[href="#/"] .MuiListItemIcon-root:has(img[src*="icon-transparent"]),
 html.ng-hide-branding .MuiAppBar-root img:is([src*="banner-light"], [src*="banner-dark"], [src*="icon-transparent"]) { display: none !important; }
+/* Keep the native Home action recognizable when its branding image is hidden. */
+html.layout-desktop.ng-hide-branding .MuiAppBar-root a.MuiButton-root[href="#/"]:has(> .MuiButton-startIcon > img[src*="icon-transparent"])::before {
+  content: "Home";
+}
+html.layout-desktop.ng-hide-branding .MuiAppBar-root a.MuiButton-root[href="#/"] > .MuiButton-startIcon:has(> img[src*="icon-transparent"]) {
+  display: none;
+}

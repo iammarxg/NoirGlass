@@ -235,7 +235,8 @@ export const groups = [
     ['search-tile-height','Search tile height','Sets the minimum height of small Search tiles.','length'],
     ['login-width','Login panel width','Limits the width of the login form.','length'],
     ['login-padding','Login panel padding','Sets padding inside the login panel.','length'],
-    ['login-background','Login background','Sets the background behind the login form.','paint'],
+    ['login-background','Login background','Sets the login panel background outside Desktop mode.','paint'],
+    ['login-desktop-background','Desktop login background','Sets the opaque Desktop login panel independently of glass transparency.','paint'],
     ['login-title-size','Login heading size','Sets the size of the login heading.','length']
   ] },
   { id: 'player', label: 'Player controls', rows: [
@@ -305,6 +306,7 @@ const commonExamples = {
   'search-field-height': ['56px','64px'], 'search-tile-width': ['120px','160px'],
   'search-tile-height': ['44px','56px'], 'login-width': ['22rem','26rem'],
   'login-title-size': ['28px','32px'], 'player-dock-padding': ['6px','10px'],
+  'login-desktop-background': ['#202023','#111114'],
   'player-dock-gap': ['3px','6px'], 'player-icon-size': ['21px','24px'],
   'player-title-size': ['18px','22px'], 'player-timeline-height': ['3px','4px']
 };

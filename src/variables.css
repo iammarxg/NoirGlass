@@ -98,6 +98,7 @@
   --ng-login-width: 440px;
   --ng-login-padding: clamp(24px, 4vw, 48px);
   --ng-login-background: var(--ng-dialog-glass);
+  --ng-login-desktop-background: var(--ng-surface-raised);
   --ng-login-title-size: 32px;
   /* tvOS-inspired surfaces and proportions. */
   --ng-nav-glass: rgb(34 34 38 / clamp(0, calc(0.7215686274509804 * var(--ng-glass-opacity-scale)), 1));

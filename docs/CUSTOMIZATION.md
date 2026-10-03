@@ -66,7 +66,7 @@ These scenarios preserve the theme's reduced-motion behavior.
 
 Start with the twelve common settings, then expand a group for more control. **Default** shows the shipped value; **Responsive / fallback** explains when the theme uses a different value.
 
-All 216 variables are listed. Defaults are generated from [the CSS settings](../src/variables.css); descriptions and examples come from [the documentation metadata](../scripts/token-docs.mjs). Some defaults combine other variables, so their formulas are shown exactly.
+All 217 variables are listed. Defaults are generated from [the CSS settings](../src/variables.css); descriptions and examples come from [the documentation metadata](../scripts/token-docs.mjs). Some defaults combine other variables, so their formulas are shown exactly.
 
 ### Reading values
 
@@ -350,7 +350,8 @@ Examples are suggestions, not the complete list of accepted CSS values. Keep eno
 | **Search tile height**<br>`--ng-search-tile-height` | Sets the minimum height of small Search tiles. | Size of 0 or greater in px, rem, vw, or svh; min(), max(), and clamp() also work<br>Examples: `44px`, `56px` | `96px` | — |
 | **Login panel width**<br>`--ng-login-width` | Limits the width of the login form. | Size of 0 or greater in px, rem, vw, or svh; min(), max(), and clamp() also work<br>Examples: `22rem`, `26rem` | `440px` | — |
 | **Login panel padding**<br>`--ng-login-padding` | Sets padding inside the login panel. | Size of 0 or greater in px, rem, vw, or svh; min(), max(), and clamp() also work<br>Examples: `16px`, `24px` | `clamp(24px, 4vw, 48px)` | — |
-| **Login background**<br>`--ng-login-background` | Sets the background behind the login form. | Background: a color, gradient, layered backgrounds, or none<br>Examples: `#22222680`, `rgba(34,34,38,.65)` | `var(--ng-dialog-glass)` | — |
+| **Login background**<br>`--ng-login-background` | Sets the login panel background outside Desktop mode. | Background: a color, gradient, layered backgrounds, or none<br>Examples: `#22222680`, `rgba(34,34,38,.65)` | `var(--ng-dialog-glass)` | — |
+| **Desktop login background**<br>`--ng-login-desktop-background` | Sets the opaque Desktop login panel independently of glass transparency. | Background: a color, gradient, layered backgrounds, or none<br>Examples: `#202023`, `#111114` | `var(--ng-surface-raised)` | — |
 | **Login heading size**<br>`--ng-login-title-size` | Sets the size of the login heading. | Size of 0 or greater in px, rem, vw, or svh; min(), max(), and clamp() also work<br>Examples: `28px`, `32px` | `32px` | — |
 
 </details>

@@ -38,6 +38,11 @@
   let preferencesTimer = null;
   let publicBrandingAt = 0;
   let publicBrandingLoading = false;
+  let publicBranding = null;
+  let loginBrand = null;
+  let loginBrandKey = null;
+  let loginBrandRequest = 0;
+  let publicBrandingRequest = 0;
   let dashboardRequest = 0;
   let dashboardKey = null;
   let dashboardTimer = null;
@@ -127,7 +132,7 @@
     pluginSettings = settingsLoading = null;
     settingsRetryAfter = settingsFetchedAt = 0;
     lineup = []; lineupAt = 0; lineupKey = lineupRevision = null;
-    clearNavigation(); publicBrandingAt = 0;
+    clearNavigation(); clearLoginBranding(); publicBrandingAt = 0; publicBranding = null; publicBrandingRequest++; publicBrandingLoading = false;
     document.documentElement.classList.remove("ng-hide-branding");
   }
   async function syncDashboard() {
@@ -317,7 +322,8 @@
         badge.title = info.evidence + ': ' + info.label + '; this is a source label, not a guarantee of browser playback quality';
         group.append(badge);
       }
-      form.append(group);
+      if (document.documentElement.classList.contains('layout-desktop')) form.prepend(group);
+      else form.append(group);
     }
     form.dataset.ngFormatsKey = key;
   }
@@ -428,16 +434,12 @@
     const pager = make('div', 'ng-feature__pager');
     const previous = make('button', 'ng-feature__arrow', '\u2039');
     const next = make('button', 'ng-feature__arrow', '\u203a');
-    const pause = make('button', 'ng-feature__pause', 'Pause');
     const status = make('span', 'ng-feature__status');
     status.setAttribute('role', 'status');
     status.setAttribute('aria-live', 'polite');
-    previous.type = next.type = pause.type = 'button';
+    previous.type = next.type = 'button';
     previous.setAttribute('aria-label', 'Previous featured title');
     next.setAttribute('aria-label', 'Next featured title');
-    pause.setAttribute('aria-label', 'Pause featured titles');
-    pause.setAttribute('aria-pressed', 'false');
-    pause.dataset.state = 'playing';
 
     function makeSlide(item) {
       const slide = make('div', 'ng-feature__slide');
@@ -493,11 +495,9 @@
     let transitionCleanup = null;
     let timer = null;
     let disposed = false;
-    let manuallyPaused = false;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const hoverCapable = matchMedia('(hover: hover)');
     const interval = pluginSettings?.intervalSeconds ?? 10;
-    const counter = make("span", "ng-feature__count");
     let dots = [];
     function updateDots() {
       const focused = document.activeElement;
@@ -515,8 +515,6 @@
         dot.addEventListener('click', () => show(index, true));
         dots.push(dot); pager.insertBefore(dot, next);
       }
-      counter.textContent = (active + 1) + ' / ' + items.length;
-      if (items.length > windowSize && !counter.isConnected) pager.insertBefore(counter, next);
       if (focusedIndex !== null) (dots.find(d => Number(d.dataset.index) === focusedIndex) || dots.find(d => d.getAttribute('aria-current') === 'true'))?.focus({ preventScroll: true });
     }
 
@@ -524,7 +522,7 @@
       const bounds = root.getBoundingClientRect();
       const visibleHeight = Math.min(bounds.bottom, innerHeight) - Math.max(bounds.top, 0);
       return !disposed && root.isConnected && !transitionCleanup && interval > 0 && items.length > 1 &&
-        !manuallyPaused && !reducedMotion.matches && !document.hidden &&
+        !reducedMotion.matches && !document.hidden &&
         bounds.height > 0 && visibleHeight / bounds.height >= 0.15 && bounds.right > 0 && bounds.left < innerWidth &&
         !(hoverCapable.matches && root.matches(':hover')) && !root.contains(document.activeElement);
     }
@@ -597,16 +595,6 @@
     }
     previous.addEventListener('click', () => show(active - 1, true));
     next.addEventListener('click', () => show(active + 1, true));
-    pause.hidden = interval === 0 || items.length < 2;
-    pause.addEventListener('click', () => {
-      manuallyPaused = !manuallyPaused;
-      pause.textContent = manuallyPaused ? 'Resume' : 'Pause';
-      pause.setAttribute('aria-label', manuallyPaused ? 'Resume featured titles' : 'Pause featured titles');
-      pause.setAttribute('aria-pressed', String(manuallyPaused));
-      pause.dataset.state = manuallyPaused ? 'paused' : 'playing';
-      schedule();
-      scheduleAutoplay();
-    });
     root.addEventListener('keydown', event => {
       if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
         event.preventDefault();
@@ -641,7 +629,7 @@
     const intersection = typeof IntersectionObserver === 'function'
       ? new IntersectionObserver(scheduleAutoplay, { threshold: [0, 0.15] })
       : null;
-    pager.append(previous, next, pause);
+    pager.append(previous, next);
     activeSlide.inert = false;
     activeSlide.setAttribute('aria-hidden', 'false');
     track.append(activeSlide);
@@ -652,7 +640,7 @@
     function preloadNext() { if (!disposed && items.length > 1) { const image = new Image(); image.src = art(api, items[(active + 1) % items.length], "Backdrop"); } }
     preloadNext();
     scheduleAutoplay();
-    root.__ngIdle = () => !manuallyPaused && !root.contains(document.activeElement) && !(hoverCapable.matches && root.matches(":hover")) && !document.hidden && !transitionCleanup;
+    root.__ngIdle = () => !root.contains(document.activeElement) && !(hoverCapable.matches && root.matches(":hover")) && !document.hidden && !transitionCleanup;
     root.addEventListener("pointerleave", schedule);
     root.addEventListener("focusout", schedule);
     root.__ngCleanup = () => {
@@ -710,17 +698,82 @@
     } catch { if (turn === navigationRequest) navigationKey = null; }
     finally { if (turn === navigationRequest) navigationLoading = false; }
   }
+  function clearLoginBranding() {
+    loginBrandRequest++;
+    loginBrand?.remove();
+    loginBrand = null; loginBrandKey = null;
+    document.documentElement.classList.remove('ng-login-brand-ready');
+    document.querySelectorAll('[data-ng-login-header-brand]').forEach(node => {
+      node.removeAttribute('data-ng-login-header-brand');
+      if (node.dataset.ngLoginOldLabel !== undefined) {
+        const label = node.dataset.ngLoginOldLabel;
+        if (label) node.setAttribute('aria-label', label); else node.removeAttribute('aria-label');
+        delete node.dataset.ngLoginOldLabel;
+      }
+    });
+  }
+  function syncLoginBranding() {
+    const flags = client()?.getCurrentUserId() ? pluginSettings : publicBranding;
+    const card = document.querySelector('#loginPage:not(.hide) > .padded-left.padded-right.padded-bottom-page');
+    const heading = [...(card?.querySelectorAll('h1') || [])].find(visible);
+    if (destroyed || !themeReady() || !document.documentElement.classList.contains('layout-desktop') ||
+        !card || !heading || !visible(card) || !flags?.enabled || flags.hideBranding) {
+      if (loginBrand || loginBrandKey) clearLoginBranding();
+      return;
+    }
+    const icon = document.querySelector('.MuiAppBar-root a[href="#/"] img[src*="icon-transparent"]');
+    const legacy = document.querySelector('.skinHeader .pageTitleWithDefaultLogo');
+    const sourceNode = icon || legacy;
+    const background = legacy && getComputedStyle(legacy).backgroundImage;
+    const asset = icon?.currentSrc || icon?.src || background?.match(/url\(["']?(.+?)["']?\)/)?.[1];
+    if (!sourceNode || !asset) { if (loginBrandKey) clearLoginBranding(); return; }
+    if (loginBrandKey?.card === card && loginBrandKey.heading === heading && loginBrandKey.asset === asset && loginBrandKey.source === sourceNode && (!loginBrand || loginBrand.isConnected)) return;
+    clearLoginBranding();
+    loginBrandKey = { card, heading, asset, source: sourceNode };
+    const turn = ++loginBrandRequest;
+    const row = make('div', 'ng-login-brand');
+    row.setAttribute('aria-label', 'Jellyfin');
+    const image = new Image();
+    image.alt = icon ? '' : 'Jellyfin'; image.decoding = 'async';
+    row.append(image);
+    if (icon) row.append(make('span', 'ng-login-wordmark', 'Jellyfin'));
+    image.onload = async () => {
+      try { await image.decode(); } catch { return; }
+      if (destroyed || turn !== loginBrandRequest || !card.isConnected || !heading.isConnected || !sourceNode.isConnected || !visible(heading) ||
+          !image.naturalWidth || !image.naturalHeight) return;
+      const currentFlags = client()?.getCurrentUserId() ? pluginSettings : publicBranding;
+      if (!currentFlags?.enabled || currentFlags.hideBranding || !themeReady() ||
+          !document.documentElement.classList.contains('layout-desktop') || !visible(card)) return;
+      loginBrand = row;
+      heading.before(row);
+      const headerBrand = icon?.closest('a') || legacy;
+      headerBrand.setAttribute('data-ng-login-header-brand', '');
+      if (icon) {
+        headerBrand.dataset.ngLoginOldLabel = headerBrand.getAttribute('aria-label') || '';
+        headerBrand.setAttribute('aria-label', 'Home');
+      }
+      document.documentElement.classList.add('ng-login-brand-ready');
+    };
+    // Failed assets retain native branding; retry on a new source or route.
+    image.onerror = () => {};
+    image.src = asset;
+  }
   async function syncPublicBranding() {
     if (destroyed || client()?.getCurrentUserId() || publicBrandingLoading || Date.now() - publicBrandingAt < 60000) return;
     publicBrandingLoading = true; publicBrandingAt = Date.now();
+    const turn = ++publicBrandingRequest;
     try {
       const base = location.pathname.replace(/\/web\/(?:index\.html)?$/i, '');
       const response = await fetch(base + '/NoirGlass/Branding', { credentials: 'same-origin', cache: 'no-store' });
       if (!response.ok) return;
       const value = await response.json();
-      if (!destroyed && !client()?.getCurrentUserId()) document.documentElement.classList.toggle('ng-hide-branding', value.enabled === true && value.hideBranding === true);
+      if (!destroyed && turn === publicBrandingRequest && !client()?.getCurrentUserId()) {
+        publicBranding = { enabled: value.enabled === true, hideBranding: value.hideBranding === true };
+        document.documentElement.classList.toggle('ng-hide-branding', publicBranding.enabled && publicBranding.hideBranding);
+        schedule();
+      }
     } catch { /* presentation flags are optional */ }
-    finally { publicBrandingLoading = false; }
+    finally { if (turn === publicBrandingRequest) publicBrandingLoading = false; }
   }
   async function sync() {
     if (destroyed) return;
@@ -759,7 +812,7 @@
     scheduleTimer = setTimeout(() => {
       scheduleTimer = null;
       scheduled = false;
-      if (!destroyed) { syncIdentity(); syncDashboard(); sync(); syncDetail(); syncNavigation(); syncPublicBranding(); }
+      if (!destroyed) { syncIdentity(); syncDashboard(); sync(); syncDetail(); syncNavigation(); syncPublicBranding(); syncLoginBranding(); }
     }, 150);
   }
   const observer = new MutationObserver(schedule);
@@ -776,6 +829,7 @@
       scheduleTimer = null;
       clearTimeout(preferencesTimer);
       clearNavigation();
+      clearLoginBranding(); publicBrandingRequest++;
       document.documentElement.classList.remove("ng-hide-branding");
       observer.disconnect();
       removeEventListener('hashchange', schedule);

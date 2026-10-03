@@ -70,21 +70,10 @@ try {
   await page.clock.runFor(800);
   console.log('PASS hover pauses and leaving resumes autoplay');
 
-  await page.locator('.ng-feature__pause').click();
-  assert.equal(await page.locator('.ng-feature__pause').getAttribute('aria-pressed'), 'true');
-  await page.mouse.move(1400, 880);
-  await page.evaluate(() => document.activeElement.blur());
-  await page.clock.runFor(10000);
-  assert.equal(await page.locator('.ng-feature__title').textContent(), 'First Film');
-  await page.locator('.ng-feature__pause').click();
-  await page.mouse.move(1400, 880);
-  await page.evaluate(() => document.activeElement.blur());
-  await page.clock.runFor(5200);
-  assert.equal(await page.locator('.ng-feature__slide[aria-hidden="false"] .ng-feature__title').textContent(), 'Second Film');
-  console.log('PASS Pause/Resume control keeps its state and timing');
-
+  assert.equal(await page.locator('.ng-feature__pause,.ng-feature__count').count(), 0, 'No obsolete carousel controls remain');
+  await page.evaluate(() => document.querySelector('.ng-feature__arrow[aria-label="Next featured title"]').click());
   await page.clock.runFor(800);
-  await page.locator('.ng-feature__pause').focus();
+  await page.locator('.ng-feature__arrow').first().focus();
   await page.clock.runFor(10000);
   assert.equal(await page.locator('.ng-feature__slide[aria-hidden="false"] .ng-feature__title').textContent(), 'Second Film');
   await page.evaluate(() => document.activeElement.blur());
@@ -164,7 +153,7 @@ try {
   await context.close();
 
   const disabled = await fixture({ interval: 0 });
-  assert.equal(await disabled.page.locator('.ng-feature__pause').isVisible(), false);
+  assert.equal(await disabled.page.locator('.ng-feature__pause,.ng-feature__count').count(), 0);
   await disabled.page.clock.runFor(30000);
   assert.equal(await disabled.page.locator('.ng-feature__title').textContent(), 'First Film');
   await disabled.context.close();

@@ -70,6 +70,8 @@ jobs:
       - run: npm run test:ui
       - run: npm run test:dashboard
       - run: npm run test:dashboard-layout
+      - run: npm run test:login
+      - run: npm run test:desktop
       - run: npm run test:polish
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -81,6 +83,7 @@ jobs:
             test-results/dashboard-layout/
             test-results/polish/
             test-results/responsive/
+            test-results/desktop/
       - run: npm run test:release
       - name: Verify release versions and changelog
         env:

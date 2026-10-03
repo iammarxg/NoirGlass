@@ -34,8 +34,8 @@ try {
       await page.screenshot({path:path.join(dir,`header-${width}-${height}.png`)});
       await load(tracks);
       const boxes=await page.locator('.trackSelectionFieldContainer').evaluateAll(nodes=>nodes.map(e=>e.getBoundingClientRect().toJSON()));
-      if(width>768)assert(boxes.every(b=>Math.abs(b.y-boxes[0].y)<1),'Three desktop controls share a compact row');
-      else assert(boxes[1].y>boxes[0].y,'Narrow track controls stack');
+      assert(boxes[1].y>=boxes[0].bottom,'Track controls stack in Desktop and narrow Mobile layouts');
+      if(width>500)for(const b of boxes)assert(b.height>=44&&b.height<=50,'Desktop track rows remain slim');
       assert(!(await page.evaluate(inspect)).overflow);
       for(const field of await page.locator('.trackSelectionFieldContainer').all()){const select=await field.locator('select').boundingBox(),arrow=await field.locator('.selectArrowContainer').boundingBox();assert(Math.abs(select.y+select.height/2-arrow.y-arrow.height/2)<1,'Track arrows align with selected values rather than labels');}
       assert.equal(await page.locator('.ng-format-badges').evaluate(e=>getComputedStyle(e).display),'flex');

@@ -52,3 +52,61 @@
 
 html:has(#loginPage:not(.hide)) .backgroundContainer.withBackdrop { background: var(--ng-transparent) !important; }
 html:has(#loginPage:not(.hide)) .backgroundContainer:not(.withBackdrop) { background: var(--ng-bg) !important; }
+
+/* Desktop sign-in keeps artwork and branding free of header glass. */
+html.layout-desktop:has(#loginPage:not(.hide)) :is(.MuiAppBar-root, .skinHeader:not(.osdHeader)) {
+  background: var(--ng-transparent) !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  border: 0;
+}
+html.layout-desktop:has(#loginPage:not(.hide)) .MuiAppBar-root a.MuiButton-root[href="#/"] {
+  background: var(--ng-transparent) !important;
+  border: 0; box-shadow: none; backdrop-filter: none;
+}
+html.layout-desktop:has(#loginPage:not(.hide)) .MuiAppBar-root a.MuiButton-root[href="#/"] .MuiButton-startIcon {
+  margin: 0;
+}
+html.layout-desktop:has(#loginPage:not(.hide)) .MuiAppBar-root img[src*="icon-transparent"] {
+  object-fit: contain; filter: none; opacity: 1; transform: none;
+}
+.layout-desktop #loginPage > .padded-left.padded-right.padded-bottom-page {
+  background: var(--ng-login-desktop-background);
+  backdrop-filter: none;
+}
+html.layout-desktop:has(#loginPage:not(.hide)) .skinHeader.noHeaderRight .headerRight { display: none; }
+
+.layout-desktop #loginPage :is(.inputContainer, .checkboxContainer, .emby-button) {
+  width: min(100%, var(--ng-form-field-min-width)) !important;
+  box-sizing: border-box;
+  margin-inline: auto;
+}
+.layout-desktop #loginPage .checkboxContainer { display: flex; }
+.layout-desktop #loginPage .manualLoginForm { margin-block-end: 0; }
+.layout-desktop #loginPage .emby-button { display: block; margin-block: 0 !important; }
+.layout-desktop #loginPage .readOnlyContent {
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--ng-space-sm);
+  margin-block: var(--ng-space-sm) 0 !important;
+}
+.layout-desktop #loginPage .manualLoginForm > div:has(> .btnCancel.hide) { display: none; }
+.layout-desktop #loginPage .manualLoginForm > div:has(> .btnCancel:not(.hide)) { margin-block: var(--ng-space-sm) 0 !important; }
+
+.layout-desktop #loginPage .ng-login-brand {
+  display: flex; align-items: center; justify-content: center;
+  height: var(--ng-login-title-size); gap: var(--ng-space-xs);
+  margin-bottom: var(--ng-space-sm);
+}
+.layout-desktop #loginPage .ng-login-brand img {
+  height: 100%; width: auto; max-width: 100%; object-fit: contain;
+  filter: none; opacity: 1;
+}
+.layout-desktop #loginPage .ng-login-brand + h1 { margin-top: 0; }
+.layout-desktop #loginPage :has(> .ng-login-brand) { flex-direction: column; }
+.layout-desktop #loginPage .ng-login-wordmark {
+  font-family: var(--ng-font); font-size: var(--ng-login-title-size);
+  color: var(--ng-text); line-height: 1;
+}
+html.ng-login-brand-ready [data-ng-login-header-brand].pageTitleWithDefaultLogo { display: none !important; }
+html.ng-login-brand-ready [data-ng-login-header-brand] .MuiButton-startIcon { display: none !important; }
+html.ng-login-brand-ready [data-ng-login-header-brand].MuiButton-root::before { content: "Home"; }

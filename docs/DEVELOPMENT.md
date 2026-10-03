@@ -66,6 +66,8 @@ npm run test:responsive
 npm run test:ui
 npm run test:dashboard
 npm run test:dashboard-layout
+npm run test:desktop
+npm run test:login
 npm run test:polish
 npm run test:release
 node scripts/check-release-version.mjs
@@ -82,6 +84,7 @@ npm audit --audit-level=high
 | Formats, settings, branding | Stream/source evidence, the settings form, and targeted logo removal. |
 | Responsive and shared UI | Header/control geometry, dialogs, splash layers, fields, favorite states, and player docks. |
 | Dashboard | CSS precedence, administrator access, direct loads, cleanup, failure recovery, and full-shell layouts. |
+| Desktop polish | Unified Home navigation, long-link scrolling, plugin form alignment, and overview expansion at popular desktop sizes followed by the full desktop matrix; Mobile Home is checked separately. |
 | Release | Version/changelog consistency and release-note generation. |
 
 The [shared viewport matrix](../scripts/viewports.mjs) tests twelve 16:9 sizes from 854×480 to 3840×2160 first, then ten alternate-aspect and mobile sizes. Some component-specific suites use smaller sets; see [UI coverage](UI-COVERAGE.md) for their purpose and evidence. A reproducible build produces the same bytes from the same source and dependencies; CI builds twice and compares asset hashes.

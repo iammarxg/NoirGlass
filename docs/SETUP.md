@@ -1,6 +1,6 @@
 # Setup and troubleshooting
 
-This guide explains how to install NoirGlass and configure its optional features. If you only want the visual theme, start with [CSS installation](#install-the-css-theme). The plugin adds the featured Home carousel, format badges, and Dashboard styling; it does not replace the CSS theme.
+This guide explains how to install NoirGlass and configure its optional features. If you only want the visual theme, start with [CSS installation](#install-the-css-theme). The plugin adds the featured Home carousel, format badges, Desktop sign-in branding, and Dashboard styling; it does not replace the CSS theme.
 
 ## Before you start
 
@@ -64,11 +64,11 @@ Use movie or series IDs, not library IDs. Inaccessible titles and items without 
 2. Choose **Collections** or a library under **Library or collection destination**, then select **Add link**.
 3. Optionally enter a display label. Use **Move up**, **Move down**, or **Remove** to adjust the list, then save.
 
-Home and Favorites remain available. A shortcut does not grant library access: each account sees only libraries it is already allowed to open.
+Enabled shortcuts share one glass navigation capsule with Home and Favorites. Longer lists scroll inside it. A shortcut does not grant library access: each account sees only libraries it is already allowed to open.
 
 ### Carousel behavior and badges
 
-Autoplay requires at least two featured titles. It pauses while you hover, focus a control with the keyboard, hide the browser tab, or scroll the carousel out of view. Reduced-motion preferences also pause autoplay and remove slide animations. **Pause/Resume** controls the current tab; manual navigation resets the slide timer. New lineups wait while the carousel is paused or being used.
+Autoplay requires at least two featured titles. It pauses while you hover, focus a control with the keyboard, hide the browser tab, or scroll the carousel out of view. Reduced-motion preferences also pause autoplay and remove slide animations. Use the arrows or dots to change titles manually and reset the slide timer. Set the slide interval to 0 to disable autoplay. New lineups wait while the carousel is being used.
 
 A format badge is a small label such as 4K or Dolby TrueHD. It describes selected-stream metadata or an explicit source label in a filename, title, or Jellyfin tag. Hover a badge to see its evidence. Source labels do not certify mastering formats, and badges do not guarantee that a browser can play the source format directly.
 
@@ -94,7 +94,7 @@ Keep the theme and plugin on compatible releases. Their internal CSS markers let
 | The theme looks inconsistent | Remove other theme imports and check both server Branding CSS and your Display CSS for conflicting overrides. |
 | The carousel or badges are missing | Install the plugin, restart Jellyfin, keep the CSS import, and enable enhancements; featured items also need suitable artwork and metadata. |
 | Dashboard is not themed | Use an administrator account and enable Theme Dashboard; check whether Display preferences disable server CSS. |
-| Slides are not changing automatically | Check the interval, Pause/Resume, reduced-motion preference, keyboard focus, pointer position, and whether at least two titles are available. |
+| Slides are not changing automatically | Check the interval, reduced-motion preference, keyboard focus, pointer position, and whether at least two titles are available. |
 | A pin, link, or badge is missing | Check item IDs, library permissions, artwork, and selected-stream metadata; a badge is omitted when its evidence is unavailable. |
 | An update still looks unchanged | Refresh browser caches and check CDN caching; pin the intended released tag if you need a specific CSS release. |
 

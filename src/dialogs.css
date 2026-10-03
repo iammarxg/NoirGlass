@@ -147,6 +147,17 @@
 .dialog :is(.readOnlyContent, .content-primary, .inputContainer, .selectContainer, .listItemBody) { min-width: 0; max-width: 100%; }
 .dialog :is(.fieldDescription, .listItemBodyText, .itemName) { overflow-wrap: anywhere; }
 .dialog :is(.imageCard, .cardImageContainer, .subtitleEditorList) { border-radius: var(--ng-radius-card); }
+/* Image editor cards can be narrower than three native action targets. */
+.layout-desktop .dialog .imageEditorCard .cardFooter .cardText:has(> button) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--ng-space-xs);
+}
+.layout-desktop .dialog .imageEditorCard .cardFooter .cardText > button {
+  flex: none;
+  margin: 0;
+}
 @media (max-width: 48rem) {
   .dialog.formDialog { height: auto; max-height: var(--ng-dialog-available-height); }
   /* Full-screen Legacy editors use an inset panel; anchored menus keep their

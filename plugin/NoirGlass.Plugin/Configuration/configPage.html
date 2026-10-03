@@ -2,14 +2,14 @@
 <html lang="en">
 <head><meta charset="utf-8"><title>NoirGlass</title></head>
 <body>
-<div id="NoirGlassConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+<div id="NoirGlassConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox,emby-textarea,emby-select">
 <div data-role="content"><div class="content-primary">
 <form id="NoirGlassConfigForm">
 <h1>NoirGlass</h1>
 <div class="checkboxContainer"><label class="emby-checkbox-label"><input id="NoirGlassEnabled" type="checkbox" is="emby-checkbox"><span>Enable NoirGlass enhancements</span></label></div>
 <div class="checkboxContainer checkboxContainer-withDescription"><label class="emby-checkbox-label"><input id="NoirGlassDashboard" type="checkbox" is="emby-checkbox"><span>Theme Dashboard</span></label><div class="fieldDescription">Use configured NoirGlass CSS on administration pages; respects each user's Display preferences.</div></div>
 <div class="inputContainer"><label class="inputLabel" for="NoirGlassCount">Featured title count</label><input id="NoirGlassCount" class="emby-input" type="number" min="1" max="2147483647" step="1" required><div class="fieldDescription">10 by default. Choose any positive whole number; fewer appear when the accessible library is smaller.</div></div>
-<div class="inputContainer"><label class="inputLabel" for="NoirGlassPinned">Pinned item IDs</label><textarea id="NoirGlassPinned" class="emby-textarea" rows="4"></textarea><div class="fieldDescription">Optional movie or series IDs, one per line, in order. Accessible titles stay first; automatic titles fill the configured count.</div></div>
+<div class="inputContainer"><label class="inputLabel" for="NoirGlassPinned">Pinned item IDs</label><textarea id="NoirGlassPinned" is="emby-textarea" class="emby-textarea" rows="4"></textarea><div class="fieldDescription">Optional movie or series IDs, one per line, in order. Accessible titles stay first; automatic titles fill the configured count.</div></div>
 <div class="inputContainer"><label class="inputLabel" for="NoirGlassInterval">Slide interval (seconds)</label><input id="NoirGlassInterval" class="emby-input" type="number" min="0" max="60" step="1" required><div class="fieldDescription">10 seconds for new configurations; saved values are preserved. Enter 0 to disable autoplay or 5–60 seconds.</div></div>
 <div class="inputContainer"><label class="inputLabel" for="NoirGlassRefresh">Replace automatic titles every (minutes)</label><input id="NoirGlassRefresh" class="emby-input" type="number" min="0" max="2147483647" step="1" required><div class="fieldDescription">360 minutes (six hours) by default. Enter 0 to disable periodic replacement; pins remain in place.</div></div>
 <button id="NoirGlassRotate" is="emby-button" type="button" class="raised emby-button">Rotate now</button>

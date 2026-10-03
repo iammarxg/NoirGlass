@@ -6,6 +6,22 @@ Use this page to see what changed in each NoirGlass release. The newest released
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-10-03
+
+### Changed
+
+- Home, Favorites, Collections, and enabled library shortcuts share one glass navigation capsule.
+- Featured Home controls use arrows and pagination without the count or Pause button; automatic interaction pauses remain available.
+
+### Fixed
+
+- Desktop plugin configuration labels, checkbox descriptions, and the full-width pinned-title editor.
+- Detail overview expansion controls align with their text instead of the far edge of the page.
+- The Desktop sign-in header retains a visible Home action when Jellyfin branding is hidden.
+- Desktop image-editor actions wrap within narrow artwork cards instead of clipping.
+- Desktop Home tabs match the Movies glass palette; detail tracks use slim stacked rows with format badges above them.
+- The Desktop sign-in card is opaque, with centered compact controls, evenly spaced actions, and a clear header and runtime Jellyfin branding above the sign-in heading.
+
 ## [1.2.0] - 2026-10-02
 
 ### Added

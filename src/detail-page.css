@@ -378,3 +378,22 @@
 
 #itemDetailPage .trackSelections .selectSourceContainer { grid-column: 1 / -1; }
 #itemDetailPage .trackSelections .selectLabel { max-width: var(--ng-track-label-width); }
+
+/* Desktop values get the full detail width rather than one third of it. */
+.layout-desktop #itemDetailPage .trackSelections { grid-template-columns: minmax(0, 1fr); }
+.layout-desktop #itemDetailPage .trackSelections .trackSelectionFieldContainer:not(.hide) {
+  grid-template-columns: minmax(0, var(--ng-track-label-width)) minmax(0, 1fr);
+  column-gap: var(--ng-space-xs);
+  padding-block: 0;
+}
+.layout-desktop #itemDetailPage .trackSelections .selectLabel { margin: 0; }
+.layout-desktop #itemDetailPage .trackSelections .selectArrowContainer {
+  inset-block-start: 50%; inset-block-end: auto; transform: translateY(-50%);
+}
+
+/* Keep expansion beside the overview instead of the far edge of the page. */
+.layout-desktop #itemDetailPage .overview-controls {
+  width: 100%; max-width: var(--ng-hero-overview-width); text-align: start;
+  box-sizing: border-box; display: flex; justify-content: flex-start;
+}
+.layout-desktop #itemDetailPage .overview-controls .overview-expand { float: none; margin-inline: 0; }
