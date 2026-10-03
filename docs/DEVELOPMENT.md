@@ -133,12 +133,13 @@ These steps publish files publicly; use them only for a reviewed release:
 
 1. Set the version in [package metadata](../package.json) to `MAJOR.MINOR.PATCH` and the version in [the plugin project](../plugin/NoirGlass.Plugin/NoirGlass.Plugin.csproj) to `MAJOR.MINOR.PATCH.0`, with the same first three numbers. Update the npm lockfile, and add a dated `## [MAJOR.MINOR.PATCH] - YYYY-MM-DD` section to [the changelog](../CHANGELOG.md). Preserve previous entries.
 2. Build and run the full validation list. Review generated CSS, browser payload, catalog, ZIP, and documentation.
-3. Push the reviewed source to `main` and wait for its validation job to pass.
-4. Create and push an annotated `vMAJOR.MINOR.PATCH` tag for that commit. The workflow verifies that the commit belongs to `main` and all release versions match.
-5. Wait for both **build-and-test** and **publish** to pass. Verify the three downloadable assets, catalog checksum, release notes, comparison link, and installation URLs.
+3. Push the reviewed source to `main`. Once validation passes, the workflow creates an annotated `vMAJOR.MINOR.PATCH` tag at the exact tested commit and publishes the release automatically. You do not need to push a tag manually.
+4. Wait for both **build-and-test** and **publish** to pass. Verify the three downloadable assets, catalog checksum, release notes, comparison link, and installation URLs.
 
-The [workflow](../.github/workflows/release.yml) validates pushes to `main` and pull requests without publishing. A version-tag push triggers publication. Release notes combine the curated changelog section with GitHub-generated notes and a comparison to the previous published stable tag; the first release links to its commit history.
+The [workflow](../.github/workflows/release.yml) validates pushes to `main` and pull requests. Only a new, explicitly requested release version on `main` is published automatically. Versions are changed manually as part of preparing that release; documentation-only changes and ordinary fixes do not bump versions. Pushes using an already-published version finish successfully with **Version already released**, leaving its tag, notes, and assets untouched. Pull requests never publish. Tag-triggered releases remain supported.
 
-If a run fails without creating a release, use **Actions → Release NoirGlass → Run workflow**, choose `main`, and enter the existing tag. This retries that tagged source with the selected workflow; it does not move the tag. Existing releases and drafts are never overwritten.
+Release notes combine the curated changelog section with GitHub-generated notes and a comparison to the previous published stable tag; the first release links to its commit history. Publication is serialized across the repository. A conflicting tag, existing draft, or prerelease requires manual resolution; none is overwritten.
 
-The workflow does not create tags for you. During release verification, check [CDN caching and version pinning](SETUP.md#versions-and-cdn-caching) to confirm that installation URLs serve the intended files.
+If validation fails before a tag exists, fix the problem and push to `main` again. If a tag exists but publication failed, use **Actions → Release NoirGlass → Run workflow**, choose `main`, and enter the existing tag. This retries that tagged source with the selected workflow; it does not move the tag. An already-published release is a successful no-op; drafts are never overwritten.
+
+During release verification, check [CDN caching and version pinning](SETUP.md#versions-and-cdn-caching) to confirm that installation URLs serve the intended files.

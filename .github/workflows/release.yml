@@ -26,6 +26,9 @@ concurrency:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      commit: ${{ steps.release.outputs.commit }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -94,8 +97,14 @@ jobs:
         run: |
           git ls-files --error-unmatch README.md docs/CUSTOMIZATION.md dist/noirglass.min.css dist/noirglass.companion.js
           git diff --exit-code -- README.md docs/CUSTOMIZATION.md dist/noirglass.min.css dist/noirglass.companion.js
+      - name: Record validated version and commit
+        id: release
+        shell: bash
+        run: |
+          echo "tag=v$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
-        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         with:
           name: noirglass-release
           if-no-files-found: error
@@ -106,33 +115,59 @@ jobs:
 
   publish:
     needs: build-and-test
-    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    concurrency:
+      group: noirglass-publication
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ inputs.tag || github.ref }}
+          ref: ${{ needs.build-and-test.outputs.commit }}
+      - name: Load publication tooling from this workflow revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .release-tools
+          sparse-checkout: scripts
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Prepare version publication
+        id: prepare
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.build-and-test.outputs.tag }}
+          TESTED_COMMIT: ${{ needs.build-and-test.outputs.commit }}
+          ALLOW_CREATE_TAG: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: node .release-tools/scripts/prepare-release.mjs
       - uses: actions/download-artifact@v4
+        if: steps.prepare.outputs.publish == 'true'
         with:
           name: noirglass-release
           path: release-files
+      - name: Verify downloaded release assets
+        if: steps.prepare.outputs.publish == 'true'
+        env:
+          RELEASE_TAG: ${{ needs.build-and-test.outputs.tag }}
+        run: node .release-tools/scripts/prepare-release.mjs --verify-assets release-files
       - name: Prepare release notes
+        if: steps.prepare.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+          RELEASE_TAG: ${{ needs.build-and-test.outputs.tag }}
         run: node scripts/release-notes.mjs "$RELEASE_TAG" release-notes.md
       - name: Publish GitHub release
+        if: steps.prepare.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+          RELEASE_TAG: ${{ needs.build-and-test.outputs.tag }}
         shell: bash
         run: |
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then

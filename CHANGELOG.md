@@ -6,6 +6,10 @@ Use this page to see what changed in each NoirGlass release. The newest released
 
 ## [Unreleased]
 
+### Changed
+
+- GitHub automatically publishes new release versions after successful validation on main; existing releases remain unchanged.
+
 ## [1.2.1] - 2026-10-03
 
 ### Changed
