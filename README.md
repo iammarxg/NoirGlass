@@ -2,9 +2,10 @@
 
 NoirGlass gives Jellyfin's browser interface, Jellyfin Web, a cinematic, Apple TV-inspired appearance: large artwork, spacious browsing, and translucent controls. Install the CSS theme for the new look, then add the optional server plugin if you want extra features.
 
-- **Theme:** styles media pages, menus, user Settings, and native playback controls.
-- **Plugin:** adds a featured Home carousel—a rotating display of titles from each user's accessible library.
-- **Plugin:** adds source-format badges and applies the theme to the administrator Dashboard.
+| Component | Features |
+| --- | --- |
+| **Theme** | Styles media pages, menus, user Settings, and native playback controls. |
+| **Plugin** | Adds a rotating Home carousel using each user’s accessible library, source-format badges, and administrator Dashboard theming. |
 
 <details>
 <summary>Screenshots</summary>
